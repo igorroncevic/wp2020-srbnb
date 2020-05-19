@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "Signup",
+  name: "notFound",
   created: function() {
     setTimeout(() => {
       this.$router.push({ name: "home" });

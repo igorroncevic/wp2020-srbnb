@@ -1,7 +1,9 @@
 <template>
   <div class="wrapper">
     <header>
-      <div class="logo">srbnb</div>
+      <div class="logo">
+        <a href="/">srbnb</a>
+      </div>
       <nav class="navbar">
         <ul>
           <li>
@@ -25,7 +27,6 @@ export default {
 
 <style>
 .wrapper {
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -34,10 +35,11 @@ export default {
   flex: 1;
 }
 
-.logo {
+.logo a {
   float: left;
   padding-top: 10px;
   font-size: 26px;
+  text-decoration: none;
   color: var(--brand-color);
 }
 
