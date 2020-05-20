@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-top: 75px;">
     <!-- Title -->
     <div class="title-wrapper">
       <h1 id="title">

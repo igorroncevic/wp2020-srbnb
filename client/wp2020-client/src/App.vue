@@ -1,18 +1,22 @@
 <template>
-  <div id="app" class="row" :style="{backgroundImage: `url('${backgroundImg}')`}">
-    <router-view />
+  <div id="app" :style="{background: 'url(' + backgroundImage +')'}">
+    <router-view class="row"/>
   </div>
 </template>
 
 <script>
+import homeBg from "./../public/img/home-cover.png";
+import loginSignupBg from "./../public/img/login-cover.png";
+
 export default {
   name: "App",
   computed: {
-    backgroundImg() {
-      return this.$route.path === "/"
-        ? "./../public/img/home-cover.png"
-        : this.$route.path === "/login" || this.$route.path === "/signup"
-        ? "./../public/img/login-cover.png"
+    backgroundImage() {
+      console.log();
+      return this.$route.name === "home"
+        ? homeBg
+        : this.$route.name === "login" || this.$route.name === "signup"
+        ? loginSignupBg
         : "";
     }
   }
@@ -34,12 +38,11 @@ export default {
 #app {
   margin: 0 auto;
   overflow-x: hidden;
+  height: 100vh;
 }
 
 .row {
   position: relative;
-  max-width: 85%;
-  height: 100%;
   width: 85%;
   margin: 0 auto;
 }
