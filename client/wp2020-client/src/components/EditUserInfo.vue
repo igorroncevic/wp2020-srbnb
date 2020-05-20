@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import SimpleInput from "./SimpleInput.vue";
-import RadioButton from "./RadioButton.vue";
-import Button from "./Button.vue";
+import SimpleInput from "./form-components/SimpleInput.vue";
+import RadioButton from "./form-components/RadioButton.vue";
+import Button from "./form-components/Button.vue";
 
 export default {
   components: {

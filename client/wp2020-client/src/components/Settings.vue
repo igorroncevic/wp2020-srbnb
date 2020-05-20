@@ -1,8 +1,20 @@
 <template>
   <div class="grid-container">
     <div class="menu">
-      <router-link to="/settings" class="navigation">Edit Your Profile</router-link>
-      <router-link to="/settings/change-password" class="navigation">Change Password</router-link>
+      <ul>
+        <li>
+          <router-link
+            to="/settings"
+            :class="{activeLink: isActive, inactiveLink: !isActive}"
+          >Edit Your Profile</router-link>
+        </li>
+        <li>
+          <router-link
+            to="/settings/change-password"
+            :class="{activeLink: !isActive, inactiveLink: isActive}"
+          >Change Password</router-link>
+        </li>
+      </ul>
     </div>
     <div class="wrapper">
       <div class="title">{{ title }}</div>
@@ -21,7 +33,6 @@
 </template>
 
 <script>
-
 export default {
   name: "Settings",
   computed: {
@@ -29,6 +40,9 @@ export default {
       return this.$route.name === "editUserInfo"
         ? "Edit Your Profile"
         : "Change Your Password";
+    },
+    isActive() {
+      return this.$route.name === "editUserInfo" ? true : false;
     }
   }
 };
@@ -45,7 +59,6 @@ export default {
 /* Navigation */
 .menu {
   grid-column: 1 / 4;
-  background: red;
 }
 
 .wrapper {
@@ -93,5 +106,24 @@ export default {
   grid-row: 4/10;
 }
 
-/* Submit Button */
+.menu ul * {
+  list-style: none;
+}
+
+.menu ul li {
+   margin-bottom: 20px;
+}
+
+.activeLink {
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: var(--main-text-color);
+}
+
+.inactiveLink {
+  text-decoration: none;
+  font-size: 1.1em;
+  color: var(--medium-text-color);
+}
 </style>
