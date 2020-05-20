@@ -7,10 +7,13 @@
       <nav class="navbar">
         <ul>
           <li>
-            <a href="/login">Login</a>
+            <router-link to="/login">Login</router-link>
           </li>
           <li>
-            <a href="/signup">Signup</a>
+            <router-link to="/signup">Signup</router-link>
+          </li>
+          <li>
+            <router-link to="/settings">Settings</router-link>
           </li>
         </ul>
       </nav>

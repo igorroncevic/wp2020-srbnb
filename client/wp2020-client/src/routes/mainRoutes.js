@@ -8,7 +8,6 @@ export default [
   {
     path: "/",
     component: Main,
-    name: "main",
     children: Subroutes,
   },
   {

@@ -2,6 +2,8 @@ import Home from "./../components/Home.vue";
 import SearchResults from "./../components/SearchResults.vue";
 import Settings from "./../components/Settings.vue";
 import Apartment from "./../components/Apartment.vue";
+import EditUserInfo from "./../components/EditUserInfo.vue";
+import ChangePassword from "./../components/ChangePassword.vue";
 
 export default [
   {
@@ -16,8 +18,19 @@ export default [
   },
   {
     path: "/settings",
-    name: "settings",
     component: Settings,
+    children: [
+      {
+        path: "",
+        component: EditUserInfo,
+        name: 'editUserInfo'
+      },
+      {
+        path: "change-password",
+        component: ChangePassword,
+        name: 'changePassword'
+      },
+    ],
   },
   {
     path: "/Apartment",
