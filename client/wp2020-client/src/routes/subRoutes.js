@@ -10,11 +10,17 @@ export default [
     path: "",
     name: "home",
     component: Home,
+    meta: {
+      title: " - Vacation Rentals, Homes, Experiences & Places",
+    },
   },
   {
     path: "/search-results",
     name: "search-results",
     component: SearchResults,
+    meta: {
+      title: " - Search Results",
+    },
   },
   {
     path: "/settings",
@@ -23,12 +29,18 @@ export default [
       {
         path: "",
         component: EditUserInfo,
-        name: 'editUserInfo'
+        name: "editUserInfo",
+        meta: {
+         title: " - Edit Your Profile",
+       },
       },
       {
         path: "change-password",
         component: ChangePassword,
-        name: 'changePassword'
+        name: "changePassword",
+        meta: {
+          title: " - Change Your Password",
+        },
       },
     ],
   },
@@ -36,5 +48,8 @@ export default [
     path: "/Apartment",
     name: "apartment",
     component: Apartment,
+    meta: {
+      title: " - Apartment Preview",
+    },
   },
 ];

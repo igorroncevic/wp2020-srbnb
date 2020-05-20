@@ -1,15 +1,21 @@
 <template>
   <div>
     <form action method="post">
-      <SimpleInput label="Full Name" inputValue="Petar Petrović"></SimpleInput>
-      <SimpleInput label="Email" inputValue="pero@email.com"></SimpleInput>
+      <SimpleInput label="Full Name" v-model="name" :inputValue="name" />
+      <SimpleInput label="Email" v-model="email" :inputValue="email" />
 
       <label for="name" style="margin-top: 10px;">Gender</label>
       <div class="gender">
-        <radio-button value="Male" checked="checked" /> <!-- Pass which one is checked -->
-        <radio-button value="Female" style="margin-left: 10rem;"/>
+        <radio-button v-if="isMale" value="Male" :checked="isMale" @change="setGender" />
+        <!-- Pass which one is checked -->
+        <radio-button
+          value="Female"
+          :checked="!isMale"
+          style="margin-left: 10rem;"
+          @change="setGender"
+        />
       </div>
-      <Button text="Save Changes" width="300" fontsize="20" id="button"/>
+      <Button text="Save Changes" width="300" fontsize="20" id="button" @clicked="submitForm" />
     </form>
   </div>
 </template>
@@ -24,6 +30,27 @@ export default {
     SimpleInput,
     RadioButton,
     Button
+  },
+  data() {
+    return {
+      name: "Petar Petrović",
+      email: "pero@gmail.com",
+      gender: "Male",
+      selectedGender: "Male"
+    };
+  },
+  computed: {
+    isMale() {
+      return this.gender === "Male" ? "checked" : "";
+    }
+  },
+  methods: {
+    setGender(value) {
+      this.selectedGender = value;
+    },
+    submitForm(){
+       console.log("Full name: " + this.name + ", email: " + this.email + ", gender: " + this.selectedGender);
+    }
   }
 };
 </script>
@@ -40,9 +67,8 @@ label {
   margin-top: 1rem;
 }
 
-#button{
-   margin-left: 6rem;
-   margin-top: 8rem;
+#button {
+  margin-left: 6rem;
+  margin-top: 8rem;
 }
-
 </style>

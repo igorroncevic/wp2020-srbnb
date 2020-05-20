@@ -1,7 +1,7 @@
 <template>
   <label class="container">
      {{value}}
-    <input type="radio" name="radio" :checked=checked />
+    <input type="radio" name="radio" :value="value" :checked=checked @change="$emit('change', $event.target.value)"/>
     <span class="checkmark"></span>
   </label>
 </template>

@@ -1,13 +1,14 @@
 <template>
   <div id="simpleInput">
     <label for="input">{{label}}</label>
-    <input type="text" name="input" :value=inputValue />
+    <input type="text" name="input" :value=inputValue @input="$emit('input', $event.target.value)"/>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["label", "inputValue"]
+  props: ["label", "inputValue", "submitted"],
+
 };
 </script>
 

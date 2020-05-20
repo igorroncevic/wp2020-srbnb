@@ -1,5 +1,5 @@
 <template>
-  <button type="submit" :style="{width: width + 'px', fontSize: fontsize + 'px'}">
+  <button type="submit" :style="{width: width + 'px', fontSize: fontsize + 'px'}" @click="$emit('clicked')">
     {{text}}
   </button>
 </template>
@@ -7,6 +7,11 @@
 <script>
 export default {
    props: ['text', 'width', 'fontsize', 'imgsrc'],
+   methods: {
+      clicked(){
+         this.$emit('clicked');
+      }
+   }
 };
 </script>
 

@@ -11,6 +11,12 @@ const router = new VueRouter({
   mode: "history",
 });
 
+router.beforeEach((to, from, next)=>{
+   document.title = 'Srbnb';
+   if(to.meta.title) document.title += to.meta.title;
+   next();
+})
+
 Vue.config.productionTip = false;
 
 new Vue({

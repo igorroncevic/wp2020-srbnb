@@ -9,20 +9,30 @@ export default [
     path: "/",
     component: Main,
     children: Subroutes,
+    
   },
   {
     path: "/login",
     name: "login",
     component: Login,
+    meta: {
+      title: " -  Login",
+    },
   },
   {
     path: "/signup",
     name: "signup",
     component: Signup,
+    meta: {
+      title: " - Signup",
+    },
   },
   {
      path: "*",
      name: "notFound",
-     component: NotFound
+     component: NotFound,
+     meta: {
+      title: " - 404 Not Found!",
+    },
   }
 ];
