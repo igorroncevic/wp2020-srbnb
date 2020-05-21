@@ -1,14 +1,98 @@
 <template>
-  <div>
-     <p> This is the login page. </p>
+  <div id="wrapper">
+    <div class="logo">
+      <a href="/">srbnb</a>
+    </div>
+    <div id="container">
+      <form action method="post" style="margin-left: 8px;">
+        <div class="title">Log In</div>
+        <SimpleInput label="Username" :value="''" v-model="username" width="400" />
+        <SimpleInput label="Password" :value="''" v-model="password" width="400" />
+        <Button text="Continue" width="350" fontsize="20" id="button" @clicked="login" />
+        <div class="signup">
+          Don't have an account?
+          <span>
+            <a href="/signup">Sign up here.</a>
+          </span>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
+import SimpleInput from "./../components/form-components/SimpleInput.vue";
+import Button from "./../components/form-components/Button.vue";
+
 export default {
-  name: 'Login',
-}
+  name: "Login",
+  components: {
+    SimpleInput,
+    Button
+  },
+  data() {
+    return {
+      username: "",
+      password: ""
+    };
+  },
+  methods: {
+    login() {
+      console.log(
+        "Username: " + this.username + ", Password: " + this.password
+      );
+    }
+  }
+};
 </script>
 
 <style scoped>
+#wrapper {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.logo a {
+  float: left;
+  position: relative;
+  top: 2%;
+  font-size: 26px;
+  text-decoration: none;
+  color: var(--brand-color);
+}
+
+.title {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+#container {
+  position: relative;
+  margin: 30% 20%;
+  padding: 40px 50px;
+  width: 27rem;
+  grid-row: 2;
+  grid-column: 5;
+  background: var(--background-color);
+  margin-bottom: 30px;
+  box-shadow: 0px 4px 8px var(--dropshadow-color);
+  border-radius: var(--border-radius);
+}
+
+#button {
+  margin-left: 2.3rem;
+  margin-top: 1.5rem;
+}
+
+.signup {
+  text-align: center;
+  margin-top: 2rem;
+}
+.signup a {
+   text-decoration: none;
+   color: var(--main-text-color);
+   font-weight: bold;
+}
 </style>

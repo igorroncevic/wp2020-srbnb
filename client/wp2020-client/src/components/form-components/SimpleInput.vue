@@ -1,13 +1,13 @@
 <template>
   <div id="simpleInput">
     <label for="input">{{label}}</label>
-    <input type="text" name="input" :value=inputValue @input="$emit('input', $event.target.value)"/>
+    <input type="text" :style="{width: width + 'px'}"  name="input" :value=inputValue @input="$emit('input', $event.target.value)"/>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["label", "inputValue", "submitted"],
+  props: ["label", "inputValue", "width"],
 
 };
 </script>
@@ -32,7 +32,6 @@ form input[type="text"] {
   color: var(--main-text-color);
   font-size: 1.3rem;
   border: 1px solid var(--light-text-color);
-
-
 }
+
 </style>
