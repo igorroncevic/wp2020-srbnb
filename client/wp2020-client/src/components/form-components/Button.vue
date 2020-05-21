@@ -19,7 +19,7 @@ export default {
 button[type="submit"] {
   cursor: pointer;
   width: auto;
-  font-size: 18px;
+  font-size: 16px;
   padding: 13px 29px 12px 25px;
   color: var(--background-color);
   background-color: var(--brand-color);
