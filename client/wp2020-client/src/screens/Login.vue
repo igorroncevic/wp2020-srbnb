@@ -8,7 +8,7 @@
         <div class="title">Log In</div>
         <SimpleInput label="Username" :value="''" v-model="username" width="400" />
         <SimpleInput label="Password" :value="''" v-model="password" width="400" />
-        <Button text="Continue" width="350" fontsize="20" id="button" @clicked="login" />
+        <Button text="Continue" width="350" fontsize="20" id="button" @clicked="login" height="45"/>
         <div class="signup">
           Don't have an account?
           <span>

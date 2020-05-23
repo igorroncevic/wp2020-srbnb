@@ -17,7 +17,7 @@
         </div>
         <SimpleInput label="Password" :value="''" v-model="password" width="550" />
         <SimpleInput label="Confirm Password" :value="''" v-model="confirmPassword" width="550" />
-        <Button text="Continue" width="400" fontsize="20" id="button" @clicked="login" />
+        <Button text="Continue" width="400" fontsize="20" id="button" @clicked="login" height="50"/>
         <div class="signup">
           Already have an account?
           <span>
