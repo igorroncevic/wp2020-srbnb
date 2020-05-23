@@ -82,13 +82,14 @@ export default {
 }
 
 #button {
-  margin-left: 2.3rem;
+  margin-left: 2rem;
   margin-top: 1.5rem;
 }
 
 .signup {
   text-align: center;
   margin-top: 2rem;
+  margin-right: 7px;
 }
 .signup a {
    text-decoration: none;

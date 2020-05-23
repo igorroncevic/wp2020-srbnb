@@ -5,10 +5,10 @@
     <div id="title">{{apartment.name}}</div>
     <div id="features">{{apartment.features}}</div>
     <div id="main-info">
-      <span>
+      <span style="margin-bottom: 6px;">
         <span style="font-weight: bold">${{apartment.price}}</span>/night
-        <Button text="Visit" width="90" height="30" fontsize="14" style="margin-left:5rem;"/>
       </span>
+      <Button text="Visit" width="100" height="30" fontsize="14" id="visit-button" />
     </div>
   </div>
 </template>
@@ -17,7 +17,7 @@
 import Button from "./form-components/Button.vue";
 
 export default {
-  props: ['apartment'],
+  props: ["apartment"],
   name: "SearchResult",
   components: { Button }
 };
@@ -28,9 +28,9 @@ export default {
   display: grid;
   grid-template-columns: 12rem 18rem;
   column-gap: 1rem;
-  grid-template-rows: 1.2rem 2rem 1.5rem 1rem 3rem;
+  grid-template-rows: 1.2rem 2rem 1.5rem 1rem 3rem 0.1rem;
   width: 23rem;
-  height: 11rem; /* Also bottom margin */
+  margin-bottom: 20px;
 }
 
 #picture {
@@ -38,7 +38,7 @@ export default {
   grid-column: 1;
   grid-row: 1/6;
   /*align-self: center;*/
-  text-align:center;
+  text-align: center;
 }
 
 #type {
@@ -65,8 +65,16 @@ export default {
 }
 
 #main-info {
+  position: relative;
   grid-column: 2;
   grid-row: 5;
   align-self: end;
+  display: flex;
+}
+
+#visit-button {
+  position: absolute;
+  right: 5%;
+  bottom: 0%;
 }
 </style>
