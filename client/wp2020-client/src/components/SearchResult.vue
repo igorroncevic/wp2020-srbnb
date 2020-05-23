@@ -5,10 +5,10 @@
     <div id="title">{{apartment.name}}</div>
     <div id="features">{{apartment.features}}</div>
     <div id="main-info">
-      <span style="margin-bottom: 6px;">
+      <span style="margin-bottom: 6px; font-size: 18px;">
         <span style="font-weight: bold">${{apartment.price}}</span>/night
       </span>
-      <Button text="Visit" width="100" height="30" fontsize="14" id="visit-button" />
+      <Button text="Visit" width="100" height="33" fontsize="15" id="visit-button" />
     </div>
   </div>
 </template>
@@ -74,7 +74,7 @@ export default {
 
 #visit-button {
   position: absolute;
-  right: 5%;
+  right: 0%;
   bottom: 0%;
 }
 </style>

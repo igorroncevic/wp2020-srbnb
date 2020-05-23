@@ -12,7 +12,7 @@
 
 <script>
 export default {
-   props: ['value']
+  props: ["value"]
 };
 </script>
 
@@ -27,6 +27,7 @@ export default {
 
 .filter-item-wrapper:hover {
   border: 1px solid var(--main-text-color);
+  cursor: pointer;
 }
 
 .filter-item {
@@ -36,7 +37,15 @@ export default {
   border-radius: var(--border-radius);
 }
 
+.filter-item:hover{
+   cursor: pointer;
+}
+
 .filter-item label {
   font-size: 14px;
+}
+
+.filter-item label:hover {
+  cursor: pointer;
 }
 </style>

@@ -15,7 +15,14 @@
           @change="setGender"
         />
       </div>
-      <Button text="Save Changes" width="300" fontsize="20" id="button" @clicked="submitForm" />
+      <Button
+        text="Save Changes"
+        width="300"
+        height="45"
+        fontsize="20"
+        id="button"
+        @clicked="submitForm"
+      />
     </form>
   </div>
 </template>
@@ -48,8 +55,15 @@ export default {
     setGender(value) {
       this.selectedGender = value;
     },
-    submitForm(){
-       console.log("Full name: " + this.name + ", email: " + this.email + ", gender: " + this.selectedGender);
+    submitForm() {
+      console.log(
+        "Full name: " +
+          this.name +
+          ", email: " +
+          this.email +
+          ", gender: " +
+          this.selectedGender
+      );
     }
   }
 };

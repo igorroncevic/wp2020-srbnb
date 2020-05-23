@@ -4,7 +4,7 @@
       <SimpleInput label="Current Password" v-model="currentPassword" :inputValue="''" />
       <SimpleInput label="New Password" v-model="newPassword" :inputValue="''" />
       <SimpleInput label="Confirm" v-model="confirmPassword" :inputValue="''" />
-      <Button text="Save Changes" width="300" fontsize="20" id="button" @clicked="submitForm" />
+      <Button text="Save Changes" width="300" height="45" fontsize="20" id="button" @clicked="submitForm" />
     </form>
   </div>
 </template>
