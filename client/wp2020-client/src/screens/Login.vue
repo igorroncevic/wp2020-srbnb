@@ -12,7 +12,7 @@
         <div class="signup">
           Don't have an account?
           <span>
-            <a href="/signup">Sign up here.</a>
+            <router-link to="/signup">Sign up here.</router-link>
           </span>
         </div>
       </form>
@@ -55,7 +55,7 @@ export default {
 .logo a {
   float: left;
   position: relative;
-  top: 2%;
+  top: 13%;
   font-size: 26px;
   text-decoration: none;
   color: var(--brand-color);
