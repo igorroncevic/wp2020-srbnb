@@ -15,7 +15,7 @@ export default [
     },
   },
   {
-    path: "/search-results",
+    path: "search-results",
     name: "search-results",
     component: SearchResults,
     meta: {

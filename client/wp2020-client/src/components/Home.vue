@@ -22,14 +22,14 @@
           </div>
           <div class="form-item" tabindex="2">
             <div class="nest stacked">
-              <label for="location" class="label">CHECK IN / CHECK OUT</label>
-              <input type="text" name="location" placeholder="Add dates" />
+              <label for="dates" class="label">CHECK IN / CHECK OUT</label>
+              <input type="text" name="dates" placeholder="Add dates" />
             </div>
           </div>
           <div class="form-item" tabindex="3">
             <div class="stacked nest">
-              <label for="location" class="label">GUESTS</label>
-              <input type="text" name="location" placeholder="Add guests" />
+              <label for="guests" class="label">GUESTS</label>
+              <input type="text" name="guests" placeholder="Add guests" />
             </div>
           </div>
           <button type="submit">
