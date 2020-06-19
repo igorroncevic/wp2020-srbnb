@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Button from "./form-components/Button.vue";
+import Button from "./../form-components/Button.vue";
 
 export default {
   props: ["apartment"],

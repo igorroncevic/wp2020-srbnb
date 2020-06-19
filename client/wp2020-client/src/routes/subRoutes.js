@@ -1,9 +1,10 @@
 import Home from "./../components/Home.vue";
 import SearchResults from "./../components/SearchResults.vue";
 import Settings from "./../components/Settings.vue";
-import Apartment from "./../components/Apartment.vue";
+import ApartmentPreview from "./../components/ApartmentPreview.vue";
 import EditUserInfo from "./../components/EditUserInfo.vue";
 import ChangePassword from "./../components/ChangePassword.vue";
+import UserProfile from "./../components/UserProfile.vue";
 
 export default [
   {
@@ -45,11 +46,18 @@ export default [
     ],
   },
   {
-    path: "/Apartment",
+    path: "apartment",
     name: "apartment",
-    component: Apartment,
+    component: ApartmentPreview,
     meta: {
       title: " - Apartment Preview",
     },
-  },
+  },{
+   path: "user-profile",
+   name: "user-profile",
+   component: UserProfile,
+   meta: {
+     title: " - User Profile",
+   },
+ },
 ];
