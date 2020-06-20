@@ -2,7 +2,7 @@
   <div style="margin-top: 75px;">
     <!-- Title -->
     <div class="title-wrapper">
-      <h1 id="title">
+      <h1>
         Book unique homes and
         <span id="accented">experience</span> a
         <br />city like a local.
@@ -54,15 +54,16 @@ export default {
   position: relative;
   width: 92%;
   margin: 0 auto;
+  top: -4%;
 }
 
-.title {
-  font-size: 48px;
-  font-weight: 400;
+h1 {
+  font-size: 36px;
+  font-weight: 500;
   color: var(--main-text-color);
-  margin: 60px 0;
+  margin: 10px 0;
   letter-spacing: 1px;
-  line-height: 56px;
+  line-height: 40px;
 }
 
 #accented {

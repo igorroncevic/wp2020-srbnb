@@ -5,6 +5,7 @@ import ApartmentPreview from "./../components/ApartmentPreview.vue";
 import EditUserInfo from "./../components/EditUserInfo.vue";
 import ChangePassword from "./../components/ChangePassword.vue";
 import UserProfile from "./../components/UserProfile.vue";
+import SearchUsers from "./../components/SearchUsers.vue";
 
 export default [
   {
@@ -32,8 +33,8 @@ export default [
         component: EditUserInfo,
         name: "editUserInfo",
         meta: {
-         title: " - Edit Your Profile",
-       },
+          title: " - Edit Your Profile",
+        },
       },
       {
         path: "change-password",
@@ -52,12 +53,21 @@ export default [
     meta: {
       title: " - Apartment Preview",
     },
-  },{
-   path: "user-profile",
-   name: "user-profile",
-   component: UserProfile,
-   meta: {
-     title: " - User Profile",
-   },
- },
+  },
+  {
+    path: "user-profile",
+    name: "user-profile",
+    component: UserProfile,
+    meta: {
+      title: " - User Profile",
+    },
+  },
+  {
+    path: "search-users",
+    name: "search-users",
+    component: SearchUsers,
+    meta: {
+      title: " - Search Users",
+    },
+  },
 ];
