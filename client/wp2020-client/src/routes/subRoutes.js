@@ -6,6 +6,7 @@ import EditUserInfo from "./../components/EditUserInfo.vue";
 import ChangePassword from "./../components/ChangePassword.vue";
 import UserProfile from "./../components/UserProfile.vue";
 import SearchUsers from "./../components/SearchUsers.vue";
+import PreviewBookings from "./../components/PreviewBookings.vue";
 
 export default [
   {
@@ -70,4 +71,12 @@ export default [
       title: " - Search Users",
     },
   },
+  {
+   path: "preview-bookings",
+   name: "preview-bookings",
+   component: PreviewBookings,
+   meta: {
+     title: " - Preview Bookings",
+   },
+ },
 ];
