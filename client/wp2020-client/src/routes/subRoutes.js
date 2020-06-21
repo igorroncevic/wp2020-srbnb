@@ -7,6 +7,7 @@ import ChangePassword from "./../components/ChangePassword.vue";
 import UserProfile from "./../components/UserProfile.vue";
 import SearchUsers from "./../components/SearchUsers.vue";
 import PreviewBookings from "./../components/PreviewBookings.vue";
+import AddApartment from "./../components/AddApartment.vue";
 
 export default [
   {
@@ -77,6 +78,14 @@ export default [
    component: PreviewBookings,
    meta: {
      title: " - Preview Bookings",
+   },
+ },
+ {
+   path: "add-apartment",
+   name: "add-apartment",
+   component: AddApartment,
+   meta: {
+     title: " - Add New Apartment",
    },
  },
 ];
