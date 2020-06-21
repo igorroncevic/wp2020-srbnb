@@ -49,8 +49,8 @@ export default [
     ],
   },
   {
-    path: "apartment",
-    name: "apartment",
+    path: "apartment-preview",
+    name: "apartment-preview",
     component: ApartmentPreview,
     meta: {
       title: " - Apartment Preview",

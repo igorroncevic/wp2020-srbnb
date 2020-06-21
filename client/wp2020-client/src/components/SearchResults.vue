@@ -74,9 +74,9 @@ export default {
     };
   },
   methods: {
-     chooseSort(){
-        alert('Clicked sort');
-     }
+    chooseSort() {
+      alert("Clicked sort");
+    }
   }
 };
 </script>
@@ -90,7 +90,7 @@ main {
 }
 
 .search-results {
-   margin-top: 15px;
+  margin-top: 15px;
   margin-left: 40px;
   grid-column: 1/2;
   width: 100%;
@@ -104,8 +104,8 @@ main {
   color: var(--medium-text-color);
 }
 
-.sort-field:hover{
-   cursor: pointer;
+.sort-field:hover {
+  cursor: pointer;
 }
 
 .map {
