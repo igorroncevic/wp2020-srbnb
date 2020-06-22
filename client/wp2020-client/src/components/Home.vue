@@ -2,7 +2,7 @@
   <div style="margin-top: 75px;">
     <!-- Title -->
     <div class="title-wrapper">
-      <h1 id="title">
+      <h1>
         Book unique homes and
         <span id="accented">experience</span> a
         <br />city like a local.
@@ -22,14 +22,14 @@
           </div>
           <div class="form-item" tabindex="2">
             <div class="nest stacked">
-              <label for="location" class="label">CHECK IN / CHECK OUT</label>
-              <input type="text" name="location" placeholder="Add dates" />
+              <label for="dates" class="label">CHECK IN / CHECK OUT</label>
+              <input type="text" name="dates" placeholder="Add dates" />
             </div>
           </div>
           <div class="form-item" tabindex="3">
             <div class="stacked nest">
-              <label for="location" class="label">GUESTS</label>
-              <input type="text" name="location" placeholder="Add guests" />
+              <label for="guests" class="label">GUESTS</label>
+              <input type="text" name="guests" placeholder="Add guests" />
             </div>
           </div>
           <button type="submit">
@@ -54,15 +54,16 @@ export default {
   position: relative;
   width: 92%;
   margin: 0 auto;
+  top: -4%;
 }
 
-.title {
-  font-size: 48px;
-  font-weight: 400;
+h1 {
+  font-size: 36px;
+  font-weight: 500;
   color: var(--main-text-color);
-  margin: 60px 0;
+  margin: 10px 0;
   letter-spacing: 1px;
-  line-height: 56px;
+  line-height: 40px;
 }
 
 #accented {

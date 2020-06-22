@@ -1,9 +1,11 @@
 import Home from "./../components/Home.vue";
 import SearchResults from "./../components/SearchResults.vue";
 import Settings from "./../components/Settings.vue";
-import Apartment from "./../components/Apartment.vue";
+import ApartmentPreview from "./../components/ApartmentPreview.vue";
 import EditUserInfo from "./../components/EditUserInfo.vue";
 import ChangePassword from "./../components/ChangePassword.vue";
+import UserProfile from "./../components/UserProfile.vue";
+import SearchUsers from "./../components/SearchUsers.vue";
 
 export default [
   {
@@ -15,7 +17,7 @@ export default [
     },
   },
   {
-    path: "/search-results",
+    path: "search-results",
     name: "search-results",
     component: SearchResults,
     meta: {
@@ -31,8 +33,8 @@ export default [
         component: EditUserInfo,
         name: "editUserInfo",
         meta: {
-         title: " - Edit Your Profile",
-       },
+          title: " - Edit Your Profile",
+        },
       },
       {
         path: "change-password",
@@ -45,11 +47,27 @@ export default [
     ],
   },
   {
-    path: "/Apartment",
+    path: "apartment",
     name: "apartment",
-    component: Apartment,
+    component: ApartmentPreview,
     meta: {
       title: " - Apartment Preview",
+    },
+  },
+  {
+    path: "user-profile",
+    name: "user-profile",
+    component: UserProfile,
+    meta: {
+      title: " - User Profile",
+    },
+  },
+  {
+    path: "search-users",
+    name: "search-users",
+    component: SearchUsers,
+    meta: {
+      title: " - Search Users",
     },
   },
 ];

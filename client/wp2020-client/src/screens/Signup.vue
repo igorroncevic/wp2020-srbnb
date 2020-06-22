@@ -21,7 +21,7 @@
         <div class="signup">
           Already have an account?
           <span>
-            <a href="/login">Log in here.</a>
+            <router-link to="/login">Log in here.</router-link>
           </span>
         </div>
       </form>
@@ -89,7 +89,7 @@ label {
 .logo a {
   float: left;
   position: relative;
-  top: 2%;
+  top: 13%;
   font-size: 26px;
   text-decoration: none;
   color: var(--brand-color);

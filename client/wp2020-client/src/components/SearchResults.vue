@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import SearchResult from "./SearchResult.vue";
+import SearchResult from "./reusable/SearchResult.vue";
 import FilterItem from "./FilterItem.vue";
 
 export default {

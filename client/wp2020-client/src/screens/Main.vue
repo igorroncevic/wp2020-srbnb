@@ -4,7 +4,7 @@
       <div class="logo">
         <a href="/">srbnb</a>
       </div>
-      <nav class="navbar">
+      <nav>
         <ul>
           <li>
             <router-link to="/login">Login</router-link>
@@ -45,7 +45,7 @@ header{
 
 .logo a {
   float: left;
-  padding-top: 10px;
+  padding-top: 6px;
   font-size: 26px;
   text-decoration: none;
   color: var(--brand-color);
@@ -53,6 +53,7 @@ header{
 
 nav {
   float: right;
+  margin-top: 3px;
 }
 
 nav ul {
