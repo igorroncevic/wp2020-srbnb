@@ -19,9 +19,11 @@ public class UsersDAO {
 	private static UsersDAO instance;
 	
 	private String GUESTS_FILE_PATH = "data/guests.json";
+	private String HOSTS_FILE_PATH = "data/hosts.json";
+	private String ADMINS_FILE_PATH = "data/admins.json";
 	private Gson gson = new Gson();
 	
-	private List<Administrator> administrators = new ArrayList<Administrator>();
+	private List<Admin> admins = new ArrayList<Admin>();
 	private List<Guest> guests = new ArrayList<Guest>();
 	private List<Host> hosts = new ArrayList<Host>();
 
@@ -37,14 +39,19 @@ public class UsersDAO {
 		return instance;
 	}
 	
-	public boolean saveNewGuest(Guest newGuest) {
-		for(Guest existingGuest : guests) {
-			if(existingGuest.getUsername().equals(newGuest.getUsername()))
-				return false;
+	private void loadData() {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(GUESTS_FILE_PATH));
+			guests = gson.fromJson(br, new TypeToken<List<Guest>>(){}.getType());
+			
+			br = new BufferedReader(new FileReader(HOSTS_FILE_PATH));
+			hosts = gson.fromJson(br, new TypeToken<List<Host>>(){}.getType());
+			
+			br = new BufferedReader(new FileReader(ADMINS_FILE_PATH));
+			admins = gson.fromJson(br, new TypeToken<List<Admin>>(){}.getType());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
-		guests.add(newGuest);
-		saveGuests();
-		return true;
 	}
 	
 	private void saveGuests() {
@@ -60,13 +67,58 @@ public class UsersDAO {
 		}
 	}
 	
-	private void loadData() {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(GUESTS_FILE_PATH));
-			guests = gson.fromJson(br, new TypeToken<List<Guest>>(){}.getType());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+	public boolean addNewGuest(Guest newGuest) {
+		for(Guest existingGuest : guests) {
+			if(existingGuest.getUsername().equals(newGuest.getUsername()))
+				return false;
 		}
+		guests.add(newGuest);
+		saveGuests();
+		return true;
 	}
+	
+	public User login(Login login) {
+		for(Guest guest : guests) {
+			if(guest.getUsername().equals(login.getUsername()) && guest.getPassword().equals(login.getPassword())) {
+				return guest;
+			}
+		}
+		
+		for(Host host : hosts) {
+			if(host.getUsername().equals(login.getUsername()) && host.getPassword().equals(login.getPassword())) {
+				return host;
+			}
+		}
+		
+		for(Admin admin : admins) {
+			if(admin.getUsername().equals(login.getUsername()) && admin.getPassword().equals(login.getPassword())) {
+				return admin;
+			}
+		}
+		
+		return null;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
