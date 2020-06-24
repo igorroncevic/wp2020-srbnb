@@ -17,7 +17,12 @@
           <div class="form-item" tabindex="1">
             <div class="nest stacked">
               <label for="location" class="label">LOCATION</label>
-              <input type="text" name="location" placeholder="Where are you going?" />
+              <input
+                v-model="location"
+                type="text"
+                name="location"
+                placeholder="Where are you going?"
+              />
             </div>
           </div>
           <div class="form-item" tabindex="2">
@@ -48,7 +53,14 @@
           <div class="form-item" tabindex="3">
             <div class="stacked nest">
               <label for="guests" class="label">GUESTS</label>
-              <input type="number" name="guests" placeholder="Add guests" />
+              <input
+                v-model="guests"
+                min="0"
+                max="10"
+                type="number"
+                name="guests"
+                placeholder="Add guests"
+              />
             </div>
           </div>
           <button type="submit">
@@ -71,6 +83,8 @@ export default {
   components: { Datepicker },
   data() {
     return {
+      location: "",
+      guests: 0,
       startDate: "", //add 7 days
       endDate: "", //add 10 days
       dateFormat: "D MMM"
@@ -78,14 +92,18 @@ export default {
   },
   methods: {
     customFormatter(date) {
-      return moment(date).format("MMMM Do YYYY");  //DD-MM-YYYY for java friendly dates
+      return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
     },
     submitForm(e) {
       e.preventDefault();
       if (moment(this.startDate).isAfter(moment(this.endDate))) {
         alert("Start date cannot be before end date!");
-      } else if(this.startDate == '' || this.endDate == ''){
-         alert("Please select dates!")
+      } else if (this.startDate == "" || this.endDate == "") {
+        alert("Please select dates!");
+      } else if (this.guests == 0) {
+        alert("Please select number of guests!");
+      }else if(this.location == ''){
+         alert('Please select a location!');
       } else {
         this.$refs.form.submit();
       }

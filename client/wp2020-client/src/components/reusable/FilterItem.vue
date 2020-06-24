@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-item-wrapper">
+  <div class="filter-item-wrapper" @click="$emit('click')">
     <div class="filter-item">
       <label>{{value}}</label>
       <img

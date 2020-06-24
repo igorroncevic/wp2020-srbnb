@@ -1,6 +1,6 @@
 <template>
   <div class="search-result">
-    <div id="picture">Picture</div>
+    <div id="app-picture">Picture</div>
     <div id="type">{{apartment.type}}</div>
     <div id="title">{{apartment.name}}</div>
     <div id="features">{{apartment.features}}</div>
@@ -33,7 +33,7 @@ export default {
   margin-bottom: 20px;
 }
 
-#picture {
+#app-picture {
   background: orange;
   grid-column: 1;
   grid-row: 1/6;
