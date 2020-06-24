@@ -13,7 +13,7 @@
     <div id="searchbar-wrapper">
       <div>
         <!-- Search form -->
-        <form method="GET" action="/search-results" id="searchbar">
+        <form ref="form" @submit="submitForm" method="GET" action="/search-results" id="searchbar">
           <div class="form-item" tabindex="1">
             <div class="nest stacked">
               <label for="location" class="label">LOCATION</label>
@@ -23,13 +23,32 @@
           <div class="form-item" tabindex="2">
             <div class="nest stacked">
               <label for="dates" class="label">CHECK IN / CHECK OUT</label>
-              <input type="text" name="dates" placeholder="Add dates" />
+              <div class="datepickers">
+                <datepicker
+                  placeholder="Select check-in date"
+                  input-class="input-style"
+                  class="startDate"
+                  v-model="startDate"
+                  :value="startDate"
+                  name="startDate"
+                  :format="customFormatter"
+                ></datepicker>
+                <datepicker
+                  placeholder="Select check-out date"
+                  input-class="input-style"
+                  class="endDate"
+                  v-model="endDate"
+                  :value="endDate"
+                  name="endDate"
+                  :format="customFormatter"
+                ></datepicker>
+              </div>
             </div>
           </div>
           <div class="form-item" tabindex="3">
             <div class="stacked nest">
               <label for="guests" class="label">GUESTS</label>
-              <input type="text" name="guests" placeholder="Add guests" />
+              <input type="number" name="guests" placeholder="Add guests" />
             </div>
           </div>
           <button type="submit">
@@ -44,12 +63,58 @@
 </template>
 
 <script>
+import moment from "moment";
+import Datepicker from "vuejs-datepicker";
+
 export default {
-  name: "Home"
+  name: "Home",
+  components: { Datepicker },
+  data() {
+    return {
+      startDate: "", //add 7 days
+      endDate: "", //add 10 days
+      dateFormat: "D MMM"
+    };
+  },
+  methods: {
+    customFormatter(date) {
+      return moment(date).format("MMMM Do YYYY");  //DD-MM-YYYY for java friendly dates
+    },
+    submitForm(e) {
+      e.preventDefault();
+      if (moment(this.startDate).isAfter(moment(this.endDate))) {
+        alert("Start date cannot be before end date!");
+      } else if(this.startDate == '' || this.endDate == ''){
+         alert("Please select dates!")
+      } else {
+        this.$refs.form.submit();
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
+/* Styles for dropdown */
+.datepickers {
+  display: inline-flex;
+  width: min-content;
+  flex-direction: row;
+  margin-top: 2px;
+}
+
+.vdp-datepicker {
+  width: 180px !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+
+.input-style {
+  color: var(--main-text-color);
+  background: red !important;
+}
+
+/* Title */
 .title-wrapper {
   position: relative;
   width: 92%;
@@ -70,6 +135,7 @@ h1 {
   color: var(--brand-color);
 }
 
+/* Search bar */
 #searchbar-wrapper {
   position: relative;
   width: 89%;
@@ -119,14 +185,16 @@ h1 {
   background: var(--brand-color-hover);
 }
 
-#searchbar input[type="text"] {
+#searchbar input[type="text"],
+#searchbar input[type="number"] {
   font-size: 16px;
   padding-top: 3px;
   padding-right: 10px;
   border: 0;
 }
 
-#searchbar input[type="text"]::placeholder {
+#searchbar input[type="text"]::placeholder,
+#searchbar input[type="number"]::placeholder {
   color: var(--light-text-color);
 }
 

@@ -12,7 +12,6 @@ if (window.location.search) {
    window.location.href = `${window.location.origin}/#${window.location.pathname}${window.location.search}`;
 }
 
-
 const router = new VueRouter({
    mode: "hash",
   routes,
