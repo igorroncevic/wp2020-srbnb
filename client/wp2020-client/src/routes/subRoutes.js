@@ -49,7 +49,7 @@ export default [
     ],
   },
   {
-    path: "apartment-preview",
+    path: "apartment-preview/:apartmentId",
     name: "apartment-preview",
     component: ApartmentPreview,
     meta: {

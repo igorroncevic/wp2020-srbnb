@@ -89,7 +89,7 @@
       </div>
     </header>
     <main>
-      <div class="sortby">
+      <div class="sortby" v-if="filteredApartments.length != 0">
         Sort by Price
         <span class="sort-field" @click="chooseSort" v>
           {{this.sortParameter}}
@@ -101,8 +101,12 @@
       <div class="search-results">
         <div v-for="(apartment,i) in filteredApartments" :key="i">
           <search-result :apartment="apartment" />
-          <hr v-if="i !== apartments.length - 1" />
+          <hr v-if="i !== filteredApartments.length - 1" />
         </div>
+        <div
+          class="no-results"
+          v-if="filteredApartments.length == 0"
+        >No apartments matching search criteria.</div>
       </div>
       <div class="map"></div>
     </main>
@@ -150,6 +154,7 @@ export default {
       amenitiesExpanded: false,
       apartments: [
         {
+          id: 1,
           name: "Apartments Perić",
           type: "Entire apartment",
           price: 40,
@@ -159,6 +164,7 @@ export default {
           features: "4 guests * 1 bedroom * 2 beds"
         },
         {
+          id: 2,
           name: "Apartments Jović",
           type: "Single room",
           price: 20,
@@ -167,6 +173,7 @@ export default {
           bedrooms: 1
         },
         {
+          id: 3,
           name: "Apartments Stević",
           type: "Penthouse",
           price: 349,
@@ -175,6 +182,7 @@ export default {
           bedrooms: 4
         },
         {
+          id: 4,
           name: "Apartments Deluxe",
           type: "Deluxe apartment",
           price: 149,
@@ -495,5 +503,11 @@ h2 {
 
 [type="checkbox"]:hover {
   background-color: var(--brand-color-hover) !important;
+}
+
+.no-results {
+  font-size: 20px;
+  margin-top: 20px;
+  text-align: center;
 }
 </style>
