@@ -39,11 +39,11 @@
               <!-- Placeholder -->
               <option value hidden>Any type</option>
               <!-- normal options -->
-              <option value="Any">Any type</option>
-              <option value="Entire">Entire apartment</option>
+              <option value="Any type">Any type</option>
+              <option value="Entire apartment">Entire apartment</option>
               <option value="Penthouse">Penthouse</option>
-              <option value="Single">Single room</option>
-              <option value="Deluxe">Deluxe apartment</option>
+              <option value="Single room">Single room</option>
+              <option value="Deluxe apartment">Deluxe apartment</option>
             </select>
             <div class="select-icon">
               <svg focusable="false" style="width:14px;height:14px" viewBox="0 0 18 18">
@@ -146,7 +146,7 @@ export default {
       rooms: "",
       price: "",
       beds: 0,
-      selectedType: "",
+      selectedType: "Any type",
       amenitiesExpanded: false,
       apartments: [
         {
@@ -218,28 +218,36 @@ export default {
       console.log(this.selectedType);
       if (this.selectedType == "Penthouse") {
         this.filteredApartments = this.apartments.filter(
-          app => app.type == "Penthouse"
+          app => app.type == "Penthouse" && app.beds >= this.bedsCounter
         );
-      } else if (this.selectedType == "Deluxe") {
+      } else if (this.selectedType == "Deluxe apartment") {
         this.filteredApartments = this.apartments.filter(
-          app => app.type == "Deluxe apartment"
+          app => app.type == "Deluxe apartment" && app.beds >= this.bedsCounter
         );
-      } else if (this.selectedType == "Single") {
+      } else if (this.selectedType == "Single room") {
         this.filteredApartments = this.apartments.filter(
-          app => app.type == "Single room"
+          app => app.type == "Single room" && app.beds >= this.bedsCounter
         );
-      } else if (this.selectedType == "Entire") {
+      } else if (this.selectedType == "Entire apartment") {
         this.filteredApartments = this.apartments.filter(
-          app => app.type == "Entire apartment"
+          app => app.type == "Entire apartment" && app.beds >= this.bedsCounter
         );
-      } else if (this.selectedType == "Any") {
-        this.filteredApartments = [...this.apartments];
+      } else if (this.selectedType == "Any type") {
+        this.filteredApartments = this.apartments.filter(
+          app => app.beds >= this.bedsCounter
+        );
       }
     },
     filterByBeds() {
-      this.filteredApartments = this.apartments.filter(
-        app => app.beds >= this.beds
-      );
+      if (this.selectedType != "Any type") {
+        this.filteredApartments = this.apartments.filter(
+          app => app.beds >= this.bedsCounter && app.type == this.selectedType
+        );
+      } else {
+        this.filteredApartments = this.apartments.filter(
+          app => app.beds >= this.bedsCounter
+        );
+      }
     },
     incrementBeds() {
       this.beds++;
