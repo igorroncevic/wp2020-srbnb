@@ -1,13 +1,13 @@
 <template>
   <div>
     <label for="input" :style="{color: labelColor}">{{labelText}}</label>
-    <input type="text" class="input" :name="name" :style="{width: width + 'px', height: height+'px'}" :value=inputValue @input="$emit('input', $event.target.value)" required />
+    <input required min="6:00:00" step="1800" max="23:30:00" type="time" class="input" name="input" :style="{width: width + 'px', height: height+'px'}" :value=inputValue @input="$emit('input', $event.target.value)" />
   </div>
 </template>
 
 <script>
 export default {
-   props: ["labelText", "inputValue", "name", "width", "height", "labelColor"],
+   props: ["labelText", "inputValue", "width", "height", "labelColor"],
 
 };
 </script>

@@ -4,7 +4,7 @@
     <div class="title-wrapper">
       <h1 style="width:25rem; font-size: 32px;">Hi, Petar! Let's get started listing your space.</h1>
     </div>
-    <div id="form">
+    <form id="form">
       <StylishInput
         id="apartmentName"
         label-text="Pick a name for your space"
@@ -16,15 +16,15 @@
       <div id="apartment-type">
         <label for="dropdown-container">What kind of apartment do you have?</label>
         <div class="dropdown-container">
-          <select required>
+          <select required v-model="appType">
             <option value hidden>Select apartment type</option>
             <!-- Placeholder -->
 
             <!-- normal options -->
-            <option value="Whole">Whole apartment</option>
-            <option value="Studio">Studio apartment</option>
-            <option value="Single">Single room</option>
-            <option value="Deluxe">Deluxe apartment</option>
+            <option value="Whole apartment">Whole apartment</option>
+            <option value="Studio apartment">Studio apartment</option>
+            <option value="Penthouse">Penthouse</option>
+            <option value="Deluxe apartment">Deluxe apartment</option>
           </select>
           <div class="select-icon">
             <svg focusable="false" style="width:25px;height:25px" viewBox="0 0 24 24">
@@ -129,42 +129,42 @@
         <label for="amenities-grid">What amenities do you offer?</label>
         <div class="amenities-grid">
           <div id="first-col">
-            <Checkbox value="Essentials" :checked="false" />
-            <Checkbox value="Wifi" :checked="false" />
-            <Checkbox value="Shampoo" :checked="false" />
-            <Checkbox value="Closet/drawers" :checked="false" />
-            <Checkbox value="TV/Cable" :checked="false" />
-            <Checkbox value="Heaters" :checked="false" />
-            <Checkbox value="Air conditioning" :checked="false" />
-            <Checkbox value="Breakfast, cofee, tea" :checked="false" />
+            <Checkbox value="Essentials" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Wifi" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Shampoo" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Closet/drawers" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="TV/Cable" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Heaters" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Air conditioning" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Breakfast, cofee, tea" :checked="false" @change="editAmenities($event.target.value)" />
           </div>
           <div id="second-col">
-            <Checkbox value="Desk/workspace" :checked="false" />
-            <Checkbox value="Fireplace" :checked="false" />
-            <Checkbox value="Iron for clothes" :checked="false" />
-            <Checkbox value="Hair dryer" :checked="false" />
-            <Checkbox value="Pets in the house" :checked="false" />
-            <Checkbox value="Private entrance" :checked="false" />
-            <Checkbox value="Parking" :checked="false" />
-            <Checkbox value="Elevator" :checked="false" />
+            <Checkbox value="Desk/workspace" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Fireplace" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Iron for clothes" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Hair dryer" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Pets in the house" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Private entrance" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Parking" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Elevator" :checked="false" @change="editAmenities($event.target.value)" />
           </div>
         </div>
         <label id="safety-label" for="safety-amenities-grid">Safety amenities</label>
         <div class="safety-amenities-grid">
           <div class="first-col">
-            <Checkbox value="Smoke detector" :checked="false" />
-            <Checkbox value="Carbon monoxide detector" :checked="false" />
-            <Checkbox value="First aid kit" :checked="false" />
-            <Checkbox value="Safety card" :checked="false" />
-            <Checkbox value="Fire extinguisher" :checked="false" />
-            <Checkbox value="Lock on bedroom door" :checked="false" />
+            <Checkbox value="Smoke detector" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Carbon monoxide detector" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox :value="'First aid kit'" :checked="false" @change="editAmenities($event.target.value)"/>
+            <Checkbox value="Safety card" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Fire extinguisher" :checked="false" @change="editAmenities($event.target.value)" />
+            <Checkbox value="Lock on bedroom door" :checked="false" @change="editAmenities($event.target.value)" />
           </div>
         </div>
       </div>
       <div class="checkin-checkout-cointainer">
         <label for="checkin-checkout">And to finish off...</label>
         <div class="checkin-checkout">
-          <StylishInput
+          <StylishTimeInput
             id="apartmentName"
             label-text="Check-in"
             labelColor="#323846"
@@ -173,22 +173,20 @@
             width="300"
             height="38"
           />
-          <StylishInput
-            id="apartmentName"
+          <StylishTimeInput  id="apartmentName"
             label-text="Check-out"
             labelColor="#323846"
-            :value="''"
+            :value="checkout"
             v-model="checkout"
             width="290"
-            height="38"
-          />
+            height="38" />
         </div>
       </div>
       <div id="price-cointainer">
-        <StylishInput
+        <StylishNumberInput
           id="price-input"
           label-text="Price"
-          :value="''"
+          name="price"
           v-model="price"
           width="100"
           height="38"
@@ -196,26 +194,30 @@
         <p id="per-night">$ / night</p>
       </div>
       <Button text="Publish" width="400" fontsize="20" id="button" height="50"/>
-    </div>
+    </form>
   </div>
 </template>
 
 <script>
 import Button from "./form-components/Button.vue";
 import StylishInput from "./reusable/StylishInput.vue";
+import StylishNumberInput from "./reusable/StylishNumberInput.vue";
+import StylishTimeInput from "./reusable/StylishTimeInput.vue";
 import Checkbox from "./form-components/Checkbox.vue";
 export default {
-  components: { StylishInput, Checkbox, Button },
+  components: { StylishInput, StylishNumberInput, StylishTimeInput, Checkbox, Button },
   data() {
     return {
       apartmentName: "",
+      appType: "",
       streetName: "",
       roomCounter: 0,
       bedCounter: 0,
       guestCounter: 0,
       checkin: "",
       checkout: "",
-      price: 0
+      price: 0,
+      amenities: [],
     };
   },
   computed: {
@@ -247,7 +249,14 @@ export default {
     },
     decrementGuests() {
       if (this.guestCounter > 0) this.guestCounter--;
-    }
+    },
+    editAmenities(value){
+       if(this.amenities.includes(value)){
+          this.amenities = this.amenities.filter(amenity => amenity != value);
+       }else{
+          this.amenities.push(value);
+       }
+    },
   }
 };
 </script>

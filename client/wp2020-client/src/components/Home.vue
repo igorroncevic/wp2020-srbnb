@@ -31,20 +31,18 @@
               <div class="datepickers">
                 <datepicker
                   placeholder="Select check-in"
-                  input-class="input-style"
-                  class="startDate"
                   v-model="startDate"
                   :value="startDate"
                   name="startDate"
+                  :disabledDates="disabledStartDates"
                   :format="customFormatter"
                 ></datepicker>
                 <datepicker
                   placeholder="Select check-out"
-                  input-class="input-style"
-                  class="endDate"
                   v-model="endDate"
                   :value="endDate"
                   name="endDate"
+                  :disabledDates="disabledEndDates"
                   :format="customFormatter"
                 ></datepicker>
               </div>
@@ -136,7 +134,13 @@ export default {
       minRooms: "",
       maxRooms: "",
       minPrice: "",
-      maxPrice: ""
+      maxPrice: "",
+      disabledStartDates: {
+        to: new Date(Date.now() - 8640000)
+      },
+      disabledEndDates: {
+        to: new Date(Date.now() - 8640000)
+      }
     };
   },
   methods: {
@@ -162,19 +166,18 @@ export default {
 </script>
 
 <style scoped>
-.dates{
-   width: 24% !important;
+.dates {
+  width: 24% !important;
 }
 
 input[data-v-8dc7cce2] {
   background: var(--background-color);
 }
 
-.vdp-datepicker[data-v-8dc7cce2]{
-   width: 130px !important;
-   margin-right: 10px;
+.vdp-datepicker[data-v-8dc7cce2] {
+  width: 130px !important;
+  margin-right: 10px;
 }
-
 
 .datepickers {
   display: inline-flex;
@@ -188,11 +191,6 @@ input[data-v-8dc7cce2] {
   width: 170px !important;
   color: var(--main-text-color) !important;
   cursor: pointer;
-}
-
-.input-style {
-  color: var(--main-text-color);
-  background: red !important;
 }
 
 /* Title */
@@ -297,8 +295,8 @@ h1 {
   width: 10%;
 }
 
-.guests input[type="number"]{
-   margin-top: 1px;
+.guests input[type="number"] {
+  margin-top: 1px;
 }
 
 .rooms {
@@ -335,8 +333,8 @@ label[for="rooms"] {
   width: 100px;
 }
 
-label[for="price"]{
-   margin-left: -9px;
+label[for="price"] {
+  margin-left: -9px;
 }
 
 .form-item:hover {

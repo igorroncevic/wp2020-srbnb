@@ -44,19 +44,35 @@
             <div class="form-item checkin" style="width: 39.7%" tabindex="1">
               <div class="stacked nest">
                 <label for="checkin-dates" class="label-style">CHECK-IN</label>
-                <input type="text" name="checkin-dates" placeholder="Select dates" />
+                <datepicker
+                  placeholder="Select check-in"
+                  class="startDate"
+                  v-model="startDate"
+                  :value="startDate"
+                  name="startDate"
+                  :disabledDates="disabledStartDates"
+                  :format="customFormatter"
+                ></datepicker>
               </div>
             </div>
             <div class="form-item checkout" style="width: 39.2%" tabindex="1">
               <div class="stacked nest">
                 <label for="checkin-dates" class="label-style">CHECK-OUT</label>
-                <input type="text" name="checkin-dates" placeholder="Select dates" />
+                <datepicker
+                  placeholder="Select check-out"
+                  class="startDate"
+                  v-model="endDate"
+                  :value="endDate"
+                  name="endDate"
+                  :disabledDates="disabledStartDates"
+                  :format="customFormatter"
+                ></datepicker>
               </div>
             </div>
             <div class="form-item guests" style="width: 84.2%;" tabindex="1">
               <div class="stacked nest">
                 <label for="checkin-dates" class="label-style">GUESTS</label>
-                <input type="text" name="checkin-dates" placeholder="Number of guests" />
+                <input type="number" min="0" name="checkin-dates" placeholder="Number of guests" />
               </div>
             </div>
           </div>
@@ -79,7 +95,7 @@
       <review-item v-for="(review, i) in reviews" :key="i" :review="review" />
     </div>
     <div id="my-review">
-      <div class="my-review-title">Write Review</div>
+      <div class="my-review-title">Write a Review</div>
       <div class="review-my-photo"></div>
       <div class="review-my-name">Petar Peric</div>
       <div class="review-my-rating" style="font-size: 18px; margin-left: 110px;">
@@ -104,11 +120,15 @@
 import Button from "./form-components/Button.vue";
 import ReviewItem from "./reusable/ReviewItem.vue";
 import StarRating from "./reusable/StarRating.vue";
+import Datepicker from "vuejs-datepicker";
+import moment from "moment";
+
 export default {
   components: {
     Button,
     ReviewItem,
-    StarRating
+    StarRating,
+    Datepicker
   },
   name: "ApartmentPreview",
   data() {
@@ -151,7 +171,15 @@ export default {
       ],
       rating: 0,
       text: "",
-      user: "Jelena Maravic"
+      user: "Jelena Maravic",
+      startDate: "", //add 7 days
+      endDate: "", //add 10 days
+      disabledStartDates: {
+        to: new Date(Date.now() - 8640000)
+      },
+      disabledEndDates: {
+        to: new Date(Date.now() - 8640000)
+      }
     };
   },
   methods: {
@@ -163,12 +191,43 @@ export default {
       });
       this.text = "";
       this.rating = 0;
+    },
+    customFormatter(date) {
+      return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
     }
   }
 };
 </script>
 
 <style scoped>
+/* For dates */
+.dates {
+  width: 24% !important;
+}
+
+input[data-v-8dc7cce2] {
+  background: var(--background-color);
+}
+
+.vdp-datepicker[data-v-8dc7cce2] {
+  width: 130px !important;
+  margin-right: 10px;
+}
+
+.datepickers {
+  display: inline-flex;
+  width: min-content;
+  flex-direction: row;
+  margin-top: 2px;
+  width: 50%;
+}
+
+.vdp-datepicker {
+  width: 170px !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+
 /* Header */
 #grid-container {
   display: grid;
@@ -294,16 +353,24 @@ label {
   margin-top: 20px;
   height: 100px;
 }
-input[type="text"] {
+input[type="text"],
+input[type="number"] {
   font-size: 16px;
   padding-top: 3px;
   padding-left: 0px;
   width: 150px;
+  color: var(--main-text-color);
   border: 0;
 }
-input[type="text"]::placeholder {
+input[type="text"]::placeholder,
+input[type="number"]::placeholder {
   color: var(--light-text-color);
 }
+
+input[type="number"]{
+   width: 200px;
+}
+
 .checkin {
   position: relative;
   top: -25%;
@@ -349,7 +416,7 @@ input[type="text"]::placeholder {
 #message-for-the-host {
   grid-row: 3;
   display: grid;
-  margin-bottom: 10%;
+  margin-bottom: 11%;
 }
 textarea {
   position: relative;
@@ -380,7 +447,6 @@ textarea:focus-within {
   grid-template-columns: 530px 530px;
   column-gap: 20rem;
 }
-
 #reviews-title {
   grid-row: 3;
   grid-column: 2;
@@ -389,7 +455,6 @@ textarea:focus-within {
   font-weight: 500;
   height: 50px;
 }
-
 #my-review {
   grid-row: 5;
   grid-column: 5/18;
@@ -398,7 +463,6 @@ textarea:focus-within {
   grid-template-rows: 4rem 3rem auto 3rem;
   margin-top: 50px;
 }
-
 .my-review-title {
   grid-row: 1;
   grid-column: 1/3;
@@ -407,14 +471,12 @@ textarea:focus-within {
   font-weight: 500;
   margin-bottom: 10px;
 }
-
 .review-my-photo {
   grid-column: 0;
   grid-row: 2;
   background: var(--brand-color);
   border-radius: 50%;
 }
-
 .review-my-name {
   grid-column: 2;
   grid-row: 2;
@@ -425,14 +487,12 @@ textarea:focus-within {
   align-self: center;
   margin-bottom: 5px;
 }
-
 .review-my-rating {
   grid-column: 3;
   grid-row: 2;
   position: relative;
   top: 6%;
 }
-
 .review-my-text {
   grid-row: 3;
   grid-column: 1/4;
@@ -440,7 +500,6 @@ textarea:focus-within {
   margin-top: 10px;
   width: 100%;
 }
-
 .review-button-publish {
   grid-row: 4;
   grid-column: 3;
