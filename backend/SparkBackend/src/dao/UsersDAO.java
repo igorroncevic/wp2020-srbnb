@@ -23,9 +23,9 @@ public class UsersDAO {
 	private String ADMINS_FILE_PATH = "data/admins.json";
 	private Gson gson = new Gson();
 	
-	private List<Admin> admins = new ArrayList<Admin>();
-	private List<Guest> guests = new ArrayList<Guest>();
-	private List<Host> hosts = new ArrayList<Host>();
+	private List<Admin> admins;
+	private List<Guest> guests;
+	private List<Host> hosts;
 
 	
 	private UsersDAO() {
@@ -54,7 +54,7 @@ public class UsersDAO {
 		}
 	}
 	
-	private void saveGuests() {
+	private void saveData() {
 		String json = gson.toJson(guests);
 		
 		try {
@@ -73,7 +73,7 @@ public class UsersDAO {
 				return false;
 		}
 		guests.add(newGuest);
-		saveGuests();
+		saveData();
 		return true;
 	}
 	
