@@ -127,16 +127,55 @@ export default {
     var endDateParts = this.$route.query.endDate.split(" ");
     this.startDate = startDateParts[0] + " " + startDateParts[1];
     this.endDate = endDateParts[0] + " " + endDateParts[1];
-    this.rooms =
-      "Rooms: " +
-      this.$route.query.minRooms +
-      " - " +
-      this.$route.query.maxRooms;
-    this.price =
-      "Price: $" +
-      this.$route.query.minPrice +
-      " - $" +
-      this.$route.query.maxPrice;
+    if (
+      (this.$route.query.minRooms == "" || this.$route.query.minRooms == 0) &&
+      this.$route.query.maxRooms != "" &&
+      this.$route.query.maxRooms != 0
+    ) {
+      this.rooms = "Up to " + this.$route.query.maxRooms + " rooms";
+    } else if (
+      (this.$route.query.maxRooms == "" || this.$route.query.maxRooms == 0) &&
+      this.$route.query.minRooms != "" &&
+      this.$route.query.minRooms != 0
+    ) {
+      this.rooms = "At least " + this.$route.query.minRooms + " rooms";
+    } else if (
+      (this.$route.query.minRooms == "" || this.$route.query.minRooms == 0) &&
+      (this.$route.query.maxRooms == "" || this.$route.query.maxRooms == 0)
+    ) {
+      this.rooms = "Any number of rooms";
+    } else {
+      this.rooms =
+        "Rooms: " +
+        this.$route.query.minRooms +
+        " - " +
+        this.$route.query.maxRooms;
+    }
+
+    if (
+      (this.$route.query.minPrice == "" || this.$route.query.minPrice == 0) &&
+      this.$route.query.maxPrice != "" &&
+      this.$route.query.maxPrice != 0
+    ) {
+      this.price = "Up to $" + this.$route.query.maxPrice;
+    } else if (
+      (this.$route.query.maxPrice == "" || this.$route.query.maxPrice == 0) &&
+      this.$route.query.minPrice != "" &&
+      this.$route.query.minPrice != 0
+    ) {
+      this.price = "Up from $" + this.$route.query.minPrice;
+    } else if (
+      (this.$route.query.minPrice == "" || this.$route.query.minPrice == 0) &&
+      (this.$route.query.maxPrice == "" || this.$route.query.maxPrice == 0)
+    ) {
+      this.price = "Any price";
+    } else {
+      this.price =
+        "Price: $" +
+        this.$route.query.minPrice +
+        " - $" +
+        this.$route.query.maxPrice;
+    }
     this.filteredApartments = [...this.apartments];
     this.sortApartments();
   },
@@ -216,14 +255,19 @@ export default {
         this.filteredApartments.sort(function(a, b) {
           return a.price - b.price;
         });
+        this.apartments.sort(function(a, b) {
+          return a.price - b.price;
+        });
       } else {
         this.filteredApartments.sort(function(a, b) {
+          return b.price - a.price;
+        });
+        this.apartments.sort(function(a, b) {
           return b.price - a.price;
         });
       }
     },
     handleTypeChange() {
-      console.log(this.selectedType);
       if (this.selectedType == "Penthouse") {
         this.filteredApartments = this.apartments.filter(
           app => app.type == "Penthouse" && app.beds >= this.bedsCounter

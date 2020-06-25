@@ -4,11 +4,11 @@
       <a href="/">srbnb</a>
     </div>
     <div id="container">
-      <form action method="post" style="margin-left: 8px;">
+      <form action method="post" style="margin-left: 8px;" @submit="login">
         <div class="title">Log In</div>
-        <SimpleInput label="Username" :value="''" v-model="username" width="400" />
-        <SimpleInput label="Password" :value="''" v-model="password" width="400" />
-        <Button text="Continue" width="350" fontsize="20" id="button" @clicked="login" height="45"/>
+        <SimpleInput label="Username" v-model="username" width="400" />
+        <SimpleInput label="Password" v-model="password" width="400" />
+        <Button text="Continue" width="350" fontsize="20" id="button" @clicked="login" height="45" />
         <div class="signup">
           Don't have an account?
           <span>
@@ -37,10 +37,8 @@ export default {
     };
   },
   methods: {
-    login() {
-      console.log(
-        "Username: " + this.username + ", Password: " + this.password
-      );
+    login(e) {
+      e.preventDefault();
     }
   }
 };
@@ -92,8 +90,8 @@ export default {
   margin-right: 7px;
 }
 .signup a {
-   text-decoration: none;
-   color: var(--main-text-color);
-   font-weight: bold;
+  text-decoration: none;
+  color: var(--main-text-color);
+  font-weight: bold;
 }
 </style>
