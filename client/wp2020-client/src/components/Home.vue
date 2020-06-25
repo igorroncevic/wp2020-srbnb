@@ -25,12 +25,12 @@
               />
             </div>
           </div>
-          <div class="form-item" tabindex="2">
+          <div class="form-item dates" tabindex="2">
             <div class="nest stacked">
-              <label for="dates" class="label">CHECK IN / CHECK OUT</label>
+              <label for="datepickers" class="label">CHECK IN / CHECK OUT</label>
               <div class="datepickers">
                 <datepicker
-                  placeholder="Select check-in date"
+                  placeholder="Select check-in"
                   input-class="input-style"
                   class="startDate"
                   v-model="startDate"
@@ -39,7 +39,7 @@
                   :format="customFormatter"
                 ></datepicker>
                 <datepicker
-                  placeholder="Select check-out date"
+                  placeholder="Select check-out"
                   input-class="input-style"
                   class="endDate"
                   v-model="endDate"
@@ -50,7 +50,7 @@
               </div>
             </div>
           </div>
-          <div class="form-item" tabindex="3">
+          <div class="form-item guests" tabindex="3">
             <div class="stacked nest">
               <label for="guests" class="label">GUESTS</label>
               <input
@@ -61,6 +61,52 @@
                 name="guests"
                 placeholder="Add guests"
               />
+            </div>
+          </div>
+          <div class="form-item" tabindex="4">
+            <div class="stacked nest">
+              <label for="rooms" class="label">ROOMS</label>
+              <div class="rooms">
+                <input
+                  v-model="minRooms"
+                  min="0"
+                  max="10"
+                  type="number"
+                  name="minRooms"
+                  placeholder="Min. rooms"
+                />
+                <input
+                  v-model="maxRooms"
+                  min="0"
+                  max="10"
+                  type="number"
+                  name="maxRooms"
+                  placeholder="Max. rooms"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-item" tabindex="5">
+            <div class="stacked nest">
+              <label for="price" class="label">PRICE</label>
+              <div class="price">
+                <div class="price">
+                  <input
+                    v-model="minPrice"
+                    min="0"
+                    type="number"
+                    name="minPrice"
+                    placeholder="Min. price"
+                  />
+                  <input
+                    v-model="maxPrice"
+                    min="0"
+                    type="number"
+                    name="maxPrice"
+                    placeholder="Max. price"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <button type="submit">
@@ -84,10 +130,13 @@ export default {
   data() {
     return {
       location: "",
-      guests: 0,
+      guests: "",
       startDate: "", //add 7 days
       endDate: "", //add 10 days
-      dateFormat: "D MMM"
+      minRooms: "",
+      maxRooms: "",
+      minPrice: "",
+      maxPrice: ""
     };
   },
   methods: {
@@ -102,8 +151,8 @@ export default {
         alert("Please select dates!");
       } else if (this.guests == 0) {
         alert("Please select number of guests!");
-      }else if(this.location == ''){
-         alert('Please select a location!');
+      } else if (this.location == "") {
+        alert("Please select a location!");
       } else {
         this.$refs.form.submit();
       }
@@ -113,16 +162,30 @@ export default {
 </script>
 
 <style scoped>
-/* Styles for dropdown */
+.dates{
+   width: 24% !important;
+}
+
+input[data-v-8dc7cce2] {
+  background: var(--background-color);
+}
+
+.vdp-datepicker[data-v-8dc7cce2]{
+   width: 130px !important;
+   margin-right: 10px;
+}
+
+
 .datepickers {
   display: inline-flex;
   width: min-content;
   flex-direction: row;
   margin-top: 2px;
+  width: 50%;
 }
 
 .vdp-datepicker {
-  width: 180px !important;
+  width: 170px !important;
   color: var(--main-text-color) !important;
   cursor: pointer;
 }
@@ -220,10 +283,60 @@ h1 {
   display: inline-block;
   padding: 0.5rem 0 0.5rem 1.5rem;
   background: var(--background-color);
-  width: 27%;
+  width: 15%;
   border: 1px solid var(--background-color);
   border-radius: var(--border-radius);
   height: 3rem;
+}
+
+.dates {
+  width: 27%;
+}
+
+.guests {
+  width: 10%;
+}
+
+.guests input[type="number"]{
+   margin-top: 1px;
+}
+
+.rooms {
+  display: inline-flex;
+  flex-direction: row;
+  margin-left: -6px;
+  margin-top: 1px;
+}
+
+label[for="rooms"] {
+  margin-left: -4px;
+}
+
+.rooms input[name="minRooms"] {
+  width: 97px;
+}
+
+.rooms input[name="maxRooms"] {
+  width: 100px;
+}
+
+.price {
+  display: inline-flex;
+  flex-direction: row;
+  margin-left: -6px;
+  margin-top: 1px;
+}
+
+.price input[name="minPrice"] {
+  width: 97px;
+}
+
+.price input[name="maxPrice"] {
+  width: 100px;
+}
+
+label[for="price"]{
+   margin-left: -9px;
 }
 
 .form-item:hover {
@@ -235,7 +348,7 @@ h1 {
 }
 
 .nest {
-  max-width: 60%;
+  max-width: 90%;
   margin-top: 6px;
 }
 

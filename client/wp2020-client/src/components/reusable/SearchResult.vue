@@ -3,7 +3,7 @@
     <div id="app-picture">Picture</div>
     <div id="type">{{apartment.type}}</div>
     <div id="title">{{apartment.name}}</div>
-    <div id="features">{{apartment.features}}</div>
+    <div id="features">{{apartment.guests}} guests • {{apartment.beds}} beds • {{apartment.bedrooms}} bedrooms</div>
     <div id="main-info">
       <span style="margin-bottom: 6px; font-size: 18px;">
         <span style="font-weight: bold">${{apartment.price}}</span>/night

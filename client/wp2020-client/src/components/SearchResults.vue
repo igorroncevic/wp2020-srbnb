@@ -3,34 +3,10 @@
     <header>
       <h2>Stays in {{location}}</h2>
       <!-- Pristupati query parametrima iz URL-a -->
-      <div class="search-params">{{guests}} guests • {{startDate}} - {{endDate}}</div>
+      <div
+        class="search-params"
+      >{{guests}} guests • {{startDate}} - {{endDate}} • {{price}} • {{rooms}}</div>
       <div class="filters">
-        <!-- Rooms -->
-        <div class="counter rooms">
-          <p style="font-size: 18px; margin: 0px 5px 0 0;">Rooms:</p>
-          <svg
-            style="width:22px;height:22px; margin-right: 5px;"
-            viewBox="0 0 24 24"
-            @click="decrementRooms"
-          >
-            <path
-              fill="#e8394d"
-              d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7"
-            />
-          </svg>
-          <p style="margin: -1px 5px; font-size:20px;">{{roomsCounter}}</p>
-          <svg
-            style="width:22px;height:22px;margin-left: 5px;"
-            viewBox="0 0 24 24"
-            cursor="pointer"
-            @click="incrementRooms"
-          >
-            <path
-              fill="#e8394d"
-              d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"
-            />
-          </svg>
-        </div>
         <!-- Beds -->
         <div class="counter beds">
           <p style="font-size: 18px; margin: 0px 5px 0 0;">Beds:</p>
@@ -59,12 +35,13 @@
         </div>
         <div id="apartment-type">
           <div class="dropdown-container">
-            <select>
+            <select @change="handleTypeChange" v-model="selectedType">
               <!-- Placeholder -->
-              <option value hidden>Type</option>
+              <option value hidden>Any type</option>
               <!-- normal options -->
-              <option value="Whole">Whole apartment</option>
-              <option value="Studio">Studio apartment</option>
+              <option value="Any">Any type</option>
+              <option value="Entire">Entire apartment</option>
+              <option value="Penthouse">Penthouse</option>
               <option value="Single">Single room</option>
               <option value="Deluxe">Deluxe apartment</option>
             </select>
@@ -113,17 +90,16 @@
     </header>
     <main>
       <div class="sortby">
-        Sort by:
-        <span class="sort-field" @click="chooseSort">
+        Sort by Price
+        <span class="sort-field" @click="chooseSort" v>
           {{this.sortParameter}}
-          <img
-            src="https://img.icons8.com/material-outlined/18/8b8b8b/expand-arrow.png"
-            style="margin-bottom: -3px;"
-          />
+          <svg style="width:14px;height:14px;" viewBox="0 0 18 18">
+            <path fill="var(--medium-text-color)" d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
+          </svg>
         </span>
       </div>
       <div class="search-results">
-        <div v-for="(apartment,i) in apartments" :key="i">
+        <div v-for="(apartment,i) in filteredApartments" :key="i">
           <search-result :apartment="apartment" />
           <hr v-if="i !== apartments.length - 1" />
         </div>
@@ -145,8 +121,20 @@ export default {
     this.location = this.$route.query.location;
     var startDateParts = this.$route.query.startDate.split(" ");
     var endDateParts = this.$route.query.endDate.split(" ");
-    this.startDate = startDateParts[1] + " " + startDateParts[0];
-    this.endDate = endDateParts[1] + " " + endDateParts[0];
+    this.startDate = startDateParts[0] + " " + startDateParts[1];
+    this.endDate = endDateParts[0] + " " + endDateParts[1];
+    this.rooms =
+      "Rooms: " +
+      this.$route.query.minRooms +
+      " - " +
+      this.$route.query.maxRooms;
+    this.price =
+      "Price: $" +
+      this.$route.query.minPrice +
+      " - $" +
+      this.$route.query.maxPrice;
+    this.filteredApartments = [...this.apartments];
+    this.sortApartments();
   },
   data() {
     return {
@@ -154,36 +142,48 @@ export default {
       startDate: "",
       endDate: "",
       guests: this.$route.query.guests,
-      sortParameter: "Price",
-      rooms: 0,
+      sortParameter: "Ascending",
+      rooms: "",
+      price: "",
       beds: 0,
+      selectedType: "",
       amenitiesExpanded: false,
       apartments: [
         {
           name: "Apartments Perić",
           type: "Entire apartment",
           price: 40,
+          guests: 4,
+          beds: 2,
+          bedrooms: 1,
           features: "4 guests * 1 bedroom * 2 beds"
         },
         {
           name: "Apartments Jović",
           type: "Single room",
           price: 20,
-          features: "2 guests * 1 bed"
+          guests: 2,
+          beds: 1,
+          bedrooms: 1
         },
         {
           name: "Apartments Stević",
           type: "Penthouse",
           price: 349,
-          features: "8 guests * 6 bed * 4 bedrooms"
+          guests: 8,
+          beds: 6,
+          bedrooms: 4
         },
         {
           name: "Apartments Deluxe",
           type: "Deluxe apartment",
           price: 149,
-          features: "6 guests * 4 beds * 3 bedrooms"
+          guests: 6,
+          beds: 4,
+          bedrooms: 3
         }
-      ]
+      ],
+      filteredApartments: []
     };
   },
   computed: {
@@ -196,28 +196,60 @@ export default {
   },
   methods: {
     chooseSort() {
-      if (this.sortParameter == "Price") {
-        this.sortParameter = "Guests";
-      } else if (this.sortParameter == "Guests") {
-        this.sortParameter = "Beds";
-      } else if (this.sortParameter == "Beds") {
-        this.sortParameter = "Price";
+      if (this.sortParameter == "Ascending") {
+        this.sortParameter = "Descending";
+      } else if (this.sortParameter == "Descending") {
+        this.sortParameter = "Ascending";
+      }
+      this.sortApartments();
+    },
+    sortApartments() {
+      if (this.sortParameter == "Ascending") {
+        this.filteredApartments.sort(function(a, b) {
+          return a.price - b.price;
+        });
+      } else {
+        this.filteredApartments.sort(function(a, b) {
+          return b.price - a.price;
+        });
       }
     },
-    displayRoomsSelector() {
-      alert("hey");
+    handleTypeChange() {
+      console.log(this.selectedType);
+      if (this.selectedType == "Penthouse") {
+        this.filteredApartments = this.apartments.filter(
+          app => app.type == "Penthouse"
+        );
+      } else if (this.selectedType == "Deluxe") {
+        this.filteredApartments = this.apartments.filter(
+          app => app.type == "Deluxe apartment"
+        );
+      } else if (this.selectedType == "Single") {
+        this.filteredApartments = this.apartments.filter(
+          app => app.type == "Single room"
+        );
+      } else if (this.selectedType == "Entire") {
+        this.filteredApartments = this.apartments.filter(
+          app => app.type == "Entire apartment"
+        );
+      } else if (this.selectedType == "Any") {
+        this.filteredApartments = [...this.apartments];
+      }
     },
-    incrementRooms() {
-      this.rooms++;
-    },
-    decrementRooms() {
-      if (this.rooms > 0) this.rooms--;
+    filterByBeds() {
+      this.filteredApartments = this.apartments.filter(
+        app => app.beds >= this.beds
+      );
     },
     incrementBeds() {
       this.beds++;
+      this.filterByBeds();
     },
     decrementBeds() {
-      if (this.beds > 0) this.beds--;
+      if (this.beds > 0) {
+        this.beds--;
+        this.filterByBeds();
+      }
     },
     showCheckboxes() {
       var checkboxes = document.getElementById("checkboxes");
@@ -236,9 +268,10 @@ export default {
 <style scoped>
 /* Combobox */
 .dropdown-container {
-  width: 285px;
+  width: 250px;
   margin-top: -9px;
   margin-left: 20px;
+  margin-right: -30px;
 }
 select {
   width: 200px;
@@ -269,7 +302,7 @@ select::-ms-expand {
 .select-icon {
   position: relative;
   top: 8px;
-  right: 5rem;
+  right: 2.8rem;
   pointer-events: none;
   transition: background-color 0.3s ease, border-color 0.3s ease;
   width: 30px;
@@ -311,23 +344,29 @@ svg {
 
 main {
   display: grid;
+  grid-template-rows: 50px auto;
   grid-template-columns: repeat(5, 1fr);
   column-gap: 11rem;
   position: relative; /* Fixuje mapu u mjestu?*/
+  min-height: 75vh;
 }
 
 .search-results {
   margin-top: 15px;
   margin-left: 40px;
   grid-column: 1/2;
+  grid-row: 2;
   width: 100%;
+  min-width: 500px;
 }
 
 .sortby {
   right: 0;
+  height: 50px !important;
   margin-top: 15px;
   margin-left: auto;
   font-size: 14px;
+  grid-row: 1;
   color: var(--medium-text-color);
 }
 
@@ -338,10 +377,10 @@ main {
 .map {
   grid-column: 2/6;
   background: teal;
-  height: 98%;
-  width: 100%;
+  width: 110%;
   float: right;
   position: absolute; /* Fixuje mapu u mjestu? Fixed ne radi */
+  min-height: 99%;
 }
 
 hr {
@@ -355,7 +394,6 @@ hr {
 
 header {
   padding-left: 10px;
-  margin-bottom: 15px;
 }
 
 h2 {
@@ -377,9 +415,7 @@ h2 {
   margin-top: 30px;
   width: 38%;
   display: grid;
-  grid-template-areas:
-    "rooms beds"
-    "type amenities";
+  grid-template-areas: "beds type amenities";
 }
 
 .rooms {
@@ -399,6 +435,7 @@ h2 {
 
 .amenities {
   grid-area: "amenities";
+  width: 180px;
 }
 
 .amenities-select-icon {
@@ -416,7 +453,6 @@ h2 {
   width: 100%;
   font-weight: bold;
 }
-
 
 .overSelect {
   position: absolute;
