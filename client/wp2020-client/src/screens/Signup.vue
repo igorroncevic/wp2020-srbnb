@@ -4,20 +4,20 @@
       <a href="/">srbnb</a>
     </div>
     <div id="container">
-      <form action method="post" style="margin-left: 8px;">
+      <form action method="post" style="margin-left: 8px;" @submit.prevent="signup">
         <div class="title">Sign Up</div>
         <SimpleInput label="Username" :value="''" v-model="username" width="550" />
         <SimpleInput label="Full Name" :value="''" v-model="fullname" width="550" />
         <SimpleInput label="Email" :value="''" v-model="email" width="550" />
         <label for="name">Gender</label>
         <div class="gender" style="margin-bottom: 7px;">
-          <radio-button value="Male" @change="setGender" />
+          <radio-button value="Male" @change="setGender" :checked="true" />
           <!-- Pass which one is checked -->
           <radio-button value="Female" style="margin-left: 2rem;" @change="setGender" />
         </div>
         <SimpleInput label="Password" :value="''" v-model="password" width="550" />
         <SimpleInput label="Confirm Password" :value="''" v-model="confirmPassword" width="550" />
-        <Button text="Continue" width="400" fontsize="20" id="button" @clicked="login" height="50"/>
+        <Button text="Continue" width="400" fontsize="20" id="button" height="50"/>
         <div class="signup">
           Already have an account?
           <span>
@@ -41,6 +41,9 @@ export default {
     Button,
     RadioButton
   },
+  beforeMount(){
+     this.setGender("Male");
+  },
   data() {
     return {
       username: "",
@@ -56,10 +59,10 @@ export default {
     setGender(value) {
       this.selectedGender = value;
     },
-    login() {
-      console.log(
-        "Username: " + this.username + ", Password: " + this.password
-      );
+    signup() {
+      if(this.username == "" || this.fullname == "" || this.email == "" || this.password == "" || this.confirmPassword == "" || this.selectedGender == "" ){
+         this.$toasted.global.emptyFields();
+      }
     }
   }
 };

@@ -29,11 +29,6 @@ Vue.use(Toasted, {
    icon: 'error_outline',
  })
 
- Vue.toasted.register('emptyFields', 'Please fill in all the fields!', {
-   type: 'error',
-   icon: 'error_outline',
- })
-
  Vue.toasted.register('emptyLocation', ' Please select a location!', {
    type: 'error',
    icon: 'error_outline',
