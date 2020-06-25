@@ -150,13 +150,13 @@ export default {
     submitForm(e) {
       e.preventDefault();
       if (moment(this.startDate).isAfter(moment(this.endDate))) {
-        alert("Start date cannot be before end date!");
+        this.$toasted.global.startDateAfterEndDate();
       } else if (this.startDate == "" || this.endDate == "") {
-        alert("Please select dates!");
+        this.$toasted.global.emptyDates();
       } else if (this.guests == 0) {
-        alert("Please select number of guests!");
+        this.$toasted.global.emptyGuests();
       } else if (this.location == "") {
-        alert("Please select a location!");
+        this.$toasted.global.emptyLocation();
       } else {
         this.$refs.form.submit();
       }
