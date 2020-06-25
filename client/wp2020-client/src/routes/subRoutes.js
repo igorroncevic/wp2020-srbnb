@@ -6,6 +6,8 @@ import EditUserInfo from "./../components/EditUserInfo.vue";
 import ChangePassword from "./../components/ChangePassword.vue";
 import UserProfile from "./../components/UserProfile.vue";
 import SearchUsers from "./../components/SearchUsers.vue";
+import PreviewBookings from "./../components/PreviewBookings.vue";
+import AddApartment from "./../components/AddApartment.vue";
 
 export default [
   {
@@ -47,8 +49,8 @@ export default [
     ],
   },
   {
-    path: "apartment",
-    name: "apartment",
+    path: "apartment-preview/:apartmentId",
+    name: "apartment-preview",
     component: ApartmentPreview,
     meta: {
       title: " - Apartment Preview",
@@ -70,4 +72,20 @@ export default [
       title: " - Search Users",
     },
   },
+  {
+   path: "preview-bookings",
+   name: "preview-bookings",
+   component: PreviewBookings,
+   meta: {
+     title: " - Preview Bookings",
+   },
+ },
+ {
+   path: "add-apartment",
+   name: "add-apartment",
+   component: AddApartment,
+   meta: {
+     title: " - Add New Apartment",
+   },
+ },
 ];

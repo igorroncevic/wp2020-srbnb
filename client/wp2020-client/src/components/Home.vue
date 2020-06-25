@@ -13,23 +13,98 @@
     <div id="searchbar-wrapper">
       <div>
         <!-- Search form -->
-        <form method="GET" action="/search-results" id="searchbar">
+        <form ref="form" @submit="submitForm" method="GET" action="/search-results" id="searchbar">
           <div class="form-item" tabindex="1">
             <div class="nest stacked">
               <label for="location" class="label">LOCATION</label>
-              <input type="text" name="location" placeholder="Where are you going?" />
+              <input
+                v-model="location"
+                type="text"
+                name="location"
+                placeholder="Where are you going?"
+              />
             </div>
           </div>
-          <div class="form-item" tabindex="2">
+          <div class="form-item dates" tabindex="2">
             <div class="nest stacked">
-              <label for="dates" class="label">CHECK IN / CHECK OUT</label>
-              <input type="text" name="dates" placeholder="Add dates" />
+              <label for="datepickers" class="label">CHECK IN / CHECK OUT</label>
+              <div class="datepickers">
+                <datepicker
+                  placeholder="Select check-in"
+                  v-model="startDate"
+                  :value="startDate"
+                  name="startDate"
+                  :disabledDates="disabledStartDates"
+                  :format="customFormatter"
+                ></datepicker>
+                <datepicker
+                  placeholder="Select check-out"
+                  v-model="endDate"
+                  :value="endDate"
+                  name="endDate"
+                  :disabledDates="disabledEndDates"
+                  :format="customFormatter"
+                ></datepicker>
+              </div>
             </div>
           </div>
-          <div class="form-item" tabindex="3">
+          <div class="form-item guests" tabindex="3">
             <div class="stacked nest">
               <label for="guests" class="label">GUESTS</label>
-              <input type="text" name="guests" placeholder="Add guests" />
+              <input
+                v-model="guests"
+                min="0"
+                max="10"
+                type="number"
+                name="guests"
+                placeholder="Add guests"
+              />
+            </div>
+          </div>
+          <div class="form-item" tabindex="4">
+            <div class="stacked nest">
+              <label for="rooms" class="label">ROOMS</label>
+              <div class="rooms">
+                <input
+                  v-model="minRooms"
+                  min="0"
+                  max="10"
+                  type="number"
+                  name="minRooms"
+                  placeholder="Min. rooms"
+                />
+                <input
+                  v-model="maxRooms"
+                  min="0"
+                  max="10"
+                  type="number"
+                  name="maxRooms"
+                  placeholder="Max. rooms"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-item" tabindex="5">
+            <div class="stacked nest">
+              <label for="price" class="label">PRICE</label>
+              <div class="price">
+                <div class="price">
+                  <input
+                    v-model="minPrice"
+                    min="0"
+                    type="number"
+                    name="minPrice"
+                    placeholder="Min. price"
+                  />
+                  <input
+                    v-model="maxPrice"
+                    min="0"
+                    type="number"
+                    name="maxPrice"
+                    placeholder="Max. price"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <button type="submit">
@@ -44,12 +119,81 @@
 </template>
 
 <script>
+import moment from "moment";
+import Datepicker from "vuejs-datepicker";
+
 export default {
-  name: "Home"
+  name: "Home",
+  components: { Datepicker },
+  data() {
+    return {
+      location: "",
+      guests: "",
+      startDate: "", //add 7 days
+      endDate: "", //add 10 days
+      minRooms: "",
+      maxRooms: "",
+      minPrice: "",
+      maxPrice: "",
+      disabledStartDates: {
+        to: new Date(Date.now() - 8640000)
+      },
+      disabledEndDates: {
+        to: new Date(Date.now() - 8640000)
+      }
+    };
+  },
+  methods: {
+    customFormatter(date) {
+      return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
+    },
+    submitForm(e) {
+      e.preventDefault();
+      if (moment(this.startDate).isAfter(moment(this.endDate))) {
+        this.$toasted.global.startDateAfterEndDate();
+      } else if (this.startDate == "" || this.endDate == "") {
+        this.$toasted.global.emptyDates();
+      } else if (this.guests == 0) {
+        this.$toasted.global.emptyGuests();
+      } else if (this.location == "") {
+        this.$toasted.global.emptyLocation();
+      } else {
+        this.$refs.form.submit();
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
+.dates {
+  width: 24% !important;
+}
+
+input[data-v-8dc7cce2] {
+  background: var(--background-color);
+}
+
+.vdp-datepicker[data-v-8dc7cce2] {
+  width: 130px !important;
+  margin-right: 10px;
+}
+
+.datepickers {
+  display: inline-flex;
+  width: min-content;
+  flex-direction: row;
+  margin-top: 2px;
+  width: 50%;
+}
+
+.vdp-datepicker {
+  width: 170px !important;
+  color: var(--main-text-color) !important;
+  cursor: pointer;
+}
+
+/* Title */
 .title-wrapper {
   position: relative;
   width: 92%;
@@ -70,6 +214,7 @@ h1 {
   color: var(--brand-color);
 }
 
+/* Search bar */
 #searchbar-wrapper {
   position: relative;
   width: 89%;
@@ -119,14 +264,16 @@ h1 {
   background: var(--brand-color-hover);
 }
 
-#searchbar input[type="text"] {
+#searchbar input[type="text"],
+#searchbar input[type="number"] {
   font-size: 16px;
   padding-top: 3px;
   padding-right: 10px;
   border: 0;
 }
 
-#searchbar input[type="text"]::placeholder {
+#searchbar input[type="text"]::placeholder,
+#searchbar input[type="number"]::placeholder {
   color: var(--light-text-color);
 }
 
@@ -134,10 +281,60 @@ h1 {
   display: inline-block;
   padding: 0.5rem 0 0.5rem 1.5rem;
   background: var(--background-color);
-  width: 27%;
+  width: 15%;
   border: 1px solid var(--background-color);
   border-radius: var(--border-radius);
   height: 3rem;
+}
+
+.dates {
+  width: 27%;
+}
+
+.guests {
+  width: 10%;
+}
+
+.guests input[type="number"] {
+  margin-top: 1px;
+}
+
+.rooms {
+  display: inline-flex;
+  flex-direction: row;
+  margin-left: -6px;
+  margin-top: 1px;
+}
+
+label[for="rooms"] {
+  margin-left: -4px;
+}
+
+.rooms input[name="minRooms"] {
+  width: 97px;
+}
+
+.rooms input[name="maxRooms"] {
+  width: 100px;
+}
+
+.price {
+  display: inline-flex;
+  flex-direction: row;
+  margin-left: -6px;
+  margin-top: 1px;
+}
+
+.price input[name="minPrice"] {
+  width: 97px;
+}
+
+.price input[name="maxPrice"] {
+  width: 100px;
+}
+
+label[for="price"] {
+  margin-left: -9px;
 }
 
 .form-item:hover {
@@ -149,7 +346,7 @@ h1 {
 }
 
 .nest {
-  max-width: 60%;
+  max-width: 90%;
   margin-top: 6px;
 }
 

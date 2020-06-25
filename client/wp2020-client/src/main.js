@@ -3,6 +3,7 @@ import App from "./App.vue";
 import VueRouter from "vue-router";
 import routes from "./routes/mainRoutes";
 import "./../public/css/styles.css";
+import "./../public/js/toasts.js";
 
 Vue.use(VueRouter);
 
@@ -11,7 +12,6 @@ Vue.use(VueRouter);
 if (window.location.search) {
    window.location.href = `${window.location.origin}/#${window.location.pathname}${window.location.search}`;
 }
-
 
 const router = new VueRouter({
    mode: "hash",

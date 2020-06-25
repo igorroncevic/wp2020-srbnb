@@ -13,7 +13,7 @@
             <search-result :apartment="apartment" />
          </div>
          <div class="btn">
-            <Button v-if="isAdmin" text="Block user" width="225" height="45" fontsize="20" id="blockUserBtn" />
+            <Button v-if="isAdmin" text="Block user" width="225" height="45" fontsize="20" />
             <Button v-if="isHomeowner" text="Add new apartment" width="300" height="45" fontsize="20" id="addApartmentBtn" />
          </div>
       </div>
@@ -123,10 +123,6 @@ export default {
    grid-row: 5;
    position: relative;
    left: 70%;
-}
-
-#blockUserBtn{
-
 }
 
 #addApartmentBtn{

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid-container">
+  <div class="grid-container-settings">
     <div class="menu">
       <ul>
         <li>
@@ -19,7 +19,7 @@
     <div class="wrapper">
       <div class="title">{{ title }}</div>
       <div class="user">
-        <div class="photo"></div>
+        <div class="photo-user"></div>
         <div class="info">
           <p class="name">Petar Petrovic</p>
           <p class="role">Guest</p>
@@ -49,8 +49,8 @@ export default {
 </script>
 
 <style scoped>
-.grid-container {
-  margin-top: 25px;
+.grid-container-settings {
+  margin-top: 5px;
   display: grid;
   grid-template-columns: repeat(15, 1fr);
   grid-gap: 10px;
@@ -62,6 +62,7 @@ export default {
 }
 
 .wrapper {
+  grid-row: 1;
   grid-column: 6 / 11;
   display: grid;
   grid-template-rows: repeat(10, 8vh);
@@ -77,11 +78,13 @@ export default {
 /* User Container */
 .user {
   grid-row: 2/4;
+  grid-column: 1;
+  margin-left: 0;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   justify-content: center;
 }
-.photo {
+.photo-user {
   background: orange;
   grid-column: 1;
   height: 140px;
@@ -111,7 +114,7 @@ export default {
 }
 
 .menu ul li {
-   margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .activeLink {
