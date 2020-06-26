@@ -1,4 +1,4 @@
-package beans.users;
+package model.users;
 
 public class Admin extends User {
 

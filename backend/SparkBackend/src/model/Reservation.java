@@ -1,8 +1,8 @@
-package beans;
+package model;
 
 import java.util.Date;
 
-import beans.users.Guest;
+import model.users.Guest;
 
 public class Reservation {
 	

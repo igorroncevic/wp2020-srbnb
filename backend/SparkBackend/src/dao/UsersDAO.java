@@ -1,7 +1,5 @@
 package dao;
 
-import beans.users.*;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,6 +12,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 
+import model.users.*;
+import requests.Login;
+import rest.Main;
+
 public class UsersDAO {
 	
 	private static UsersDAO instance;
@@ -21,7 +23,6 @@ public class UsersDAO {
 	private String GUESTS_FILE_PATH = "data/guests.json";
 	private String HOSTS_FILE_PATH = "data/hosts.json";
 	private String ADMINS_FILE_PATH = "data/admins.json";
-	private Gson gson = new Gson();
 	
 	private List<Admin> admins;
 	private List<Guest> guests;
@@ -42,23 +43,36 @@ public class UsersDAO {
 	private void loadData() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(GUESTS_FILE_PATH));
-			guests = gson.fromJson(br, new TypeToken<List<Guest>>(){}.getType());
+			guests = Main.g.fromJson(br, new TypeToken<List<Guest>>(){}.getType());
 			
 			br = new BufferedReader(new FileReader(HOSTS_FILE_PATH));
-			hosts = gson.fromJson(br, new TypeToken<List<Host>>(){}.getType());
+			hosts = Main.g.fromJson(br, new TypeToken<List<Host>>(){}.getType());
 			
 			br = new BufferedReader(new FileReader(ADMINS_FILE_PATH));
-			admins = gson.fromJson(br, new TypeToken<List<Admin>>(){}.getType());
+			admins = Main.g.fromJson(br, new TypeToken<List<Admin>>(){}.getType());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void saveData() {
-		String json = gson.toJson(guests);
+	private void saveGuestsData() {
+		String json = Main.g.toJson(guests);
 		
 		try {
 			FileWriter writer = new FileWriter(GUESTS_FILE_PATH);
+			writer.write(json);
+			writer.close();
+			  
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void saveHostsData() {
+		String json = Main.g.toJson(hosts);
+		
+		try {
+			FileWriter writer = new FileWriter(HOSTS_FILE_PATH);
 			writer.write(json);
 			writer.close();
 			  
@@ -73,7 +87,17 @@ public class UsersDAO {
 				return false;
 		}
 		guests.add(newGuest);
-		saveData();
+		saveGuestsData();
+		return true;
+	}
+	
+	public boolean addNewHost(Host newHost) {
+		for(Host existingHost : hosts) {
+			if(existingHost.getUsername().equals(newHost.getUsername()))
+				return false;
+		}
+		hosts.add(newHost);
+		saveHostsData();
 		return true;
 	}
 	

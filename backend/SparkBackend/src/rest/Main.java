@@ -8,23 +8,42 @@ import static spark.Spark.port;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.security.Key;
 import io.jsonwebtoken.security.Keys;
+import model.*;
+import model.users.*;
+import requests.ApartmentSearch;
+import requests.Login;
 
 import org.eclipse.jetty.security.UserAuthentication;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 
-import beans.users.*;
+import dao.ApartmentsDAO;
 import dao.UsersDAO;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import spark.Session;
 
-public class SparkAppMain {
+public class Main {
 
-	private static Gson g = new Gson();
+	public static JsonSerializer<Date> ser = (src, typeOfSrc, context) -> src == null ? null : new JsonPrimitive(src.getTime());
+	public static JsonDeserializer<Date> deser = (jSon, typeOfT, context) -> jSon == null ? null : new Date(jSon.getAsLong());
+	public static Gson g = new GsonBuilder()
+			   .registerTypeAdapter(Date.class, ser)
+			   .registerTypeAdapter(Date.class, deser).create();
+	
 	static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 	public static void main(String[] args) throws Exception {
@@ -34,8 +53,7 @@ public class SparkAppMain {
 		staticFiles.externalLocation(new File("./WebContent").getCanonicalPath());
 		
 		get("/test", (req, res) -> {
-			UsersDAO.getInstance();
-			return "Works";
+			return "Successful";
 		});
 		
 		post("/register", (req, res) -> {
@@ -71,6 +89,15 @@ public class SparkAppMain {
 			}
 			
 		});
+		
+		post("/search/apartments", (req, res) -> {
+			String payload = req.body();
+			ApartmentSearch search = g.fromJson(payload, ApartmentSearch.class);
+			
+			List<Apartment> searchResult = ApartmentsDAO.getInstance().searchApartments(search);
+			
+			return g.toJson(searchResult);
+			});
 	
 	}
 }

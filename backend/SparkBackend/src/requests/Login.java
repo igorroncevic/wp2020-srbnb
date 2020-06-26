@@ -1,4 +1,4 @@
-package beans.users;
+package requests;
 
 public class Login {
 	

@@ -1,6 +1,6 @@
-package beans;
+package model;
 
-import beans.users.Guest;
+import model.users.Guest;
 
 public class Comment {
 	
