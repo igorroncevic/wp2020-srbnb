@@ -54,7 +54,8 @@ public class AmenitiesDAO {
 		}
 	}
 	
-	public boolean addNewReservation(Amenity newAmenity) {
+	public boolean addNewAmenity(Amenity newAmenity) {
+		newAmenity.setId(amenities.size());
 		amenities.add(newAmenity);
 		saveData();
 		return true;

@@ -26,18 +26,22 @@ public class Apartment {
 	private ApartmentStatus status;
 	private List<Integer> amenities;
 	
-	public Apartment(int numberOfRooms, int numberOfGuest, Location location, List<Date> daysForRent,
-			List<Date> availableDaysForRent, String host, double pricePerNight) {
+	
+
+	public Apartment(ApartmentType type, int numberOfRooms, int numberOfGuest, Location location, List<Date> daysForRent, 
+					 List<Date> availableDaysForRent, String host, double pricePerNight, ApartmentStatus status) {
 		super();
-		this.type = ApartmentType.Ful_Apartment;
+		this.type = type;
 		this.numberOfRooms = numberOfRooms;
 		this.numberOfGuest = numberOfGuest;
 		this.location = location;
 		this.daysForRent = daysForRent;
 		this.availableDaysForRent = availableDaysForRent;
 		this.host = host;
+		this.comments = new ArrayList<Comment>();
+		this.images = new ArrayList<String>();
 		this.pricePerNight = pricePerNight;
-		this.status = ApartmentStatus.Active;
+		this.status = status;
 		this.amenities = new ArrayList<Integer>();
 	}
 
