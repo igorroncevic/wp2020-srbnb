@@ -1,1 +1,85 @@
-[]
+[
+   {
+      "id":0,
+      "type":"Ful_Apartment",
+      "numberOfRooms":3,
+      "numberOfGuest":6,
+      "location":{
+         "latitude":41.55,
+         "longitude":39.33,
+         "address":{
+            "street":"Gogoljeva",
+            "number":"7A",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         1593258773158,
+         1593345173158,
+         1593431573158
+      ],
+      "availableDaysForRent":[
+         1593258773158,
+         1593345173158,
+         1593431573158
+      ],
+      "host":"miljanovmarko",
+      "comments":[
+
+      ],
+      "images":[
+
+      ],
+      "pricePerNight":15.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Active",
+      "amenities":[
+         0,
+         1,
+         2
+      ]
+   },
+   {
+      "id":1,
+      "type":"Ful_Apartment",
+      "numberOfRooms":2,
+      "numberOfGuest":4,
+      "location":{
+         "latitude":35.32,
+         "longitude":39.33,
+         "address":{
+            "street":"Antona Cehova",
+            "number":"BB",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         1593258773158,
+         1593345173158,
+         1593431573158
+      ],
+      "availableDaysForRent":[
+         1593258773158,
+         1593345173158,
+         1593431573158
+      ],
+      "host":"raicevicmilija",
+      "comments":[
+
+      ],
+      "images":[
+
+      ],
+      "pricePerNight":20.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Active",
+      "amenities":[
+         0,
+         2
+      ]
+   }
+]

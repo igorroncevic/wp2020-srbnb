@@ -1,4 +1,7 @@
-package beans.users;
+package model.users;
+
+import model.enums.Gender;
+import model.enums.UserType;
 
 public class User {
 	
@@ -6,15 +9,17 @@ public class User {
 	private String password;
 	private String name;
 	private String lastname;
-	private String gender;
+	private Gender gender;
+	private UserType type;
 	
-	public User(String username, String password, String name, String lastname, String gender) {
+	public User(String username, String password, String name, String lastname, Gender gender, UserType type) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.name = name;
 		this.lastname = lastname;
 		this.gender = gender;
+		this.type = type;
 	}
 
 	public String getUsername() {
@@ -49,14 +54,20 @@ public class User {
 		this.lastname = lastname;
 	}
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	
-	
+
+	public UserType getType() {
+		return type;
+	}
+
+	public void setType(UserType type) {
+		this.type = type;
+	}
 
 }
