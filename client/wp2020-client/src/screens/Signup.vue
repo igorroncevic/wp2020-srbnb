@@ -17,7 +17,7 @@
         </div>
         <SimpleInput label="Password" :value="''" v-model="password" width="550" />
         <SimpleInput label="Confirm Password" :value="''" v-model="confirmPassword" width="550" />
-        <Button text="Continue" width="400" fontsize="20" id="button" height="50"/>
+        <Button text="Continue" width="400" fontsize="20" id="button" height="50" />
         <div class="signup">
           Already have an account?
           <span>
@@ -41,8 +41,8 @@ export default {
     Button,
     RadioButton
   },
-  beforeMount(){
-     this.setGender("Male");
+  beforeMount() {
+    this.setGender("Male");
   },
   data() {
     return {
@@ -60,8 +60,15 @@ export default {
       this.selectedGender = value;
     },
     signup() {
-      if(this.username == "" || this.fullname == "" || this.email == "" || this.password == "" || this.confirmPassword == "" || this.selectedGender == "" ){
-         this.$toasted.global.emptyFields();
+      if (
+        this.username == "" ||
+        this.fullname == "" ||
+        this.email == "" ||
+        this.password == "" ||
+        this.confirmPassword == "" ||
+        this.selectedGender == ""
+      ) {
+        this.$toasted.global.emptyFields();
       }
     }
   }
