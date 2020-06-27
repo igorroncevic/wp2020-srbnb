@@ -3,7 +3,6 @@ package model;
 import java.util.Date;
 
 import model.enums.ReservationStatus;
-import model.users.Guest;
 
 public class Reservation {
 	

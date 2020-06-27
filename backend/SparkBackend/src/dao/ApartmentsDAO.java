@@ -22,9 +22,6 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 import model.Apartment;
-import model.users.Admin;
-import model.users.Guest;
-import model.users.Host;
 import requests.ApartmentSearch;
 import rest.Main;
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 import model.enums.ApartmentStatus;
 import model.enums.ApartmentType;
-import model.users.Host;
 
 public class Apartment {
 

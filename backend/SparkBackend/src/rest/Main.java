@@ -8,16 +8,12 @@ import static spark.Spark.port;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
 import java.security.Key;
 import io.jsonwebtoken.security.Keys;
 import model.*;
-import model.enums.ApartmentStatus;
-import model.enums.ApartmentType;
+import model.enums.UserType;
 import model.users.*;
 import requests.ApartmentSearch;
 import requests.Login;
@@ -26,19 +22,16 @@ import org.eclipse.jetty.security.UserAuthentication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 
-import dao.AmenitiesDAO;
 import dao.ApartmentsDAO;
 import dao.UsersDAO;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import spark.Session;
 
 public class Main {
 
@@ -63,9 +56,10 @@ public class Main {
 		post("/register", (req, res) -> {
 			
 			String payload = req.body();
-			Guest guest = g.fromJson(payload, Guest.class);
+			User user = g.fromJson(payload, User.class);
+			user.setType(UserType.Guest);
 			
-			boolean successful = UsersDAO.getInstance().addNewGuest(guest);
+			boolean successful = UsersDAO.getInstance().addNewUser(user);
 			
 			if(successful) {
 				res.status(200);
@@ -101,7 +95,26 @@ public class Main {
 			List<Apartment> searchResult = ApartmentsDAO.getInstance().searchApartments(search);
 			
 			return g.toJson(searchResult);
-			});
+		});
+		
+		post("/updateUserData", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    // ako nije bacio izuzetak, onda je OK
+				    String payload = req.body();
+					User newData = g.fromJson(payload, User.class);
+					UsersDAO.getInstance().updateUserData(newData);
+					return "";
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+			
+			return "Error";
+		});
 	
 	}
 }

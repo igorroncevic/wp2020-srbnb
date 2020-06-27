@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 
+import model.enums.UserType;
 import model.users.*;
 import requests.Login;
 import rest.Main;
@@ -20,14 +21,12 @@ public class UsersDAO {
 	
 	private static UsersDAO instance;
 	
-	private String GUESTS_FILE_PATH = "data/users/guests.json";
-	private String HOSTS_FILE_PATH = "data/users/hosts.json";
-	private String ADMINS_FILE_PATH = "data/users/admins.json";
+	private String USERS_FILE_PATH = "data/users.json";
 	
-	private List<Admin> admins;
-	private List<Guest> guests;
-	private List<Host> hosts;
-
+	private List<User> users;
+	private List<User> admins = new ArrayList<User>();
+	private List<User> guests = new ArrayList<User>();
+	private List<User> hosts = new ArrayList<User>();
 	
 	private UsersDAO() {
 		loadData();
@@ -42,24 +41,28 @@ public class UsersDAO {
 	
 	private void loadData() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(GUESTS_FILE_PATH));
-			guests = Main.g.fromJson(br, new TypeToken<List<Guest>>(){}.getType());
+			BufferedReader br = new BufferedReader(new FileReader(USERS_FILE_PATH));
+			users = Main.g.fromJson(br, new TypeToken<List<User>>(){}.getType());
 			
-			br = new BufferedReader(new FileReader(HOSTS_FILE_PATH));
-			hosts = Main.g.fromJson(br, new TypeToken<List<Host>>(){}.getType());
+			for(User user : users) {
+				if(user.getType() == UserType.Guest)
+					guests.add(user);
+				else if(user.getType() == UserType.Host)
+					hosts.add(user);
+				else
+					admins.add(user);
+			}
 			
-			br = new BufferedReader(new FileReader(ADMINS_FILE_PATH));
-			admins = Main.g.fromJson(br, new TypeToken<List<Admin>>(){}.getType());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void saveGuestsData() {
+	private void saveData() {
 		String json = Main.g.toJson(guests);
 		
 		try {
-			FileWriter writer = new FileWriter(GUESTS_FILE_PATH);
+			FileWriter writer = new FileWriter(USERS_FILE_PATH);
 			writer.write(json);
 			writer.close();
 			  
@@ -68,64 +71,44 @@ public class UsersDAO {
 		}
 	}
 	
-	private void saveHostsData() {
-		String json = Main.g.toJson(hosts);
-		
-		try {
-			FileWriter writer = new FileWriter(HOSTS_FILE_PATH);
-			writer.write(json);
-			writer.close();
-			  
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public boolean addNewGuest(Guest newGuest) {
-		for(Guest existingGuest : guests) {
-			if(existingGuest.getUsername().equals(newGuest.getUsername()))
+	public boolean addNewUser(User newUser) {
+		for(User existingUser : users) {
+			if(existingUser.getUsername().equals(newUser.getUsername()))
 				return false;
 		}
-		guests.add(newGuest);
-		saveGuestsData();
-		return true;
-	}
-	
-	public boolean addNewHost(Host newHost) {
-		for(Host existingHost : hosts) {
-			if(existingHost.getUsername().equals(newHost.getUsername()))
-				return false;
-		}
-		hosts.add(newHost);
-		saveHostsData();
+		users.add(newUser);
+		if(newUser.getType() == UserType.Guest)
+			guests.add(newUser);
+		else if(newUser.getType() == UserType.Host)
+			hosts.add(newUser);
+		else
+			admins.add(newUser);
+		saveData();
 		return true;
 	}
 	
 	public User login(Login login) {
-		for(Guest guest : guests) {
-			if(guest.getUsername().equals(login.getUsername()) && guest.getPassword().equals(login.getPassword())) {
-				return guest;
-			}
-		}
-		
-		for(Host host : hosts) {
-			if(host.getUsername().equals(login.getUsername()) && host.getPassword().equals(login.getPassword())) {
-				return host;
-			}
-		}
-		
-		for(Admin admin : admins) {
-			if(admin.getUsername().equals(login.getUsername()) && admin.getPassword().equals(login.getPassword())) {
-				return admin;
-			}
-		}
+		for(User user : users)
+			if(user.getUsername().equals(login.getUsername()) && user.getPassword().equals(login.getPassword()))
+				return user;
 		
 		return null;
-		
 	}
 	
 	
-	
+	public boolean updateUserData(User newData) {
+		for(User user : users)
+			if(user.getUsername().equals(newData.getUsername())) {
+				user.setPassword(newData.getPassword());
+				user.setName(newData.getName());
+				user.setLastname(newData.getLastname());
+				user.setGender(newData.getGender());
+				saveData();
+				return true;
+			}
+				
+		return false;
+	}
 	
 	
 	
