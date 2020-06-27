@@ -8,6 +8,24 @@ Vue.use(Toasted, {
    singleton: true,
 });
 
+
+// Info messages
+Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
+   type: 'info',
+   icon: 'info',
+ })
+ 
+ Vue.toasted.register('alreadyLoggedIn', 'You are logged in. Please log out to continue.', {
+   type: 'info',
+   icon: 'info',
+ })
+
+ Vue.toasted.register('successMessage', 'Success!', {
+   type: 'success',
+   icon: 'done_outline',
+ })
+
+
  // Input errors
  Vue.toasted.register('emptyLoginFields', 'Email and password cannot be empty!', {
    type: 'error',
@@ -29,7 +47,17 @@ Vue.use(Toasted, {
    icon: 'error_outline',
  })
 
- Vue.toasted.register('emptyLocation', ' Please select a location!', {
+ Vue.toasted.register('emptyFields', 'Please fill in all the fields!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
+ Vue.toasted.register('emptyLocation', 'Please select a location!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
+ Vue.toasted.register('badConfirmPassword', 'Password and confirm password must match!', {
    type: 'error',
    icon: 'error_outline',
  })
@@ -37,12 +65,20 @@ Vue.use(Toasted, {
 
 
 
- // Global errors
+ // Authorization errors
  Vue.toasted.register('loginError', 'Wrong Email or password!', {
    type: 'error',
    icon: 'error_outline',
  })
 
+ Vue.toasted.register('signupError', 'Username already exists!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
+
+
+  // Global errors
  Vue.toasted.register('unknownError', 'Something went wrong!', {
    type: 'error',
    icon: 'report_problem',

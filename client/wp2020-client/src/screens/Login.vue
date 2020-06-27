@@ -23,12 +23,19 @@
 <script>
 import SimpleInput from "./../components/form-components/SimpleInput.vue";
 import Button from "./../components/form-components/Button.vue";
+import UserService from "./../services/UserService";
 
 export default {
   name: "Login",
   components: {
     SimpleInput,
     Button
+  },
+  beforeCreate() {
+    if (UserService.getToken()) {
+      this.$toasted.global.alreadyLoggedIn();
+      this.$router.push({ name: "home" });
+    }
   },
   data() {
     return {
@@ -40,6 +47,19 @@ export default {
     login() {
       if (this.username == "" || this.password == "") {
         this.$toasted.global.emptyLoginFields();
+      }
+
+      var loginSuccess = UserService.login({
+        username: this.username,
+        password: this.password
+      });
+      if (loginSuccess) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.push({ name: "home" });
+        }, 1000);
+      } else {
+        this.$toasted.global.loginError();
       }
     }
   }

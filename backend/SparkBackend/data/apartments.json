@@ -1,7 +1,7 @@
 [
    {
       "id":0,
-      "type":"Ful_Apartment",
+      "type":"Full_Apartment",
       "numberOfRooms":3,
       "numberOfGuest":6,
       "location":{
@@ -43,7 +43,7 @@
    },
    {
       "id":1,
-      "type":"Ful_Apartment",
+      "type":"Full_Apartment",
       "numberOfRooms":2,
       "numberOfGuest":4,
       "location":{

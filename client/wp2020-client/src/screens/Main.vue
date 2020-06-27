@@ -5,15 +5,20 @@
         <a href="/">srbnb</a>
       </div>
       <nav>
-        <ul>
+        <ul v-if="!isLoggedIn">
           <li>
             <router-link to="/login">Login</router-link>
           </li>
           <li>
             <router-link to="/signup">Signup</router-link>
           </li>
+        </ul>
+        <ul v-if="isLoggedIn">
           <li>
             <router-link to="/settings">Settings</router-link>
+          </li>
+          <li>
+            <router-link to="/" @click.native="logout">Logout</router-link>
           </li>
         </ul>
       </nav>
@@ -23,15 +28,30 @@
 </template>
 
 <script>
+import UserService from "./../services/UserService";
+
 export default {
-  name: "App"
+  name: "App",
+  computed: {
+    isLoggedIn() {
+      return UserService.getToken() === null ? false : true;
+    }
+  },
+  methods: {
+    logout() {
+      UserService.logoutUser();
+      this.$toasted.global.loggedOut();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+  }
 };
 </script>
 
 <style>
-
-header{
-   margin-top: 5px;
+header {
+  margin-top: 5px;
 }
 
 .wrapper {
