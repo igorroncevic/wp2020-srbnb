@@ -4,38 +4,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import model.enums.ApartmentStatus;
+import model.enums.ApartmentType;
 import model.users.Host;
 
 public class Apartment {
-	
-	enum Type {
-		Ful_Apartment,
-		Room
-	}
 
-	enum ApartmentStatus {
-		Active,
-		Inactive
-	}
-	
-	private Type type;
+	private int id;
+	private ApartmentType type;
 	private int numberOfRooms;
 	private int numberOfGuest;
 	private Location location;
 	private List<Date> daysForRent;
 	private List<Date> availableDaysForRent;
-	private Host host;
-	private List<String> imagePaths;
+	private String host;
+	private List<Comment> comments;
+	private List<String> images;
 	private double pricePerNight;
 	private int checkInTime = 14;
 	private int checkOutTime = 10;
 	private ApartmentStatus status;
-	private List<Amenity> amenities;
+	private List<Integer> amenities;
 	
 	public Apartment(int numberOfRooms, int numberOfGuest, Location location, List<Date> daysForRent,
-			List<Date> availableDaysForRent, Host host, double pricePerNight) {
+			List<Date> availableDaysForRent, String host, double pricePerNight) {
 		super();
-		this.type = Type.Ful_Apartment;
+		this.type = ApartmentType.Ful_Apartment;
 		this.numberOfRooms = numberOfRooms;
 		this.numberOfGuest = numberOfGuest;
 		this.location = location;
@@ -44,14 +38,22 @@ public class Apartment {
 		this.host = host;
 		this.pricePerNight = pricePerNight;
 		this.status = ApartmentStatus.Active;
-		this.amenities = new ArrayList<Amenity>();
+		this.amenities = new ArrayList<Integer>();
 	}
 
-	public Type getType() {
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public ApartmentType getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(ApartmentType type) {
 		this.type = type;
 	}
 
@@ -95,20 +97,28 @@ public class Apartment {
 		this.availableDaysForRent = availableDaysForRent;
 	}
 
-	public Host getHost() {
+	public String getHost() {
 		return host;
 	}
 
-	public void setHost(Host host) {
+	public void setHost(String host) {
 		this.host = host;
 	}
 
-	public List<String> getImagePaths() {
-		return imagePaths;
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public void setImagePaths(List<String> imagePaths) {
-		this.imagePaths = imagePaths;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 
 	public double getPricePerNight() {
@@ -143,14 +153,14 @@ public class Apartment {
 		this.status = status;
 	}
 
-	public List<Amenity> getAmenities() {
+	public List<Integer> getAmenities() {
 		return amenities;
 	}
 
-	public void setAmenities(List<Amenity> amenities) {
+	public void setAmenities(List<Integer> amenities) {
 		this.amenities = amenities;
 	}
-	
+
 	
 
 }

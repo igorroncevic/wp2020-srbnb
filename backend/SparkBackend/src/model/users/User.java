@@ -1,14 +1,16 @@
 package model.users;
 
+import model.enums.Gender;
+
 public class User {
 	
 	private String username;
 	private String password;
 	private String name;
 	private String lastname;
-	private String gender;
+	private Gender gender;
 	
-	public User(String username, String password, String name, String lastname, String gender) {
+	public User(String username, String password, String name, String lastname, Gender gender) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -49,11 +51,11 @@ public class User {
 		this.lastname = lastname;
 	}
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 	

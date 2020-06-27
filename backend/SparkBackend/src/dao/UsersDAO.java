@@ -20,9 +20,9 @@ public class UsersDAO {
 	
 	private static UsersDAO instance;
 	
-	private String GUESTS_FILE_PATH = "data/guests.json";
-	private String HOSTS_FILE_PATH = "data/hosts.json";
-	private String ADMINS_FILE_PATH = "data/admins.json";
+	private String GUESTS_FILE_PATH = "data/users/guests.json";
+	private String HOSTS_FILE_PATH = "data/users/hosts.json";
+	private String ADMINS_FILE_PATH = "data/users/admins.json";
 	
 	private List<Admin> admins;
 	private List<Guest> guests;

@@ -70,6 +70,7 @@ public class ApartmentsDAO {
 	}
 	
 	public boolean addNewApartment(Apartment newApartment) {
+		newApartment.setId(apartments.size());
 		apartments.add(newApartment);
 		saveData();
 		return true;
