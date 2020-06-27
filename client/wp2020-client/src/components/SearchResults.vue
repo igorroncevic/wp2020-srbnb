@@ -115,33 +115,46 @@
 
 <script>
 import SearchResult from "./reusable/SearchResult.vue";
+import ApartmentsService from "./../services/ApartmentsService";
+import moment from "moment";
 
 export default {
   name: "SearchResults",
   components: {
     SearchResult
   },
-  beforeMount() {
+  async beforeMount() {
+    this.apartments = await ApartmentsService.searchApartments({
+      location: this.$route.query.location,
+      guests: this.$route.query.guests,
+      startDate: moment(this.$route.query.startDate).format("MM/DD/YYYY"),
+      endDate: moment(this.$route.query.endDate).format("MM/DD/YYYY"),
+      minRooms: this.$route.query.minRooms,
+      maxRooms: this.$route.query.maxRooms,
+      minPrice: this.$route.query.minPrice,
+      maxPrice: this.$route.query.maxPrice
+    });
+    
+    
     this.location = this.$route.query.location;
-    var startDateParts = this.$route.query.startDate.split(" ");
-    var endDateParts = this.$route.query.endDate.split(" ");
+    var startDateParts = moment(this.$route.query.startDate)
+      .format("MMMM Do YYYY")
+      .split(" ");
+    var endDateParts = moment(this.$route.query.endDate)
+      .format("MMMM Do YYYY")
+      .split(" ");
     this.startDate = startDateParts[0] + " " + startDateParts[1];
     this.endDate = endDateParts[0] + " " + endDateParts[1];
-    if (
-      (this.$route.query.minRooms == "" || this.$route.query.minRooms == 0) &&
-      this.$route.query.maxRooms != "" &&
-      this.$route.query.maxRooms != 0
-    ) {
+    if (this.$route.query.minRooms == 0 && this.$route.query.maxRooms != 0) {
       this.rooms = "Up to " + this.$route.query.maxRooms + " rooms";
     } else if (
-      (this.$route.query.maxRooms == "" || this.$route.query.maxRooms == 0) &&
-      this.$route.query.minRooms != "" &&
+      this.$route.query.maxRooms == 0 &&
       this.$route.query.minRooms != 0
     ) {
       this.rooms = "At least " + this.$route.query.minRooms + " rooms";
     } else if (
-      (this.$route.query.minRooms == "" || this.$route.query.minRooms == 0) &&
-      (this.$route.query.maxRooms == "" || this.$route.query.maxRooms == 0)
+      this.$route.query.minRooms == 0 &&
+      this.$route.query.maxRooms == 0
     ) {
       this.rooms = "Any number of rooms";
     } else {
@@ -152,21 +165,16 @@ export default {
         this.$route.query.maxRooms;
     }
 
-    if (
-      (this.$route.query.minPrice == "" || this.$route.query.minPrice == 0) &&
-      this.$route.query.maxPrice != "" &&
-      this.$route.query.maxPrice != 0
-    ) {
+    if (this.$route.query.minPrice == 0 && this.$route.query.maxPrice != 0) {
       this.price = "Up to $" + this.$route.query.maxPrice;
     } else if (
-      (this.$route.query.maxPrice == "" || this.$route.query.maxPrice == 0) &&
-      this.$route.query.minPrice != "" &&
+      this.$route.query.maxPrice == 0 &&
       this.$route.query.minPrice != 0
     ) {
       this.price = "Up from $" + this.$route.query.minPrice;
     } else if (
-      (this.$route.query.minPrice == "" || this.$route.query.minPrice == 0) &&
-      (this.$route.query.maxPrice == "" || this.$route.query.maxPrice == 0)
+      this.$route.query.minPrice == 0 &&
+      this.$route.query.maxPrice == 0
     ) {
       this.price = "Any price";
     } else {
@@ -178,6 +186,9 @@ export default {
     }
     this.filteredApartments = [...this.apartments];
     this.sortApartments();
+  },
+  mounted() {
+    this.$forceUpdate();
   },
   data() {
     return {
@@ -191,7 +202,8 @@ export default {
       beds: 0,
       selectedType: "Any type",
       amenitiesExpanded: false,
-      apartments: [
+      apartments: [],
+      /*apartments: [
         {
           id: 1,
           name: "Apartments Perić",
@@ -229,7 +241,7 @@ export default {
           beds: 4,
           bedrooms: 3
         }
-      ],
+      ],*/
       filteredApartments: []
     };
   },

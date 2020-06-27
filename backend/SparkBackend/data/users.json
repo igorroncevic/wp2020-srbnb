@@ -1,1 +1,26 @@
-[{"username":"petarpetrovic","password":"Test123","name":"Petar","lastname":"Petrovic","gender":"Male","type":"Guest"},{"username":"zukovicfilip","password":"Sifra98","name":"Filip","lastname":"Zukovic","gender":"Male","type":"Guest"},{"username":"igorroncevic","password":"igorroncevic","lastname":"Roncevic","gender":"Male","type":"Guest"}]
+[
+	{
+		"username": "petarpetrovic",
+		"password": "Test123",
+		"name": "Petar",
+		"lastname": "Petrovic",
+		"gender": "Male",
+		"type": "Guest"
+	},
+	{
+		"username": "zukovicfilip",
+		"password": "Sifra98",
+		"name": "Filip",
+		"lastname": "Zukovic",
+		"gender": "Male",
+		"type": "Guest"
+	},
+	{
+		"username": "igorroncevic",
+		"password": "igorroncevic",
+		"name": "Igor",
+		"lastname": "Roncevic",
+		"gender": "Male",
+		"type": "Guest"
+	}
+]

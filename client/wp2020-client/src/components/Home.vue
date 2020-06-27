@@ -13,7 +13,13 @@
     <div id="searchbar-wrapper">
       <div>
         <!-- Search form -->
-        <form ref="form" @submit="submitForm" method="GET" action="/search-results" id="searchbar">
+        <form
+          ref="form"
+          @submit.prevent="submitForm"
+          method="GET"
+          action="/search-results"
+          id="searchbar"
+        >
           <div class="form-item" tabindex="1">
             <div class="nest stacked">
               <label for="location" class="label">LOCATION</label>
@@ -158,7 +164,19 @@ export default {
       } else if (this.location == "") {
         this.$toasted.global.emptyLocation();
       } else {
-        this.$refs.form.submit();
+        this.$router.push({
+          name: "search-results",
+          query: {
+            location: this.location,
+            guests: this.guests,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            minRooms: this.minRooms == "" ? 0 : this.$route.query.minRooms,
+            maxRooms: this.maxRooms == "" ? 0 : this.$route.query.maxRooms,
+            minPrice: this.minPrice == "" ? 0 : this.$route.query.minPrice,
+            maxPrice: this.maxPrice == "" ? 0 : this.$route.query.maxPrice,
+          }
+        });
       }
     }
   }
