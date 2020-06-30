@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,6 +24,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 import model.Apartment;
+import model.User;
 import requests.ApartmentSearch;
 import rest.Main;
 
@@ -31,7 +34,7 @@ public class ApartmentsDAO {
 	
 	private String APARTMENTS_FILE_PATH = "data/apartments.json";
 	
-	private List<Apartment> apartments;
+	private Map<Integer, Apartment> apartments = new HashMap<Integer, Apartment>();;
 	
 	private ApartmentsDAO() {
 		loadData();
@@ -47,14 +50,17 @@ public class ApartmentsDAO {
 	private void loadData() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(APARTMENTS_FILE_PATH));
-			apartments = Main.g.fromJson(br, new TypeToken<List<Apartment>>(){}.getType());
+			List<Apartment> data = Main.g.fromJson(br, new TypeToken<List<Apartment>>(){}.getType());
+			for(Apartment apartment : data) {
+				this.apartments.put(apartment.getId(), apartment);
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void saveData() {
-		String json = Main.g.toJson(apartments);
+		String json = Main.g.toJson(apartments.values());
 		
 		try {
 			FileWriter writer = new FileWriter(APARTMENTS_FILE_PATH);
@@ -68,7 +74,7 @@ public class ApartmentsDAO {
 	
 	public boolean addNewApartment(Apartment newApartment) {
 		newApartment.setId(apartments.size());
-		apartments.add(newApartment);
+		apartments.put(newApartment.getId(), newApartment);
 		saveData();
 		return true;
 	}
@@ -76,7 +82,7 @@ public class ApartmentsDAO {
 	public List<Apartment> searchApartments(ApartmentSearch search) {
 		List<Apartment> searchResult = new ArrayList<Apartment>();
 		
-		for(Apartment apartment : apartments) {
+		for(Apartment apartment : apartments.values()) {
 			//if(search.getCheckInDate() != null && UslovNijeIspunjen) continue;
 			//if(search.getCheckOutDate() != null && UslovNijeIspunjen) continue;
 			if(search.getLocation() != null && !apartment.getLocation().getAddress().getPlace().equals(search.getLocation())) continue;
@@ -90,6 +96,10 @@ public class ApartmentsDAO {
 		}
 		
 		return searchResult;
+	}
+	
+	public User getHost(int apartmentId) {
+		return UsersDAO.getInstance().getUser(apartments.get(apartmentId).getHost());
 	}
 
 }

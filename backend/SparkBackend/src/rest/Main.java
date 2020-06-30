@@ -14,7 +14,6 @@ import java.security.Key;
 import io.jsonwebtoken.security.Keys;
 import model.*;
 import model.enums.UserType;
-import model.users.*;
 import requests.ApartmentSearch;
 import requests.Login;
 
@@ -27,6 +26,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 
 import dao.ApartmentsDAO;
+import dao.ReservationDAO;
 import dao.UsersDAO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -50,7 +50,8 @@ public class Main {
 		staticFiles.externalLocation(new File("./WebContent").getCanonicalPath());
 		
 		get("/test", (req, res) -> {
-			return "Successful";
+			
+			return g.toJson(UsersDAO.getInstance().getMyGuests("zoransijan"));
 		});
 		
 		post("/register", (req, res) -> {
@@ -83,7 +84,7 @@ public class Main {
 				res.status(400);
 				return "Failed to login";
 			} else {
-				return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date()).signWith(key).compact();
+				return Jwts.builder().setSubject(user.getUsername()).claim("Type", user.getType()).setIssuedAt(new Date()).signWith(key).compact();
 			}
 			
 		});
@@ -110,6 +111,71 @@ public class Main {
 					return "";
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
+				}
+			}
+			
+			return "Error";
+		});
+		
+		post("/testJWT", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    // ako nije bacio izuzetak, onda je OK
+				    System.out.println(claims.getBody().getSubject() + ", Type: " + claims.getBody().get("Type"));
+				    return "Success";
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+			
+			return "Error";
+		});
+		
+		get("/users", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(!claims.getBody().get("Type").equals("Admin")) {
+				    	return "Error";
+				    }
+				    else {
+				    	String search = req.queryParams("search");
+						if(search == null)
+							return g.toJson(UsersDAO.getInstance().getAllUsers());
+						else
+							return g.toJson(UsersDAO.getInstance().searchUsers(search));
+				    }
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+			return "Error";
+		});
+		
+		get("/myGuests", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(!claims.getBody().get("Type").equals("Host")) {
+				    	return "Error";
+				    }
+				    else {
+				    	String search = req.queryParams("search");
+				    	String host = claims.getBody().getSubject();
+						if(search == null)
+							return g.toJson(UsersDAO.getInstance().getMyGuests(host));
+						else
+							return g.toJson(UsersDAO.getInstance().searchMyGuests(host, search));
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
 				}
 			}
 			

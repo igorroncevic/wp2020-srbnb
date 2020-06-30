@@ -22,5 +22,21 @@
 		"lastname": "Roncevic",
 		"gender": "Male",
 		"type": "Guest"
+	},
+	{
+		"username": "miroslavraduljica",
+		"password": "Sifra123",
+		"name": "Miroslav",
+		"lastname": "Raduljica",
+		"gender": "Male",
+		"type": "Admin"
+	},
+	{
+		"username": "zoransijan",
+		"password": "zoransijan",
+		"name": "Zoran",
+		"lastname": "Sijan",
+		"gender": "Male",
+		"type": "Host"
 	}
 ]

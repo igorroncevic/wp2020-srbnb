@@ -1,4 +1,4 @@
-package model.users;
+package model;
 
 import model.enums.Gender;
 import model.enums.UserType;

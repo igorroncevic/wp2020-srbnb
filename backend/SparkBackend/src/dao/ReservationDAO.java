@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
 
 import model.Reservation;
+import model.User;
 import rest.Main;
 
 public class ReservationDAO {
@@ -57,6 +59,20 @@ public class ReservationDAO {
 		reservations.add(newReservations);
 		saveData();
 		return true;
+	}
+	
+	
+	
+	public List<Reservation> getMyReservations(String host) {
+		List<Reservation> myReservations = new ArrayList<Reservation>();
+		
+		for(Reservation reservation : reservations) {
+			if(ApartmentsDAO.getInstance().getHost(reservation.getApartment()).getUsername().equals(host)) {
+				myReservations.add(reservation);
+			}
+		}
+		
+		return myReservations;
 	}
 
 }

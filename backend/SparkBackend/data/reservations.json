@@ -1,1 +1,18 @@
-[]
+[
+   {
+      "apartment":0,
+      "checkInDay":1593545634366,
+      "nightsStaying":3,
+      "totalPrice":0.0,
+      "guest":"zukovicfilip",
+      "status":"Created"
+   },
+   {
+      "apartment":1,
+      "checkInDay":1593545634366,
+      "nightsStaying":3,
+      "totalPrice":0.0,
+      "guest":"igorroncevic",
+      "status":"Created"
+   }
+]
