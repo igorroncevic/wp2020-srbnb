@@ -275,5 +275,26 @@ public class Main {
 			return "Error";
 		});
 		
+		post("/apartments/new", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	String payload = req.body();
+						Apartment newApartment = g.fromJson(payload, Apartment.class);
+						ApartmentsDAO.getInstance().addNewApartment(newApartment);
+						return "Success";
+				    } else {
+				    	return "You dont have right permission";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
 	}
 }
