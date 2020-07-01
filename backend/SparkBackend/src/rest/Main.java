@@ -463,13 +463,13 @@ public class Main {
 					Reservation toDecline = g.fromJson(payload, Reservation.class);
 				    if(claims.getBody().get("Type").equals("Host")) {
 				    	if(!ApartmentsDAO.getInstance().getHost(toDecline.getApartment()).getUsername().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to accept this reservation";
+				    		return "You dont have permission to decline this reservation";
 				    	if(ReservationsDAO.getInstance().declineReservation(toDecline))
 				    		return "Success";
 				    	else
 				    		return "Error";
 				    } else {
-				    	return "You dont have permission to accept this reservation";
+				    	return "You dont have permission to decline this reservation";
 				    }
 				} catch (Exception e) {
 					System.out.println("You dont have right permission");
@@ -478,5 +478,49 @@ public class Main {
 			return "Error";
 		});
 		
+		post("/reservations/complete", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    String payload = req.body();
+					Reservation toComplete = g.fromJson(payload, Reservation.class);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	if(!ApartmentsDAO.getInstance().getHost(toComplete.getApartment()).getUsername().equals(claims.getBody().getSubject()))
+				    		return "You dont have permission to complete this reservation";
+				    	if(ReservationsDAO.getInstance().completeReservation(toComplete))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    } else {
+				    	return "You dont have permission to complete this reservation";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/reservations/new", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    String payload = req.body();
+					Reservation newReservation = g.fromJson(payload, Reservation.class);
+				    if(claims.getBody().get("Type").equals("Guest")) {
+				    	ReservationsDAO.getInstance().addNewReservation(newReservation);
+				    } else {
+				    	return "You dont have permission to create new reservation";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
 	}
 }
