@@ -524,7 +524,7 @@ public class Main {
 			return "Error";
 		});
 		
-		post("/comment/new", (req, res) -> {
+		post("/comments/new", (req, res) -> {
 			String auth = req.headers("Authorization");
 			if ((auth != null) && (auth.contains("Bearer "))) {
 				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
@@ -547,7 +547,7 @@ public class Main {
 			return "Error";
 		});
 		
-		post("/comment/visible", (req, res) -> {
+		post("/comments/visible", (req, res) -> {
 			String auth = req.headers("Authorization");
 			if ((auth != null) && (auth.contains("Bearer "))) {
 				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
@@ -562,6 +562,29 @@ public class Main {
 				    	return "Success";
 				    } else {
 				    	return "You dont have permission to make comments visible to guests";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		get("/comments", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    int apartmentId = Integer.parseInt(req.queryParams("id"));
+				    if(claims.getBody().get("Type").equals("Guest")) {
+				    	return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
+				    } else if(claims.getBody().get("Type").equals("Host")) {
+				    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(claims.getBody().getSubject()))
+				    		return "You dont have permission to view comments for this apartment";
+				    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+				    } else {
+				    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
 				    }
 				} catch (Exception e) {
 					System.out.println("You dont have right permission");

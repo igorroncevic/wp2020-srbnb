@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,5 +75,23 @@ public class CommentsDAO {
 		comments.get(id).setVisibleToGuests(true);
 		saveData();
 	}
+	
+	public List<Comment> getVisibleComments(int apartment) {
+		List<Comment> visibleComments = new ArrayList<Comment>();
+		for(Comment comment : comments.values()) {
+			if(comment.getApartment() == apartment && comment.isVisibleToGuests())
+				visibleComments.add(comment);
+		}
+		return visibleComments;
+	}
+	
+	public List<Comment> getComments(int apartment) {
+		List<Comment> comms = new ArrayList<Comment>();
+		for(Comment comment : comments.values()) {
+			if(comment.getApartment() == apartment)
+				comms.add(comment);
+		}
+		return comms;
+	} 
 
 }
