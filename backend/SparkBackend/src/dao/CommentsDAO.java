@@ -65,5 +65,14 @@ public class CommentsDAO {
 		saveData();
 		return true;
 	}
+	
+	public Comment getComment(int id) {
+		return comments.get(id);
+	}
+	
+	public void makeCommentVisible(int id) {
+		comments.get(id).setVisibleToGuests(true);
+		saveData();
+	}
 
 }

@@ -154,5 +154,14 @@ public class ReservationsDAO {
 				return false;
 		}
 	}
+	
+	public boolean guestHasCompletedReservation(String guest, int apartment) {
+		for(Reservation reservation : reservations.values())
+			if(reservation.getApartment() == apartment && reservation.getGuest().equals(guest) && 
+				(reservation.getStatus() == ReservationStatus.Declined || reservation.getStatus() == ReservationStatus.Completed))
+				return true;
+		
+		return false;
+	}
 
 }

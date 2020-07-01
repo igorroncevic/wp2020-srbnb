@@ -27,6 +27,7 @@ import com.google.gson.JsonSerializer;
 
 import dao.AmenitiesDAO;
 import dao.ApartmentsDAO;
+import dao.CommentsDAO;
 import dao.ReservationsDAO;
 import dao.UsersDAO;
 import io.jsonwebtoken.Claims;
@@ -515,6 +516,52 @@ public class Main {
 				    	ReservationsDAO.getInstance().addNewReservation(newReservation);
 				    } else {
 				    	return "You dont have permission to create new reservation";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/comment/new", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    String payload = req.body();
+					Comment newComment = g.fromJson(payload, Comment.class);
+				    if(claims.getBody().get("Type").equals("Guest")) {
+				    	if(!ReservationsDAO.getInstance().guestHasCompletedReservation(newComment.getAuthor(), newComment.getApartment()))
+				    		return "You dont have permission to leave a comment on this apartment";
+				    	CommentsDAO.getInstance().addNewComment(newComment);
+				    	return "Success";
+				    } else {
+				    	return "You dont have permission to leave a comment";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/comment/visible", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	int id = Integer.parseInt(req.queryParams("id"));
+				    	Comment comment = CommentsDAO.getInstance().getComment(id); 
+				    	if(!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(claims.getBody().getSubject()))
+				    		return "You dont have permission to make this comment visible to guests";
+				    	CommentsDAO.getInstance().makeCommentVisible(id);
+				    	return "Success";
+				    } else {
+				    	return "You dont have permission to make comments visible to guests";
 				    }
 				} catch (Exception e) {
 					System.out.println("You dont have right permission");
