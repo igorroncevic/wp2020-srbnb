@@ -6,6 +6,7 @@ import model.enums.ReservationStatus;
 
 public class Reservation {
 	
+	private int id;
 	private int apartment;
 	private Date checkInDay;
 	private int nightsStaying = 1;
@@ -82,7 +83,13 @@ public class Reservation {
 	public void setStatus(ReservationStatus status) {
 		this.status = status;
 	}
-	
-	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 }

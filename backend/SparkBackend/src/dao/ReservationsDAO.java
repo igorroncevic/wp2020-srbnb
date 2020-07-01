@@ -7,12 +7,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.reflect.TypeToken;
 
 import model.Reservation;
 import model.User;
+import model.enums.ReservationStatus;
 import rest.Main;
 
 public class ReservationsDAO {
@@ -21,7 +24,7 @@ public class ReservationsDAO {
 	
 	private String RESERVATIONS_FILE_PATH = "data/reservations.json";
 	
-	private List<Reservation> reservations;
+	private Map<Integer, Reservation> reservations = new HashMap<Integer, Reservation>();
 	
 	private ReservationsDAO() {
 		loadData();
@@ -37,14 +40,17 @@ public class ReservationsDAO {
 	private void loadData() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(RESERVATIONS_FILE_PATH));
-			reservations = Main.g.fromJson(br, new TypeToken<List<Reservation>>(){}.getType());
+			List<Reservation> data = Main.g.fromJson(br, new TypeToken<List<Reservation>>(){}.getType());
+			for(Reservation reservation : data) {
+				reservations.put(reservation.getId(), reservation);
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void saveData() {
-		String json = Main.g.toJson(reservations);
+		String json = Main.g.toJson(reservations.values());
 		
 		try {
 			FileWriter writer = new FileWriter(RESERVATIONS_FILE_PATH);
@@ -56,8 +62,9 @@ public class ReservationsDAO {
 		}
 	}
 	
-	public boolean addNewReservation(Reservation newReservations) {
-		reservations.add(newReservations);
+	public boolean addNewReservation(Reservation newReservation) {
+		newReservation.setId(reservations.size());
+		reservations.put(newReservation.getId(), newReservation);
 		saveData();
 		return true;
 	}
@@ -67,7 +74,7 @@ public class ReservationsDAO {
 	public List<Reservation> getHostReservations(String host) {
 		List<Reservation> hostReservations = new ArrayList<Reservation>();
 		
-		for(Reservation reservation : reservations) {
+		for(Reservation reservation : reservations.values()) {
 			if(ApartmentsDAO.getInstance().getHost(reservation.getApartment()).getUsername().equals(host)) {
 				hostReservations.add(reservation);
 			}
@@ -79,7 +86,7 @@ public class ReservationsDAO {
 	public List<Reservation> getGuestReservations(String guest) {
 		List<Reservation> guestReservations = new ArrayList<Reservation>();
 		
-		for(Reservation reservation : reservations) {
+		for(Reservation reservation : reservations.values()) {
 			if(reservation.getGuest().equals(guest)) {
 				guestReservations.add(reservation);
 			}
@@ -89,7 +96,33 @@ public class ReservationsDAO {
 	}
 	
 	public Collection<Reservation> getReservations() {
-		return reservations;
+		return reservations.values();
+	}
+	
+	public boolean cancleReservation(Reservation reservation) {
+		if(reservations.get(reservation.getId()) == null)
+			return false;
+		else {
+			if(reservation.getStatus() == ReservationStatus.Created || reservation.getStatus() == ReservationStatus.Accepted) {
+				reservations.get(reservation.getId()).setStatus(ReservationStatus.Canceled);
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+	
+	public boolean acceptReservation(Reservation reservation) {
+		if(reservations.get(reservation.getId()) == null)
+			return false;
+		else {
+			if(reservations.get(reservation.getId()).getStatus() == ReservationStatus.Created) {
+				reservations.get(reservation.getId()).setStatus(ReservationStatus.Accepted);
+				return true;
+			}
+			else
+				return false;
+		}
 	}
 
 }

@@ -403,5 +403,55 @@ public class Main {
 			return "Error";
 		});
 		
+		post("/reservations/cancel", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    String payload = req.body();
+					Reservation toCancle = g.fromJson(payload, Reservation.class);
+				    if(claims.getBody().get("Type").equals("Guest")) {
+				    	if(!toCancle.getGuest().equals(claims.getBody().getSubject()))
+				    		return "You dont have permission to cancle this reservation";
+				    	if(ReservationsDAO.getInstance().cancleReservation(toCancle))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    } else {
+				    	return "You dont have permission to cancle this reservation";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/reservations/cancel", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    String payload = req.body();
+					Reservation toAccept = g.fromJson(payload, Reservation.class);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	if(!ApartmentsDAO.getInstance().getHost(toAccept.getApartment()).getUsername().equals(claims.getBody().getSubject()))
+				    		return "You dont have permission to accept this reservation";
+				    	if(ReservationsDAO.getInstance().acceptReservation(toAccept))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    } else {
+				    	return "You dont have permission to accept this reservation";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
 	}
 }
