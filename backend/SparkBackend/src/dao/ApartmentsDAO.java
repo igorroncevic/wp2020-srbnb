@@ -23,6 +23,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
+import model.Amenity;
 import model.Apartment;
 import model.User;
 import model.enums.ApartmentStatus;
@@ -167,6 +168,12 @@ public class ApartmentsDAO {
 	
 	public List<Apartment> getApartments() {
 		return (List<Apartment>) apartments.values();
+	}
+	
+	public void deleteAmenity(Amenity toDelete) {
+		for(Apartment apartment : apartments.values())
+			if(apartment.getAmenities().contains(toDelete.getId()))
+				apartment.getAmenities().remove(toDelete.getId());
 	}
 
 }

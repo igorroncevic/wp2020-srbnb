@@ -78,6 +78,17 @@ public class AmenitiesDAO {
 		}
 	}
 	
+	public boolean deleteAmenity(Amenity toDelete) {
+		Amenity amenity = amenities.get(toDelete.getId());
+		if(amenity == null)
+			return false;
+		else {
+			amenities.remove(amenity.getId());
+			saveData();
+			return true;
+		}
+	}
+	
 	public List<Amenity> getAmenities() {
 		return (List<Amenity>) amenities.values();
 	}

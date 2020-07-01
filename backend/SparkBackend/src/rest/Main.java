@@ -315,5 +315,73 @@ public class Main {
 			return "Error";
 		});
 		
+		post("/amenities/new", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Admin")) {
+				    	String payload = req.body();
+						Amenity newAmenity = g.fromJson(payload, Amenity.class);
+						AmenitiesDAO.getInstance().addNewAmenity(newAmenity);
+						return "Success";
+				    } else {
+				    	return "You dont have right permission";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/amenities/update", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Admin")) {
+				    	String payload = req.body();
+						Amenity newData = g.fromJson(payload, Amenity.class);
+						if(AmenitiesDAO.getInstance().updateAmenity(newData))
+							return "Success";
+						else
+							return "Error";
+				    } else {
+				    	return "You dont have right permission";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/amenities/delete", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Admin")) {
+				    	String payload = req.body();
+						Amenity toDelete = g.fromJson(payload, Amenity.class);
+						if(AmenitiesDAO.getInstance().deleteAmenity(toDelete)) {
+							ApartmentsDAO.getInstance().deleteAmenity(toDelete);
+							return "Success";
+						} else
+							return "Error";
+				    } else {
+				    	return "You dont have right permission";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
 	}
 }
