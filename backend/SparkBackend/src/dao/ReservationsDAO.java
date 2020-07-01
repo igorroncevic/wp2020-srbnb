@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
@@ -14,21 +15,21 @@ import model.Reservation;
 import model.User;
 import rest.Main;
 
-public class ReservationDAO {
+public class ReservationsDAO {
 	
-	private static ReservationDAO instance;
+	private static ReservationsDAO instance;
 	
 	private String RESERVATIONS_FILE_PATH = "data/reservations.json";
 	
 	private List<Reservation> reservations;
 	
-	private ReservationDAO() {
+	private ReservationsDAO() {
 		loadData();
 	}
 	
-	public static ReservationDAO getInstance() {
+	public static ReservationsDAO getInstance() {
 		if(instance == null)
-			instance = new ReservationDAO();
+			instance = new ReservationsDAO();
 		
 		return instance;
 	}
@@ -63,16 +64,32 @@ public class ReservationDAO {
 	
 	
 	
-	public List<Reservation> getMyReservations(String host) {
-		List<Reservation> myReservations = new ArrayList<Reservation>();
+	public List<Reservation> getHostReservations(String host) {
+		List<Reservation> hostReservations = new ArrayList<Reservation>();
 		
 		for(Reservation reservation : reservations) {
 			if(ApartmentsDAO.getInstance().getHost(reservation.getApartment()).getUsername().equals(host)) {
-				myReservations.add(reservation);
+				hostReservations.add(reservation);
 			}
 		}
 		
-		return myReservations;
+		return hostReservations;
+	}
+	
+	public List<Reservation> getGuestReservations(String guest) {
+		List<Reservation> guestReservations = new ArrayList<Reservation>();
+		
+		for(Reservation reservation : reservations) {
+			if(reservation.getGuest().equals(guest)) {
+				guestReservations.add(reservation);
+			}
+		}
+		
+		return guestReservations;
+	}
+	
+	public Collection<Reservation> getReservations() {
+		return reservations;
 	}
 
 }

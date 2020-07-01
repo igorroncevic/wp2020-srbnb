@@ -122,7 +122,7 @@ public class UsersDAO {
 	public List<User> getMyGuests(String host) {
 		List<User> myGuests = new ArrayList<User>();
 		
-		for(Reservation reservation : ReservationDAO.getInstance().getMyReservations(host)) {
+		for(Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host)) {
 			myGuests.add(users.get(reservation.getGuest()));
 		}
 		

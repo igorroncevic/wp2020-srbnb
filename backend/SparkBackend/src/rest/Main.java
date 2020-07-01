@@ -27,7 +27,7 @@ import com.google.gson.JsonSerializer;
 
 import dao.AmenitiesDAO;
 import dao.ApartmentsDAO;
-import dao.ReservationDAO;
+import dao.ReservationsDAO;
 import dao.UsersDAO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -383,7 +383,25 @@ public class Main {
 			return "Error";
 		});
 		
-		
+		get("/reservations", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Guest")) {
+				    	return g.toJson(ReservationsDAO.getInstance().getGuestReservations(claims.getBody().getSubject()));
+				    } else if(claims.getBody().get("Type").equals("Host")) {
+				    	return g.toJson(ReservationsDAO.getInstance().getHostReservations(claims.getBody().getSubject()));
+				    } else {
+				    	return g.toJson(ReservationsDAO.getInstance().getReservations());
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
 		
 	}
 }
