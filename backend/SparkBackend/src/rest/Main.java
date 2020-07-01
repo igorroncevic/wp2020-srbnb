@@ -233,6 +233,40 @@ public class Main {
 				    		return "Success";
 				    	else
 				    		return "Error";
+				    } else {
+				    	return "You dont have right permission";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		post("/apartments/delete", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	String payload = req.body();
+						Apartment toDelete = g.fromJson(payload, Apartment.class);
+						if(!toDelete.getHost().equals(claims.getBody().getSubject()))
+							return "You dont have permission to delete this apartment";
+				    	if(ApartmentsDAO.getInstance().deleteApartment(toDelete))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    } else if(claims.getBody().get("Type").equals("Admin")) {
+				    	String payload = req.body();
+						Apartment toDelete = g.fromJson(payload, Apartment.class);
+						if(ApartmentsDAO.getInstance().deleteApartment(toDelete))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    } else {
+				    	return "You dont have right permission";
 				    }
 				} catch (Exception e) {
 					System.out.println("You dont have right permission");

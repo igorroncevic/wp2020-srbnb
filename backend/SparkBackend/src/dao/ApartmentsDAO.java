@@ -91,6 +91,17 @@ public class ApartmentsDAO {
 		}
 	}
 	
+	public boolean deleteApartment(Apartment toDelete) {
+		Apartment apartment = apartments.get(toDelete.getId());
+		if(apartment == null)
+			return false;
+		else {
+			apartment.setStatus(ApartmentStatus.Inactive);
+			saveData();
+			return true;
+		}
+	}
+	
 	public User getHost(int apartmentId) {
 		return UsersDAO.getInstance().getUser(apartments.get(apartmentId).getHost());
 	}
