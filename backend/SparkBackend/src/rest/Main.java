@@ -211,7 +211,35 @@ public class Main {
 			return "Error";
 		});
 		
-		
+		post("/apartments/update", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	String payload = req.body();
+						Apartment newData = g.fromJson(payload, Apartment.class);
+						if(!newData.getHost().equals(claims.getBody().getSubject()))
+							return "You dont have permission to update this apartment";
+				    	if(ApartmentsDAO.getInstance().updateApartment(newData))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    } else if(claims.getBody().get("Type").equals("Admin")) {
+				    	String payload = req.body();
+						Apartment newData = g.fromJson(payload, Apartment.class);
+						if(ApartmentsDAO.getInstance().updateApartment(newData))
+				    		return "Success";
+				    	else
+				    		return "Error";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
 		
 	}
 }
