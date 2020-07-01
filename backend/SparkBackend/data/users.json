@@ -38,5 +38,13 @@
 		"lastname": "Sijan",
 		"gender": "Male",
 		"type": "Host"
+	},
+	{
+		"username": "vojapetrovic",
+		"password": "vojapetrovic",
+		"name": "Voja",
+		"lastname": "Petrovic",
+		"gender": "Male",
+		"type": "Host"
 	}
 ]

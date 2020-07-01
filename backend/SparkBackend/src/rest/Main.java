@@ -52,7 +52,7 @@ public class Main {
 		
 		get("/test", (req, res) -> {
 			
-			return g.toJson(UsersDAO.getInstance().getMyGuests("zoransijan"));
+			return g.toJson(AmenitiesDAO.getInstance().getAmenities());
 		});
 		
 		post("/register", (req, res) -> {
@@ -174,10 +174,10 @@ public class Main {
 				    } else if(claims.getBody().get("Type").equals("Admin")) {
 				    	//Admin
 				    	if(req.queryParams().isEmpty()) {
-							return g.toJson(ApartmentsDAO.getInstance().getApartments());
+							return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
 						} else {
 							ApartmentSearch search = new ApartmentSearch(req);
-							return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getApartments()));
+							return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
 						}
 				    }
 				} catch (Exception e) {
@@ -382,6 +382,8 @@ public class Main {
 			}
 			return "Error";
 		});
+		
+		
 		
 	}
 }

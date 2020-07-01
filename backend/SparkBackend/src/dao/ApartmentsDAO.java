@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,11 +83,10 @@ public class ApartmentsDAO {
 	}
 	
 	public boolean updateApartment(Apartment newData) {
-		Apartment apartment = apartments.get(newData.getId());
-		if(apartment == null)
+		if(apartments.get(newData.getId()) == null)
 			return false;
 		else {
-			apartment = newData;
+			apartments.replace(newData.getId(), newData);
 			saveData();
 			return true;
 		}
@@ -166,8 +166,8 @@ public class ApartmentsDAO {
 		return myInactiveApartments;
 	}
 	
-	public List<Apartment> getApartments() {
-		return (List<Apartment>) apartments.values();
+	public Collection<Apartment> getApartments() {
+		return apartments.values();
 	}
 	
 	public void deleteAmenity(Amenity toDelete) {

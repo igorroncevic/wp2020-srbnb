@@ -1,7 +1,6 @@
 [
    {
       "id":0,
-      "type":"Full_Apartment",
       "numberOfRooms":3,
       "numberOfGuest":6,
       "location":{
@@ -43,7 +42,6 @@
    },
    {
       "id":1,
-      "type":"Full_Apartment",
       "numberOfRooms":2,
       "numberOfGuest":4,
       "location":{
@@ -77,6 +75,46 @@
       "checkInTime":14,
       "checkOutTime":10,
       "status":"Active",
+      "amenities":[
+         0,
+         2
+      ]
+   },
+   {
+      "id":2,
+      "numberOfRooms":2,
+      "numberOfGuest":4,
+      "location":{
+         "latitude":20.0,
+         "longitude":50.33,
+         "address":{
+            "street":"Somborski Bulevar",
+            "number":"15",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         1593258773158,
+         1593345173158,
+         1593431573158
+      ],
+      "availableDaysForRent":[
+         1593258773158,
+         1593345173158,
+         1593431573158
+      ],
+      "host":"vojapetrovic",
+      "comments":[
+
+      ],
+      "images":[
+
+      ],
+      "pricePerNight":20.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Inactive",
       "amenities":[
          0,
          2
