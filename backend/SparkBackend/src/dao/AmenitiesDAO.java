@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -19,7 +21,7 @@ public class AmenitiesDAO {
 	
 	private String AMENITIES_FILE_PATH = "data/amenities.json";
 	
-	private List<Amenity> amenities;
+	private Map<Integer, Amenity> amenities = new HashMap<Integer, Amenity>();
 	
 	private AmenitiesDAO() {
 		loadData();
@@ -35,14 +37,17 @@ public class AmenitiesDAO {
 	private void loadData() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(AMENITIES_FILE_PATH));
-			amenities = Main.g.fromJson(br, new TypeToken<List<Amenity>>(){}.getType());
+			List<Amenity> data = Main.g.fromJson(br, new TypeToken<List<Amenity>>(){}.getType());
+			for(Amenity amenity : data) {
+				this.amenities.put(amenity.getId(), amenity);
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void saveData() {
-		String json = Main.g.toJson(amenities);
+		String json = Main.g.toJson(amenities.values());
 		
 		try {
 			FileWriter writer = new FileWriter(AMENITIES_FILE_PATH);
@@ -56,8 +61,12 @@ public class AmenitiesDAO {
 	
 	public boolean addNewAmenity(Amenity newAmenity) {
 		newAmenity.setId(amenities.size());
-		amenities.add(newAmenity);
+		amenities.put(newAmenity.getId(), newAmenity)
 		saveData();
 		return true;
+	}
+	
+	public List<Amenity> getAmenities() {
+		return amenities.values();
 	}
 }

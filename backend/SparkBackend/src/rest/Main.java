@@ -25,6 +25,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 
+import dao.AmenitiesDAO;
 import dao.ApartmentsDAO;
 import dao.ReservationDAO;
 import dao.UsersDAO;
@@ -286,6 +287,24 @@ public class Main {
 						Apartment newApartment = g.fromJson(payload, Apartment.class);
 						ApartmentsDAO.getInstance().addNewApartment(newApartment);
 						return "Success";
+				    } else {
+				    	return "You dont have right permission";
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			return "Error";
+		});
+		
+		get("/amenities", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Admin")) {
+				    	return g.toJson(AmenitiesDAO.getInstance().getAmenities());
 				    } else {
 				    	return "You dont have right permission";
 				    }
