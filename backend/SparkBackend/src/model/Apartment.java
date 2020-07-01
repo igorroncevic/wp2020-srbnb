@@ -17,7 +17,6 @@ public class Apartment {
 	private List<Date> daysForRent;
 	private List<Date> availableDaysForRent;
 	private String host;
-	private List<Comment> comments;
 	private List<String> images;
 	private double pricePerNight;
 	private int checkInTime = 14;
@@ -37,7 +36,6 @@ public class Apartment {
 		this.daysForRent = daysForRent;
 		this.availableDaysForRent = availableDaysForRent;
 		this.host = host;
-		this.comments = new ArrayList<Comment>();
 		this.images = new ArrayList<String>();
 		this.pricePerNight = pricePerNight;
 		this.status = status;
@@ -106,14 +104,6 @@ public class Apartment {
 
 	public void setHost(String host) {
 		this.host = host;
-	}
-
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
 	}
 
 	public List<String> getImages() {

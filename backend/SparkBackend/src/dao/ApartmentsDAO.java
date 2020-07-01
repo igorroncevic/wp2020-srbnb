@@ -37,7 +37,7 @@ public class ApartmentsDAO {
 	
 	private String APARTMENTS_FILE_PATH = "data/apartments.json";
 	
-	private Map<Integer, Apartment> apartments = new HashMap<Integer, Apartment>();;
+	private Map<Integer, Apartment> apartments = new HashMap<Integer, Apartment>();
 	
 	private ApartmentsDAO() {
 		loadData();
