@@ -12,6 +12,7 @@ import java.util.Map;
 import com.google.gson.reflect.TypeToken;
 
 import model.Amenity;
+import model.Apartment;
 import model.Reservation;
 import rest.Main;
 
@@ -64,6 +65,17 @@ public class AmenitiesDAO {
 		amenities.put(newAmenity.getId(), newAmenity);
 		saveData();
 		return true;
+	}
+	
+	public boolean updateAmenity(Amenity newData) {
+		Amenity amenity = amenities.get(newData.getId());
+		if(amenity == null)
+			return false;
+		else {
+			amenity = newData;
+			saveData();
+			return true;
+		}
 	}
 	
 	public List<Amenity> getAmenities() {
