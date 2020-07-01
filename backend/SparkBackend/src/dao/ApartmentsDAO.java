@@ -25,6 +25,7 @@ import com.google.gson.reflect.TypeToken;
 
 import model.Apartment;
 import model.User;
+import model.enums.ApartmentStatus;
 import requests.ApartmentSearch;
 import rest.Main;
 
@@ -79,10 +80,25 @@ public class ApartmentsDAO {
 		return true;
 	}
 	
-	public List<Apartment> searchApartments(ApartmentSearch search) {
+	public boolean updateApartment(Apartment newData) {
+		Apartment apartment = apartments.get(newData.getId());
+		if(apartment == null)
+			return false;
+		else {
+			apartment = newData;
+			saveData();
+			return true;
+		}
+	}
+	
+	public User getHost(int apartmentId) {
+		return UsersDAO.getInstance().getUser(apartments.get(apartmentId).getHost());
+	}
+	
+	public List<Apartment> searchApartments(ApartmentSearch search, List<Apartment> apartments) {
 		List<Apartment> searchResult = new ArrayList<Apartment>();
 		
-		for(Apartment apartment : apartments.values()) {
+		for(Apartment apartment : apartments) {
 			//if(search.getCheckInDate() != null && UslovNijeIspunjen) continue;
 			//if(search.getCheckOutDate() != null && UslovNijeIspunjen) continue;
 			if(search.getLocation() != null && !apartment.getLocation().getAddress().getPlace().equals(search.getLocation())) continue;
@@ -98,8 +114,48 @@ public class ApartmentsDAO {
 		return searchResult;
 	}
 	
-	public User getHost(int apartmentId) {
-		return UsersDAO.getInstance().getUser(apartments.get(apartmentId).getHost());
+	public List<Apartment> getActiveApartments() {
+		List<Apartment> active = new ArrayList<Apartment>();
+		
+		for(Apartment apartment : apartments.values())
+			if(apartment.getStatus() == ApartmentStatus.Active)
+				active.add(apartment);
+		
+		return active;
+	}
+	
+	public List<Apartment> getInactiveApartments() {
+		List<Apartment> inactive = new ArrayList<Apartment>();
+		
+		for(Apartment apartment : apartments.values())
+			if(apartment.getStatus() == ApartmentStatus.Inactive)
+				inactive.add(apartment);
+		
+		return inactive;
+	}
+	
+	public List<Apartment> getMyActiveApartments(String host) {
+		List<Apartment> myApartments = new ArrayList<Apartment>();
+		
+		for(Apartment apartment : apartments.values())
+			if(apartment.getHost().equals(host) && apartment.getStatus() == ApartmentStatus.Active)
+				myApartments.add(apartment);
+		
+		return myApartments;
+	}
+	
+	public List<Apartment> getMyInactiveApartments(String host) {
+		List<Apartment> myInactiveApartments = new ArrayList<Apartment>();
+		
+		for(Apartment apartment : apartments.values())
+			if(apartment.getHost().equals(host) && apartment.getStatus() == ApartmentStatus.Inactive)
+				myInactiveApartments.add(apartment);
+		
+		return myInactiveApartments;
+	}
+	
+	public List<Apartment> getApartments() {
+		return (List<Apartment>) apartments.values();
 	}
 
 }

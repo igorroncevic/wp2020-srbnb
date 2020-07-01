@@ -1,6 +1,9 @@
 package requests;
 
+import java.text.DateFormat;
 import java.util.Date;
+
+import spark.Request;
 
 public class ApartmentSearch {
 	
@@ -29,19 +32,11 @@ public class ApartmentSearch {
 		this.numberOfGuests = numberOfGuests;
 	}
 	
-	public ApartmentSearch(String location, double minPrice, double maxPrice,
-			int minRooms, int maxRooms, int numberOfGuests) {
-		this.location = location;
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
-		this.minRooms = minRooms;
-		this.maxRooms = maxRooms;
-		this.numberOfGuests = numberOfGuests;
-	}
-	
-	public ApartmentSearch(double minPrice, double maxPrice) {
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
+	public ApartmentSearch(Request req) {
+		this.location = req.queryParams("location");
+		this.numberOfGuests = Integer.parseInt(req.queryParams("guests"));
+		//this.checkInDate = Date.parse(req.queryParams("startDate"));
+		//this.checkOutDate =
 	}
 
 	public Date getCheckInDate() {

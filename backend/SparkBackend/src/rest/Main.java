@@ -89,15 +89,6 @@ public class Main {
 			
 		});
 		
-		post("/search/apartments", (req, res) -> {
-			String payload = req.body();
-			ApartmentSearch search = g.fromJson(payload, ApartmentSearch.class);
-			
-			List<Apartment> searchResult = ApartmentsDAO.getInstance().searchApartments(search);
-			
-			return g.toJson(searchResult);
-		});
-		
 		post("/updateUserData", (req, res) -> {
 			String auth = req.headers("Authorization");
 			if ((auth != null) && (auth.contains("Bearer "))) {
@@ -109,23 +100,6 @@ public class Main {
 					User newData = g.fromJson(payload, User.class);
 					UsersDAO.getInstance().updateUserData(newData);
 					return "";
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-				}
-			}
-			
-			return "Error";
-		});
-		
-		post("/testJWT", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    // ako nije bacio izuzetak, onda je OK
-				    System.out.println(claims.getBody().getSubject() + ", Type: " + claims.getBody().get("Type"));
-				    return "Success";
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
@@ -181,6 +155,63 @@ public class Main {
 			
 			return "Error";
 		});
-	
+		
+		get("/apartments", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	//Host
+				    	if(req.queryParams().isEmpty()) {
+							return g.toJson(ApartmentsDAO.getInstance().getMyActiveApartments(claims.getBody().getSubject()));
+						} else {
+							ApartmentSearch search = new ApartmentSearch(req);
+							return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getMyActiveApartments(claims.getBody().getSubject())));
+						}
+				    } else if(claims.getBody().get("Type").equals("Admin")) {
+				    	//Admin
+				    	if(req.queryParams().isEmpty()) {
+							return g.toJson(ApartmentsDAO.getInstance().getApartments());
+						} else {
+							ApartmentSearch search = new ApartmentSearch(req);
+							return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getApartments()));
+						}
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			//Guest and unregistered
+			if(req.queryParams().isEmpty()) {
+				return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
+			} else {
+				ApartmentSearch search = new ApartmentSearch(req);
+				return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
+			}
+		});
+		
+		get("/apartments/inactive", (req, res) -> {
+			String auth = req.headers("Authorization");
+			if ((auth != null) && (auth.contains("Bearer "))) {
+				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+				try {
+				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+				    if(claims.getBody().get("Type").equals("Host")) {
+				    	return g.toJson(ApartmentsDAO.getInstance().getMyInactiveApartments(claims.getBody().getSubject()));
+				    } else if(claims.getBody().get("Type").equals("Admin")) {
+				    	return g.toJson(ApartmentsDAO.getInstance().getInactiveApartments());
+				    }
+				} catch (Exception e) {
+					System.out.println("You dont have right permission");
+				}
+			}
+			
+			return "Error";
+		});
+		
+		
+		
 	}
 }
