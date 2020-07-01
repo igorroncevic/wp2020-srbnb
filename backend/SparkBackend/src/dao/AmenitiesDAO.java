@@ -61,12 +61,12 @@ public class AmenitiesDAO {
 	
 	public boolean addNewAmenity(Amenity newAmenity) {
 		newAmenity.setId(amenities.size());
-		amenities.put(newAmenity.getId(), newAmenity)
+		amenities.put(newAmenity.getId(), newAmenity);
 		saveData();
 		return true;
 	}
 	
 	public List<Amenity> getAmenities() {
-		return amenities.values();
+		return (List<Amenity>) amenities.values();
 	}
 }
