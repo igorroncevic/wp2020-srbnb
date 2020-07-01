@@ -103,8 +103,9 @@ public class ReservationsDAO {
 		if(reservations.get(reservation.getId()) == null)
 			return false;
 		else {
-			if(reservation.getStatus() == ReservationStatus.Created || reservation.getStatus() == ReservationStatus.Accepted) {
+			if(reservations.get(reservation.getId()).getStatus() == ReservationStatus.Created || reservations.get(reservation.getId()).getStatus() == ReservationStatus.Accepted) {
 				reservations.get(reservation.getId()).setStatus(ReservationStatus.Canceled);
+				saveData();
 				return true;
 			}
 			else
@@ -118,6 +119,35 @@ public class ReservationsDAO {
 		else {
 			if(reservations.get(reservation.getId()).getStatus() == ReservationStatus.Created) {
 				reservations.get(reservation.getId()).setStatus(ReservationStatus.Accepted);
+				saveData();
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+	
+	public boolean declineReservation(Reservation reservation) {
+		if(reservations.get(reservation.getId()) == null)
+			return false;
+		else {
+			if(reservations.get(reservation.getId()).getStatus() == ReservationStatus.Created || reservations.get(reservation.getId()).getStatus() == ReservationStatus.Accepted) {
+				reservations.get(reservation.getId()).setStatus(ReservationStatus.Declined);
+				saveData();
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+	
+	public boolean completeReservation(Reservation reservation) {
+		if(reservations.get(reservation.getId()) == null)
+			return false;
+		else {
+			if(reservations.get(reservation.getId()).getStatus() == ReservationStatus.Accepted) {
+				reservations.get(reservation.getId()).setStatus(ReservationStatus.Completed);
+				saveData();
 				return true;
 			}
 			else
