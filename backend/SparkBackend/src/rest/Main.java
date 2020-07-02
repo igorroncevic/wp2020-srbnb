@@ -2,6 +2,8 @@ package rest;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.Spark.put;
+import static spark.Spark.delete;
 import static spark.Spark.before;
 import static spark.Spark.halt;
 import static spark.Spark.port;
@@ -13,6 +15,7 @@ import java.util.Date;
 import java.security.Key;
 import io.jsonwebtoken.security.Keys;
 import model.*;
+import model.enums.ReservationStatus;
 import model.enums.UserType;
 import requests.ApartmentSearch;
 import requests.Login;
@@ -43,7 +46,7 @@ public class Main {
 			   .registerTypeAdapter(Date.class, ser)
 			   .registerTypeAdapter(Date.class, deser).create();
 	
-	static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	public static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 	public static void main(String[] args) throws Exception {
 		
@@ -56,7 +59,22 @@ public class Main {
 			return g.toJson(AmenitiesDAO.getInstance().getAmenities());
 		});
 		
-		post("/register", (req, res) -> {
+		post("/users/login", (req, res) -> {
+			String payload = req.body();
+			Login login = g.fromJson(payload, Login.class);
+			
+			User user = UsersDAO.getInstance().login(login);
+			
+			if(user == null) {
+				res.status(400);
+				return "Failed to login";
+			} else {
+				return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date()).signWith(key).compact();
+			}
+			
+		});
+		
+		post("/users", (req, res) -> {
 			
 			String payload = req.body();
 			User user = g.fromJson(payload, User.class);
@@ -75,522 +93,355 @@ public class Main {
 			
 		});
 		
-		post("/login", (req, res) -> {
-			
-			String payload = req.body();
-			Login login = g.fromJson(payload, Login.class);
-			
-			User user = UsersDAO.getInstance().login(login);
-			
-			if(user == null) {
-				res.status(400);
-				return "Failed to login";
-			} else {
-				return Jwts.builder().setSubject(user.getUsername()).claim("Type", user.getType()).setIssuedAt(new Date()).signWith(key).compact();
+		put("/users", (req, res) -> {
+			String username = Utils.authenticate(req);
+			if(username == null)
+				return "You dont have right permission";
+			else {
+				String payload = req.body();
+				User newData = g.fromJson(payload, User.class);
+				newData.setUsername(username);
+				UsersDAO.getInstance().updateUserData(newData);
+				return "Success";
 			}
-			
-		});
-		
-		post("/updateUserData", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    // ako nije bacio izuzetak, onda je OK
-				    String payload = req.body();
-					User newData = g.fromJson(payload, User.class);
-					UsersDAO.getInstance().updateUserData(newData);
-					return "";
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-				}
-			}
-			
-			return "Error";
 		});
 		
 		get("/users", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(!claims.getBody().get("Type").equals("Admin")) {
-				    	return "Error";
-				    }
-				    else {
-				    	String search = req.queryParams("search");
-						if(search == null)
-							return g.toJson(UsersDAO.getInstance().getAllUsers());
-						else
-							return g.toJson(UsersDAO.getInstance().searchUsers(search));
-				    }
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				res.status(403);
+				return "You cant view users";
+			} else {
+				if(UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
+					
+					String search = req.queryParams("search");
+					if(search == null)
+						return g.toJson(UsersDAO.getInstance().getAllUsers());
+					else
+						return g.toJson(UsersDAO.getInstance().searchUsers(search));
+					
+				} else {
+					
+					String search = req.queryParams("search");
+					if(search == null)
+						return g.toJson(UsersDAO.getInstance().getMyGuests(username));
+					else
+						return g.toJson(UsersDAO.getInstance().searchMyGuests(username, search));
+					
 				}
 			}
-			return "Error";
-		});
-		
-		get("/myGuests", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(!claims.getBody().get("Type").equals("Host")) {
-				    	return "Error";
-				    }
-				    else {
-				    	String search = req.queryParams("search");
-				    	String host = claims.getBody().getSubject();
-						if(search == null)
-							return g.toJson(UsersDAO.getInstance().getMyGuests(host));
-						else
-							return g.toJson(UsersDAO.getInstance().searchMyGuests(host, search));
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
-			}
-			
-			return "Error";
 		});
 		
 		get("/apartments", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	//Host
-				    	if(req.queryParams().isEmpty()) {
-							return g.toJson(ApartmentsDAO.getInstance().getMyActiveApartments(claims.getBody().getSubject()));
-						} else {
-							ApartmentSearch search = new ApartmentSearch(req);
-							return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getMyActiveApartments(claims.getBody().getSubject())));
-						}
-				    } else if(claims.getBody().get("Type").equals("Admin")) {
-				    	//Admin
-				    	if(req.queryParams().isEmpty()) {
-							return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
-						} else {
-							ApartmentSearch search = new ApartmentSearch(req);
-							return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
-						}
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				if(req.queryParams().isEmpty()) {
+					return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
+				} else {
+					ApartmentSearch search = new ApartmentSearch(req);
+					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
 				}
-			}
-			//Guest and unregistered
-			if(req.queryParams().isEmpty()) {
-				return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				if(req.queryParams().isEmpty()) {
+					return g.toJson(ApartmentsDAO.getInstance().getMyActiveApartments(username));
+				} else {
+					ApartmentSearch search = new ApartmentSearch(req);
+					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getMyActiveApartments(username)));
+				}
 			} else {
-				ApartmentSearch search = new ApartmentSearch(req);
-				return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
-			}
-		});
-		
-		get("/apartments/inactive", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	return g.toJson(ApartmentsDAO.getInstance().getMyInactiveApartments(claims.getBody().getSubject()));
-				    } else if(claims.getBody().get("Type").equals("Admin")) {
-				    	return g.toJson(ApartmentsDAO.getInstance().getInactiveApartments());
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
+				if(req.queryParams().isEmpty()) {
+					return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
+				} else {
+					ApartmentSearch search = new ApartmentSearch(req);
+					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
 				}
 			}
 			
-			return "Error";
 		});
 		
-		post("/apartments/update", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	String payload = req.body();
-						Apartment newData = g.fromJson(payload, Apartment.class);
-						if(!newData.getHost().equals(claims.getBody().getSubject()))
-							return "You dont have permission to update this apartment";
-				    	if(ApartmentsDAO.getInstance().updateApartment(newData))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else if(claims.getBody().get("Type").equals("Admin")) {
-				    	String payload = req.body();
-						Apartment newData = g.fromJson(payload, Apartment.class);
-						if(ApartmentsDAO.getInstance().updateApartment(newData))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		get("/apartments/inactive", (req, res) -> {
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				res.status(403);
+				return "You cant access inactive apartments";
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				return g.toJson(ApartmentsDAO.getInstance().getMyInactiveApartments(username));
+			} else {
+				return g.toJson(ApartmentsDAO.getInstance().getInactiveApartments());
 			}
-			return "Error";
 		});
 		
-		post("/apartments/delete", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	String payload = req.body();
-						Apartment toDelete = g.fromJson(payload, Apartment.class);
-						if(!toDelete.getHost().equals(claims.getBody().getSubject()))
-							return "You dont have permission to delete this apartment";
-				    	if(ApartmentsDAO.getInstance().deleteApartment(toDelete))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else if(claims.getBody().get("Type").equals("Admin")) {
-				    	String payload = req.body();
-						Apartment toDelete = g.fromJson(payload, Apartment.class);
-						if(ApartmentsDAO.getInstance().deleteApartment(toDelete))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
+		put("/apartments/:id", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				res.status(403);
+				return "You cant update apartments";
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				if(!ApartmentsDAO.getInstance().getHost(id).getUsername().equals(username)) {
+					res.status(403);
+					return "You dont have permission to update this apartment";
 				}
+				String payload = req.body();
+				Apartment newData = g.fromJson(payload, Apartment.class);
+		    	if(ApartmentsDAO.getInstance().updateApartment(newData))
+		    		return "Success";
+		    	else
+		    		return "Error";
+		    	
+			} else {
+				String payload = req.body();
+				Apartment newData = g.fromJson(payload, Apartment.class);
+				if(ApartmentsDAO.getInstance().updateApartment(newData))
+		    		return "Success";
+		    	else
+		    		return "Error";
 			}
-			return "Error";
+
 		});
 		
-		post("/apartments/new", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	String payload = req.body();
-						Apartment newApartment = g.fromJson(payload, Apartment.class);
-						ApartmentsDAO.getInstance().addNewApartment(newApartment);
-						return "Success";
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
+		delete("/apartments/:id", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				res.status(403);
+				return "You cant delete apartments";
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				if(!ApartmentsDAO.getInstance().getHost(id).getUsername().equals(username)) {
+					res.status(403);
+					return "You dont have permission to delete this apartment";
 				}
+				if(ApartmentsDAO.getInstance().deleteApartment(id))
+		    		return "Success";
+		    	else
+		    		return "Error";
+		    	
+			} else {
+				if(ApartmentsDAO.getInstance().deleteApartment(id))
+		    		return "Success";
+		    	else
+		    		return "Error";
 			}
-			return "Error";
+		});
+		
+		post("/apartments", (req, res) -> {
+			String username = Utils.authenticate(req);
+			if(UsersDAO.getInstance().getUserType(username) != UserType.Host) {
+				res.status(403);
+				return "You cant add new apartment";
+			} else {
+				String payload = req.body();
+				Apartment newApartment = g.fromJson(payload, Apartment.class);
+				newApartment.setHost(username);
+				ApartmentsDAO.getInstance().addNewApartment(newApartment);
+				return "Success";
+			}
 		});
 		
 		get("/amenities", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Admin")) {
-				    	return g.toJson(AmenitiesDAO.getInstance().getAmenities());
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
+				res.status(403);
+				return "You cant view amenities";
+			} else {
+				return g.toJson(AmenitiesDAO.getInstance().getAmenities());
 			}
-			return "Error";
+			
 		});
 		
-		post("/amenities/new", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Admin")) {
-				    	String payload = req.body();
-						Amenity newAmenity = g.fromJson(payload, Amenity.class);
-						AmenitiesDAO.getInstance().addNewAmenity(newAmenity);
-						return "Success";
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		post("/amenities", (req, res) -> {
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
+				res.status(403);
+				return "You cant add new amenity";
+			} else {
+				String payload = req.body();
+				Amenity newAmenity = g.fromJson(payload, Amenity.class);
+				AmenitiesDAO.getInstance().addNewAmenity(newAmenity);
+				return "Success";
 			}
-			return "Error";
 		});
 		
-		post("/amenities/update", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Admin")) {
-				    	String payload = req.body();
-						Amenity newData = g.fromJson(payload, Amenity.class);
-						if(AmenitiesDAO.getInstance().updateAmenity(newData))
-							return "Success";
-						else
-							return "Error";
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		put("/amenities/:id", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
+				res.status(403);
+				return "You cant update amenities";
+			} else {
+				String payload = req.body();
+				Amenity newData = g.fromJson(payload, Amenity.class);
+				if(AmenitiesDAO.getInstance().updateAmenityName(id, newData.getName()))
+					return "Success";
+				else
+					return "Error";
 			}
-			return "Error";
 		});
 		
-		post("/amenities/delete", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Admin")) {
-				    	String payload = req.body();
-						Amenity toDelete = g.fromJson(payload, Amenity.class);
-						if(AmenitiesDAO.getInstance().deleteAmenity(toDelete)) {
-							ApartmentsDAO.getInstance().deleteAmenity(toDelete);
-							return "Success";
-						} else
-							return "Error";
-				    } else {
-				    	return "You dont have right permission";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		delete("/amenities/:id", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
+				res.status(403);
+				return "You cant delete amenities";
+			} else {
+				if(AmenitiesDAO.getInstance().deleteAmenity(id)) {
+					ApartmentsDAO.getInstance().deleteAmenity(id);
+					return "Success";
+				} else
+					return "Error";
 			}
-			return "Error";
 		});
 		
 		get("/reservations", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Guest")) {
-				    	return g.toJson(ReservationsDAO.getInstance().getGuestReservations(claims.getBody().getSubject()));
-				    } else if(claims.getBody().get("Type").equals("Host")) {
-				    	return g.toJson(ReservationsDAO.getInstance().getHostReservations(claims.getBody().getSubject()));
-				    } else {
-				    	return g.toJson(ReservationsDAO.getInstance().getReservations());
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+			String username = Utils.authenticate(req);
+			if(username == null) {
+				res.status(401);
+				return "You must login first";
+			} else {
+				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+			    	return g.toJson(ReservationsDAO.getInstance().getGuestReservations(username));
+			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
+			    	return g.toJson(ReservationsDAO.getInstance().getHostReservations(username));
+			    } else {
+			    	return g.toJson(ReservationsDAO.getInstance().getReservations());
+			    }
 			}
-			return "Error";
+			
 		});
 		
-		post("/reservations/cancel", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    String payload = req.body();
-					Reservation toCancle = g.fromJson(payload, Reservation.class);
-				    if(claims.getBody().get("Type").equals("Guest")) {
-				    	if(!toCancle.getGuest().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to cancle this reservation";
-				    	if(ReservationsDAO.getInstance().cancleReservation(toCancle))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else {
-				    	return "You dont have permission to cancle this reservation";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		put("/reservations/:id/cancle", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {
+				res.status(403);
+				return "You cant cancel reservation";
+			} else {
+				Reservation toCancle = ReservationsDAO.getInstance().getReservation(id);
+				if(!toCancle.getGuest().equals(username))
+		    		return "You can't cancle this reservation";
+		    	if(ReservationsDAO.getInstance().cancleReservation(id))
+		    		return "Success";
+		    	else
+		    		return "Error";
 			}
-			return "Error";
+			
 		});
 		
-		post("/reservations/accept", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    String payload = req.body();
-					Reservation toAccept = g.fromJson(payload, Reservation.class);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	if(!ApartmentsDAO.getInstance().getHost(toAccept.getApartment()).getUsername().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to accept this reservation";
-				    	if(ReservationsDAO.getInstance().acceptReservation(toAccept))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else {
-				    	return "You dont have permission to accept this reservation";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		put("/reservations/:id/accept", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
+				res.status(403);
+				return "You cant accept reservations";
+			} else {
+				Reservation toAccept = ReservationsDAO.getInstance().getReservation(id);
+				if(!ApartmentsDAO.getInstance().getHost(toAccept.getApartment()).getUsername().equals(username))
+		    		return "You dont have permission to accept this reservation";
+		    	if(ReservationsDAO.getInstance().acceptReservation(id))
+		    		return "Success";
+		    	else
+		    		return "Error";
 			}
-			return "Error";
 		});
 		
-		post("/reservations/decline", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    String payload = req.body();
-					Reservation toDecline = g.fromJson(payload, Reservation.class);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	if(!ApartmentsDAO.getInstance().getHost(toDecline.getApartment()).getUsername().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to decline this reservation";
-				    	if(ReservationsDAO.getInstance().declineReservation(toDecline))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else {
-				    	return "You dont have permission to decline this reservation";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		put("/reservations/:id/decline", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
+				res.status(403);
+				return "You cant decline reservations";
+			} else {
+				Reservation toDecline = ReservationsDAO.getInstance().getReservation(id);
+				if(!ApartmentsDAO.getInstance().getHost(toDecline.getApartment()).getUsername().equals(username))
+					return "You dont have permission to decline this reservation";
+				if(ReservationsDAO.getInstance().declineReservation(id))
+					return "Success";
+				else
+					return "Error";
 			}
-			return "Error";
 		});
 		
-		post("/reservations/complete", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    String payload = req.body();
-					Reservation toComplete = g.fromJson(payload, Reservation.class);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	if(!ApartmentsDAO.getInstance().getHost(toComplete.getApartment()).getUsername().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to complete this reservation";
-				    	if(ReservationsDAO.getInstance().completeReservation(toComplete))
-				    		return "Success";
-				    	else
-				    		return "Error";
-				    } else {
-				    	return "You dont have permission to complete this reservation";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		put("/reservations/:id/complete", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
+				res.status(403);
+				return "You cant decline reservations";
+			} else {
+				Reservation toComplete = ReservationsDAO.getInstance().getReservation(id);
+				if(!ApartmentsDAO.getInstance().getHost(toComplete.getApartment()).getUsername().equals(username))
+		    		return "You dont have permission to complete this reservation";
+		    	if(ReservationsDAO.getInstance().completeReservation(id))
+		    		return "Success";
+		    	else
+		    		return "Error";
 			}
-			return "Error";
 		});
 		
-		post("/reservations/new", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    String payload = req.body();
-					Reservation newReservation = g.fromJson(payload, Reservation.class);
-				    if(claims.getBody().get("Type").equals("Guest")) {
-				    	ReservationsDAO.getInstance().addNewReservation(newReservation);
-				    } else {
-				    	return "You dont have permission to create new reservation";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		post("/reservations", (req, res) -> {
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {
+				res.status(403);
+				return "You cant make new reservations";
+			} else {
+				String payload = req.body();
+				Reservation newReservation = g.fromJson(payload, Reservation.class);
+				newReservation.setGuest(username);
+				ReservationsDAO.getInstance().addNewReservation(newReservation);
+				return "Success";
 			}
-			return "Error";
 		});
 		
-		post("/comments/new", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    String payload = req.body();
-					Comment newComment = g.fromJson(payload, Comment.class);
-				    if(claims.getBody().get("Type").equals("Guest")) {
-				    	if(!ReservationsDAO.getInstance().guestHasCompletedReservation(newComment.getAuthor(), newComment.getApartment()))
-				    		return "You dont have permission to leave a comment on this apartment";
-				    	CommentsDAO.getInstance().addNewComment(newComment);
-				    	return "Success";
-				    } else {
-				    	return "You dont have permission to leave a comment";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		post("/comments", (req, res) -> {
+			String username = Utils.authenticate(req);
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {
+				res.status(403);
+				return "You cant make new comment";
+			} else {
+				String payload = req.body();
+				Comment newComment = g.fromJson(payload, Comment.class);
+				newComment.setAuthor(username);
+				if(!ReservationsDAO.getInstance().guestHasCompletedReservation(newComment.getAuthor(), newComment.getApartment()))
+		    		return "You dont have permission to leave a comment on this apartment";
+		    	CommentsDAO.getInstance().addNewComment(newComment);
+		    	return "Success";
 			}
-			return "Error";
+			
 		});
 		
-		post("/comments/visible", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    if(claims.getBody().get("Type").equals("Host")) {
-				    	int id = Integer.parseInt(req.queryParams("id"));
-				    	Comment comment = CommentsDAO.getInstance().getComment(id); 
-				    	if(!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to make this comment visible to guests";
-				    	CommentsDAO.getInstance().makeCommentVisible(id);
-				    	return "Success";
-				    } else {
-				    	return "You dont have permission to make comments visible to guests";
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		put("/comments/:id/visible", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
+				res.status(403);
+				return "You cant make comments visible to guests";
+			} else {
+		    	Comment comment = CommentsDAO.getInstance().getComment(id); 
+		    	if(!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username))
+		    		return "You dont have permission to make this comment visible to guests";
+		    	CommentsDAO.getInstance().makeCommentVisible(id);
+		    	return "Success";
 			}
-			return "Error";
 		});
 		
-		get("/comments", (req, res) -> {
-			String auth = req.headers("Authorization");
-			if ((auth != null) && (auth.contains("Bearer "))) {
-				String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
-				try {
-				    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
-				    int apartmentId = Integer.parseInt(req.queryParams("id"));
-				    if(claims.getBody().get("Type").equals("Guest")) {
-				    	return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
-				    } else if(claims.getBody().get("Type").equals("Host")) {
-				    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(claims.getBody().getSubject()))
-				    		return "You dont have permission to view comments for this apartment";
-				    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
-				    } else {
-				    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
-				    }
-				} catch (Exception e) {
-					System.out.println("You dont have right permission");
-				}
+		get("/comments/:id", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int apartmentId = Integer.parseInt(req.params("id"));
+			if(username == null) {
+				res.status(401);
+				return "You must login first";
+			} else {
+				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+					return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
+			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
+			    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username))
+			    		return "You dont have permission to view comments for this apartment";
+			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    } else {
+			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    }
 			}
-			return "Error";
 		});
 		
 	}

@@ -68,23 +68,23 @@ public class AmenitiesDAO {
 		return true;
 	}
 	
-	public boolean updateAmenity(Amenity newData) {
-		Amenity amenity = amenities.get(newData.getId());
+	public boolean updateAmenityName(int id, String name) {
+		Amenity amenity = amenities.get(id);
 		if(amenity == null)
 			return false;
 		else {
-			amenity = newData;
+			amenities.get(id).setName(name);
 			saveData();
 			return true;
 		}
 	}
 	
-	public boolean deleteAmenity(Amenity toDelete) {
-		Amenity amenity = amenities.get(toDelete.getId());
+	public boolean deleteAmenity(int id) {
+		Amenity amenity = amenities.get(id);
 		if(amenity == null)
 			return false;
 		else {
-			amenities.remove(amenity.getId());
+			amenities.remove(id);
 			saveData();
 			return true;
 		}
