@@ -6,5 +6,13 @@
       "content":"Odlican apartman!",
       "rating":5.0,
       "visibleToGuests":true
+   },
+   {
+      "id":1,
+      "author":"zukovicfilip",
+      "apartment":2,
+      "content":"Sve pohvale!",
+      "rating":5.0,
+      "visibleToGuests":true
    }
 ]

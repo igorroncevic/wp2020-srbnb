@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,22 +87,19 @@ public class UsersDAO {
 	
 	
 	public boolean updateUserData(User newData) {
-		User user = users.get(newData.getUsername());
-		if(user == null)
+		if(users.get(newData.getUsername()) == null)
 			return false;
 		else {
-			user.setPassword(newData.getPassword());
-			user.setName(newData.getName());
-			user.setLastname(newData.getLastname());
-			user.setGender(newData.getGender());
+			newData.setType(getUserType(newData.getUsername()));
+			users.replace(newData.getUsername(), newData);
 			saveData();
 			return true;
 		}
 				
 	}
 	
-	public List<User> getAllUsers() {
-		return (List<User>) users.values();
+	public Collection<User> getAllUsers() {
+		return users.values();
 	}
 	
 	public List<User> searchUsers(String search) {
@@ -117,6 +115,10 @@ public class UsersDAO {
 	
 	public User getUser(String username) {
 		return users.get(username);
+	}
+	
+	public UserType getUserType(String username) {
+		return users.get(username).getType();
 	}
 	
 	public List<User> getMyGuests(String host) {

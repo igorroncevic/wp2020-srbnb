@@ -77,6 +77,7 @@ public class ApartmentsDAO {
 	
 	public boolean addNewApartment(Apartment newApartment) {
 		newApartment.setId(apartments.size());
+		newApartment.setAvailableDaysForRent(new ArrayList<Date>(newApartment.getDaysForRent()));
 		apartments.put(newApartment.getId(), newApartment);
 		saveData();
 		return true;
@@ -92,8 +93,8 @@ public class ApartmentsDAO {
 		}
 	}
 	
-	public boolean deleteApartment(Apartment toDelete) {
-		Apartment apartment = apartments.get(toDelete.getId());
+	public boolean deleteApartment(int id) {
+		Apartment apartment = apartments.get(id);
 		if(apartment == null)
 			return false;
 		else {
@@ -170,10 +171,10 @@ public class ApartmentsDAO {
 		return apartments.values();
 	}
 	
-	public void deleteAmenity(Amenity toDelete) {
+	public void deleteAmenity(int id) {
 		for(Apartment apartment : apartments.values())
-			if(apartment.getAmenities().contains(toDelete.getId()))
-				apartment.getAmenities().remove(toDelete.getId());
+			if(apartment.getAmenities().contains(id))
+				apartment.getAmenities().remove(id);
 	}
 
 }
