@@ -1,6 +1,8 @@
+require('dotenv').config();
 import Vue from "vue";
 import App from "./App.vue";
 import VueRouter from "vue-router";
+
 import "./../public/css/styles.css";
 import "./../public/js/toasts.js";
 import routes from "./routes/mainRoutes";
@@ -27,7 +29,6 @@ router.beforeEach((to, from, next) => {
   } else {
     console.log("ulogovan");
   }
-
   next();
 });
 

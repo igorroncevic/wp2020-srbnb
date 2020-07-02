@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve & SET NODE_ENV=development",
-    "build": "vue-cli-service build & SET NODE_ENV=production",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "dotenv": "^8.2.0",
+    "mapbox-gl": "^0.54.0",
     "material-icons": "^0.3.1",
     "moment": "^2.27.0",
     "vue": "^2.6.11",

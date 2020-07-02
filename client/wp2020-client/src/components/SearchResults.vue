@@ -108,23 +108,25 @@
           v-if="filteredApartments.length == 0"
         >No apartments matching search criteria.</div>
       </div>
-      <div class="map"></div>
+      <Mapbox class="map-container"></Mapbox>
     </main>
   </div>
 </template>
 
 <script>
 import SearchResult from "./reusable/SearchResult.vue";
-import ApartmentsService from "./../services/ApartmentsService";
+import Mapbox from "./Mapbox.vue";
+//import ApartmentsService from "./../services/ApartmentsService";
 import moment from "moment";
 
 export default {
   name: "SearchResults",
   components: {
-    SearchResult
+    SearchResult,
+    Mapbox
   },
   async beforeMount() {
-    this.apartments = await ApartmentsService.searchApartments({
+    /*this.apartments = await ApartmentsService.searchApartments({
       location: this.$route.query.location,
       guests: this.$route.query.guests,
       startDate: moment(this.$route.query.startDate).format("MM/DD/YYYY"),
@@ -133,7 +135,7 @@ export default {
       maxRooms: this.$route.query.maxRooms,
       minPrice: this.$route.query.minPrice,
       maxPrice: this.$route.query.maxPrice
-    });
+    });*/
     
     
     this.location = this.$route.query.location;
@@ -446,13 +448,14 @@ main {
   cursor: pointer;
 }
 
-.map {
+.map-container {
   grid-column: 2/6;
   background: teal;
-  width: 110%;
+  width: 116%;
   float: right;
   position: absolute; /* Fixuje mapu u mjestu? Fixed ne radi */
-  min-height: 99%;
+  min-height: 110%;
+  margin-top: -80px;
 }
 
 hr {
