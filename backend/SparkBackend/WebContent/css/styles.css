@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css');
 @import '../../node_modules/material-icons/iconfont/material-icons.css';
 
 :root {
@@ -24,3 +25,11 @@ body {
 html, body {
    font-family: 'Roboto', sans-serif;
 }
+
+.marker {
+   background-image: url("./../img/pin.png");
+   background-size: 100% 100%;
+   width: 32px;
+   height: 44px;
+   cursor: pointer;
+ }

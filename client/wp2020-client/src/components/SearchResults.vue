@@ -476,7 +476,7 @@ main {
   bottom: 0px;
   min-height: 800px;
   max-height: 900px;
-  width: 1100px;
+  width: 1077px;
 }
 
 hr {
