@@ -75,7 +75,6 @@ public class Main {
 		});
 		
 		post("/users", (req, res) -> {
-			
 			String payload = req.body();
 			User user = g.fromJson(payload, User.class);
 			user.setType(UserType.Guest);
@@ -310,7 +309,7 @@ public class Main {
 			
 		});
 		
-		put("/reservations/:id/cancle", (req, res) -> {
+		put("/reservations/:id/cancel", (req, res) -> {
 			String username = Utils.authenticate(req);
 			int id = Integer.parseInt(req.params("id"));
 			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {

@@ -14,7 +14,7 @@ class UsersService {
   async login(userInfo) {
     //var loginInfo = JSON.stringify(userInfo);
     const success = await this.apiClient
-      .post("/login", userInfo)
+      .post("/users/login", userInfo)
       .then((response) => {
         if (response.status == 200) {
           this.loginUser(response.data);
