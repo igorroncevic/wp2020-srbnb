@@ -8,7 +8,7 @@
     >{{apartment.guests}} guests • {{apartment.beds}} beds • {{apartment.bedrooms}} bedrooms</div>
     <div id="main-info">
       <span style="margin-bottom: 6px; font-size: 18px;">
-        <span style="font-weight: bold">${{apartment.price}}</span>/night
+        <span style="font-weight: bold">${{apartment.pricePerNight}}</span>/night
       </span>
       <router-link
         :to="{name: 'apartment-preview', params: {apartmentId: apartment.id}}"

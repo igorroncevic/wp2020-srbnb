@@ -4,8 +4,8 @@
       "numberOfRooms":3,
       "numberOfGuest":6,
       "location":{
-         "latitude":41.55,
-         "longitude":39.33,
+         "latitude": 45.2818875,
+         "longitude": 19.8936123,
          "address":{
             "street":"Gogoljeva",
             "number":"7A",
@@ -42,8 +42,8 @@
       "numberOfRooms":2,
       "numberOfGuest":4,
       "location":{
-         "latitude":35.32,
-         "longitude":39.33,
+         "latitude": 45.2518875,
+         "longitude": 19.8336123,
          "address":{
             "street":"Antona Cehova",
             "number":"BB",
@@ -79,8 +79,8 @@
       "numberOfRooms":2,
       "numberOfGuest":4,
       "location":{
-         "latitude":20.0,
-         "longitude":50.33,
+         "latitude": 45.3018875,
+         "longitude": 19.8136123,
          "address":{
             "street":"Somborski Bulevar",
             "number":"15",

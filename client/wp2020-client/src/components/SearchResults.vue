@@ -108,7 +108,7 @@
           v-if="filteredApartments.length == 0"
         >No apartments matching search criteria.</div>
       </div>
-      <Mapbox class="map-container"></Mapbox>
+      <Mapbox :apartments="filteredApartments" class="map-container"></Mapbox>
     </main>
   </div>
 </template>
@@ -136,8 +136,7 @@ export default {
       minPrice: this.$route.query.minPrice,
       maxPrice: this.$route.query.maxPrice
     });*/
-    
-    
+
     this.location = this.$route.query.location;
     var startDateParts = moment(this.$route.query.startDate)
       .format("MMMM Do YYYY")
@@ -204,46 +203,88 @@ export default {
       beds: 0,
       selectedType: "Any type",
       amenitiesExpanded: false,
-      apartments: [],
-      /*apartments: [
+      //apartments: [],
+      apartments: [
         {
           id: 1,
           name: "Apartments Perić",
           type: "Entire apartment",
-          price: 40,
+          pricePerNight: 40,
           guests: 4,
           beds: 2,
           bedrooms: 1,
-          features: "4 guests * 1 bedroom * 2 beds"
+          features: "4 guests * 1 bedroom * 2 beds",
+          location: {
+            latitude: 45.2518875,
+            longitude: 19.8336123
+          }
         },
         {
           id: 2,
           name: "Apartments Jović",
           type: "Single room",
-          price: 20,
+          pricePerNight: 20,
           guests: 2,
           beds: 1,
-          bedrooms: 1
+          bedrooms: 1,
+          location: {
+            latitude: 45.2479296,
+            longitude: 19.8367477
+          }
         },
         {
           id: 3,
           name: "Apartments Stević",
           type: "Penthouse",
-          price: 349,
+          pricePerNight: 349,
           guests: 8,
           beds: 6,
-          bedrooms: 4
+          bedrooms: 4,
+          location: {
+            latitude: 45.2403965,
+            longitude: 19.8415322
+          }
         },
         {
           id: 4,
           name: "Apartments Deluxe",
           type: "Deluxe apartment",
-          price: 149,
+          pricePerNight: 149,
           guests: 6,
           beds: 4,
-          bedrooms: 3
+          bedrooms: 3,
+          location: {
+            latitude: 45.2503965,
+            longitude:  19.8445322
+          }
+        },
+        {
+          id: 5,
+          name: "Apartments Deluxe",
+          type: "Deluxe apartment",
+          pricePerNight: 149,
+          guests: 6,
+          beds: 4,
+          bedrooms: 3,
+          location: {
+            latitude: 45.2243965,
+            longitude:  19.8445322
+          }
+        },
+        {
+          id: 6,
+          name: "Apartments Deluxe",
+          type: "Deluxe apartment",
+          pricePerNight: 149,
+          guests: 6,
+          beds: 4,
+          bedrooms: 3,
+          location: {
+            latitude: 45.2503265,
+            longitude:  19.8845322
+          }
         }
-      ],*/
+      ],
       filteredApartments: []
     };
   },
@@ -426,7 +467,7 @@ main {
 }
 
 .search-results {
-  margin-top: 15px;
+  margin-top: -10px;
   margin-left: 40px;
   grid-column: 1/2;
   grid-row: 2;
@@ -437,7 +478,6 @@ main {
 .sortby {
   right: 0;
   height: 50px !important;
-  margin-top: 15px;
   margin-left: auto;
   font-size: 14px;
   grid-row: 1;
@@ -450,11 +490,11 @@ main {
 
 .map-container {
   grid-column: 2/6;
-  background: teal;
   width: 116%;
-  float: right;
-  position: absolute; /* Fixuje mapu u mjestu? Fixed ne radi */
-  min-height: 110%;
+  position: sticky; /* Fixuje mapu u mjestu? Fixed ne radi */
+  right: 0;
+  min-height: 800px;
+  max-height: 800px;
   margin-top: -80px;
 }
 
