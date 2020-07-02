@@ -74,7 +74,7 @@ export default {
     setGender(value) {
       this.selectedGender = value;
     },
-    signup() {
+    async signup() {
       if (
         this.username == "" ||
         this.firstname == "" ||
@@ -87,7 +87,7 @@ export default {
       } else if (this.confirmPassword != this.password) {
         this.$toasted.global.badConfirmPassword();
       } else {
-        var signupSuccess = UserService.signup({
+        var signupSuccess = await UserService.signup({
           username: this.username,
           name: this.firstname,
           lastname: this.lastname,

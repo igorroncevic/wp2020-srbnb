@@ -44,20 +44,21 @@ export default {
     };
   },
   methods: {
-    login() {
+    async login() {
       if (this.username == "" || this.password == "") {
         this.$toasted.global.emptyLoginFields();
       }
 
-      var loginSuccess = UserService.login({
+      var loginSuccess = await UserService.login({
         username: this.username,
         password: this.password
       });
+      console.log("Login success - " + loginSuccess);
       if (loginSuccess) {
         this.$toasted.global.successMessage();
         setTimeout(() => {
           this.$router.push({ name: "home" });
-        }, 1000);
+        }, 2500);
       } else {
         this.$toasted.global.loginError();
       }

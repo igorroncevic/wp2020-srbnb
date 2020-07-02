@@ -29,7 +29,7 @@ export default {
         style: "mapbox://styles/mapbox/streets-v11",
         minZoom: 12,
         maxZoom: 17,
-        center: [19.8311387, 45.2506721], // Ne smije biti centra, jer odatle krece sirenje mape, a ne znamo da li je uvijek NS
+        //center: [19.8311387, 45.2506721], // Ne smije biti centra, jer odatle krece sirenje mape, a ne znamo da li je uvijek NS
         zoom: 14
       });
 

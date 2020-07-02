@@ -12,26 +12,38 @@ class UsersService {
   }
 
   async login(userInfo) {
-    var loginInfo = JSON.stringify(userInfo);
-    await this.apiClient.post("/login", loginInfo).then((response) => {
-      if (response.status == 200) {
-        this.loginUser(response.data);
-        return true;
-      } else {
+    //var loginInfo = JSON.stringify(userInfo);
+    const success = await this.apiClient
+      .post("/login", userInfo)
+      .then((response) => {
+        if (response.status == 200) {
+          this.loginUser(response.data);
+          return true;
+        }
         return false;
-      }
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+      return success;
   }
 
   async signup(userInfo) {
-    var signupInfo = JSON.stringify(userInfo);
-    await this.apiClient.post("/register", signupInfo).then((response) => {
-      if (response.status == 200) {
-        return true;
-      } else {
+    //var signupInfo = JSON.stringify(userInfo);
+    const success = await this.apiClient
+      .post("/register", userInfo)
+      .then((response) => {
+        if (response.status == 200) {
+          return true;
+        }
         return false;
-      }
-    });
+      })
+      .catch((err) => {
+        console.log(JSON.stringify(err));
+        return false;
+      });
+      return success;
   }
 
   getToken() {

@@ -1,5 +1,13 @@
 [
 	{
+		"username": "svetipetar",
+		"password": "svetipetar",
+		"name": "Sveti",
+		"lastname": "Petar",
+		"gender": "Male",
+		"type": "Guest"
+	},
+	{
 		"username": "petarpetrovic",
 		"password": "Test123",
 		"name": "Petar",
@@ -14,6 +22,14 @@
 		"lastname": "Zukovic",
 		"gender": "Male",
 		"type": "Guest"
+	},
+	{
+		"username": "vojapetrovic",
+		"password": "vojapetrovic",
+		"name": "Voja",
+		"lastname": "Petrovic",
+		"gender": "Male",
+		"type": "Host"
 	},
 	{
 		"username": "igorroncevic",
@@ -36,14 +52,6 @@
 		"password": "zoransijan",
 		"name": "Zoran",
 		"lastname": "Sijan",
-		"gender": "Male",
-		"type": "Host"
-	},
-	{
-		"username": "vojapetrovic",
-		"password": "vojapetrovic",
-		"name": "Voja",
-		"lastname": "Petrovic",
 		"gender": "Male",
 		"type": "Host"
 	}
