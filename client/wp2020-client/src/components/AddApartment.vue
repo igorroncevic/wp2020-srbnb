@@ -21,10 +21,8 @@
             <!-- Placeholder -->
 
             <!-- normal options -->
-            <option value="Whole apartment">Whole apartment</option>
-            <option value="Studio apartment">Studio apartment</option>
-            <option value="Penthouse">Penthouse</option>
-            <option value="Deluxe apartment">Deluxe apartment</option>
+            <option value="Full_apartment">Full apartment</option>
+            <option value="Room">Room</option>
           </select>
           <div class="select-icon">
             <svg focusable="false" style="width:25px;height:25px" viewBox="0 0 24 24">
@@ -189,7 +187,7 @@
           name="price"
           v-model="price"
           width="100"
-          height="38"
+          height="28"
         />
         <p id="per-night">$ / night</p>
       </div>
@@ -459,4 +457,5 @@ select:focus ~ .select-icon svg.icon {
   position: relative;
   top: 5%;
 }
+
 </style>

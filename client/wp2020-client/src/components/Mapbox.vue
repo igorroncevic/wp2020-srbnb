@@ -29,10 +29,10 @@ export default {
         style: "mapbox://styles/mapbox/streets-v11",
         minZoom: 12,
         maxZoom: 17,
-        center: [19.8311387, 45.2506721], // Novi Sad
+        center: [19.8311387, 45.2506721], // Ne smije biti centra, jer odatle krece sirenje mape, a ne znamo da li je uvijek NS
         zoom: 14
       });
-      
+
       const bounds = new mapboxgl.LngLatBounds();
       console.log(this.apartments);
       this.apartments.forEach(app => {
@@ -49,7 +49,9 @@ export default {
           .addTo(this.map);
 
         //Add popup
-        new mapboxgl.Popup()
+        new mapboxgl.Popup({
+           closeOnClick: false
+        })
           .setLngLat([app.location.longitude, app.location.latitude])
           .setHTML(`<p>$${app.pricePerNight}</p>`)
           .addTo(this.map);
@@ -72,20 +74,21 @@ export default {
 </script>
 
 <style>
-.mapboxgl-popup-content-wrapper{
-   height: 20px;
-   scale: 50%;
+.mapboxgl-popup-content-wrapper {
+  height: 20px;
+  scale: 50%;
 }
-.mapboxgl-popup-content{
-   font-size: 18px;
-   padding-bottom: 1.5rem;
-   padding-top: 0px;
-   height: 1.9rem;
-   width: 3.5rem;
-   text-align: center;
+.mapboxgl-popup-content {
+   font-weight: 700;
+  font-size: 18px;
+  padding-bottom: 1.5rem;
+  padding-top: 0px;
+  height: 1.9rem;
+  width: 3.5rem;
+  text-align: center;
 }
 
 .mapboxgl-popup-anchor-bottom {
-    margin-top: -48px !important;
+  margin-top: -48px !important;
 }
 </style>

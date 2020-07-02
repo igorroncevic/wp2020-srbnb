@@ -169,7 +169,7 @@ export default {
           query: {
             location: this.location,
             guests: this.guests,
-            startDate: this.startDate,
+            startDate: this.startDate, //formatiranje u pravi date unutar SearchResults
             endDate: this.endDate,
             minRooms: this.minRooms == "" ? 0 : this.$route.query.minRooms,
             maxRooms: this.maxRooms == "" ? 0 : this.$route.query.maxRooms,

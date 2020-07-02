@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="search-wrapper">
     <header>
       <h2>Stays in {{location}}</h2>
       <!-- Pristupati query parametrima iz URL-a -->
@@ -9,41 +9,16 @@
       <div class="filters">
         <!-- Beds -->
         <div class="counter beds">
-          <p style="font-size: 18px; margin: 0px 5px 0 0;">Beds:</p>
-          <svg
-            style="width:22px;height:22px; margin-right: 5px;"
-            viewBox="0 0 24 24"
-            @click="decrementBeds"
-          >
-            <path
-              fill="#e8394d"
-              d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7"
-            />
-          </svg>
-          <p style="margin: -1px 5px; font-size:20px;">{{bedsCounter}}</p>
-          <svg
-            style="width:22px;height:22px;margin-left: 5px;"
-            viewBox="0 0 24 24"
-            cursor="pointer"
-            @click="incrementBeds"
-          >
-            <path
-              fill="#e8394d"
-              d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"
-            />
-          </svg>
+          <p style="font-size: 20px; margin: 0px 5px 0 0;">Beds:</p>
+          <input type="number" v-model="beds" />
         </div>
         <div id="apartment-type">
           <div class="dropdown-container">
-            <select @change="handleTypeChange" v-model="selectedType">
-              <!-- Placeholder -->
-              <option value hidden>Any type</option>
+            <select v-model="selectedType">
               <!-- normal options -->
-              <option value="Any type">Any type</option>
-              <option value="Entire apartment">Entire apartment</option>
-              <option value="Penthouse">Penthouse</option>
-              <option value="Single room">Single room</option>
-              <option value="Deluxe apartment">Deluxe apartment</option>
+              <option value="Any_type">Any type</option>
+              <option value="Full_apartment">Full apartment</option>
+              <option value="Room">Room</option>
             </select>
             <div class="select-icon">
               <svg focusable="false" style="width:14px;height:14px" viewBox="0 0 18 18">
@@ -86,6 +61,7 @@
             </label>
           </div>
         </div>
+        <Button text="Apply filters" width="100" height="33" fontsize="15" class="filter-button" />
       </div>
     </header>
     <main>
@@ -108,8 +84,8 @@
           v-if="filteredApartments.length == 0"
         >No apartments matching search criteria.</div>
       </div>
-      <Mapbox :apartments="filteredApartments" class="map-container"></Mapbox>
     </main>
+   <Mapbox :apartments="filteredApartments" class="map-container"></Mapbox>
   </div>
 </template>
 
@@ -117,13 +93,15 @@
 import SearchResult from "./reusable/SearchResult.vue";
 import Mapbox from "./Mapbox.vue";
 //import ApartmentsService from "./../services/ApartmentsService";
+import Button from "./form-components/Button.vue";
 import moment from "moment";
 
 export default {
   name: "SearchResults",
   components: {
     SearchResult,
-    Mapbox
+    Mapbox,
+    Button
   },
   async beforeMount() {
     /*this.apartments = await ApartmentsService.searchApartments({
@@ -201,7 +179,7 @@ export default {
       rooms: "",
       price: "",
       beds: 0,
-      selectedType: "Any type",
+      selectedType: "Any_type",
       amenitiesExpanded: false,
       //apartments: [],
       apartments: [
@@ -255,33 +233,33 @@ export default {
           bedrooms: 3,
           location: {
             latitude: 45.2503965,
-            longitude:  19.8445322
+            longitude: 19.8445322
           }
         },
         {
           id: 5,
           name: "Apartments Deluxe",
           type: "Deluxe apartment",
-          pricePerNight: 149,
+          pricePerNight: 159,
           guests: 6,
           beds: 4,
           bedrooms: 3,
           location: {
             latitude: 45.2243965,
-            longitude:  19.8445322
+            longitude: 19.8445322
           }
         },
         {
           id: 6,
           name: "Apartments Deluxe",
           type: "Deluxe apartment",
-          pricePerNight: 149,
+          pricePerNight: 169,
           guests: 6,
           beds: 4,
           bedrooms: 3,
           location: {
             latitude: 45.2503265,
-            longitude:  19.8845322
+            longitude: 19.8845322
           }
         }
       ],
@@ -289,9 +267,6 @@ export default {
     };
   },
   computed: {
-    roomsCounter() {
-      return this.rooms;
-    },
     bedsCounter() {
       return this.beds;
     }
@@ -303,26 +278,29 @@ export default {
       } else if (this.sortParameter == "Descending") {
         this.sortParameter = "Ascending";
       }
+      console.log(this.sortParameter);
       this.sortApartments();
     },
     sortApartments() {
       if (this.sortParameter == "Ascending") {
         this.filteredApartments.sort(function(a, b) {
-          return a.price - b.price;
+          return a.pricePerNight - b.pricePerNight;
         });
         this.apartments.sort(function(a, b) {
-          return a.price - b.price;
+          return a.pricePerNight - b.pricePerNight;
         });
       } else {
         this.filteredApartments.sort(function(a, b) {
-          return b.price - a.price;
+          return b.pricePerNight - a.pricePerNight;
         });
         this.apartments.sort(function(a, b) {
-          return b.price - a.price;
+          return b.pricePerNight - a.pricePerNight;
         });
+        console.log(this.filteredApartments);
+        console.log(this.apartments);
       }
     },
-    handleTypeChange() {
+    /*handleTypeChange() {
       if (this.selectedType == "Penthouse") {
         this.filteredApartments = this.apartments.filter(
           app => app.type == "Penthouse" && app.beds >= this.bedsCounter
@@ -355,15 +333,13 @@ export default {
           app => app.beds >= this.bedsCounter
         );
       }
-    },
+    },*/
     incrementBeds() {
       this.beds++;
-      this.filterByBeds();
     },
     decrementBeds() {
       if (this.beds > 0) {
         this.beds--;
-        this.filterByBeds();
       }
     },
     showCheckboxes() {
@@ -459,28 +435,33 @@ svg {
 
 main {
   display: grid;
-  grid-template-rows: 50px auto;
-  grid-template-columns: repeat(5, 1fr);
-  column-gap: 11rem;
+  grid-template-rows: 2% 98%;
+  grid-template-columns: repeat(6, 20vh);
+  column-gap: 2rem;
   position: relative; /* Fixuje mapu u mjestu?*/
-  min-height: 75vh;
+  min-height: 69vh;
+  max-height: 70vh;
+  overflow: hidden;
 }
 
 .search-results {
-  margin-top: -10px;
-  margin-left: 40px;
-  grid-column: 1/2;
+  margin-top: 20px;
+  margin-left: 20px;
+  grid-column: 1/3;
   grid-row: 2;
-  width: 100%;
-  min-width: 500px;
+  width: 400px; /* Sets scrollbar behind map */
+  min-width: 800px;
+  overflow-y: scroll;
+  box-sizing: content-box;
+  scrollbar-color: red;
 }
 
 .sortby {
   right: 0;
   height: 50px !important;
-  margin-left: auto;
   font-size: 14px;
-  grid-row: 1;
+  grid-column: 3;
+  margin-left: -15px;
   color: var(--medium-text-color);
 }
 
@@ -489,13 +470,13 @@ main {
 }
 
 .map-container {
-  grid-column: 2/6;
-  width: 116%;
-  position: sticky; /* Fixuje mapu u mjestu? Fixed ne radi */
-  right: 0;
+  /*grid-column: 4/6;*/
+  position: absolute; /* Fixuje mapu u mjestu? Fixed ne radi */
+  left: 700px;
+  bottom: 0px;
   min-height: 800px;
-  max-height: 800px;
-  margin-top: -80px;
+  max-height: 900px;
+  width: 1100px;
 }
 
 hr {
@@ -530,27 +511,41 @@ h2 {
   margin-top: 30px;
   width: 38%;
   display: grid;
-  grid-template-areas: "beds type amenities";
+  grid-template-columns: 9rem 16rem 17rem;
+  grid-template-rows: 3rem 3rem;
+  /*-moz-animation-delay: ;grid-template-areas:
+    "beds type amenities"
+    ". . button";*/
 }
 
-.rooms {
-  margin-left: 22px;
-  grid-area: "rooms";
+.filter-button {
+  /*grid-area: "button";*/
+  grid-column: 3;
+  grid-row: 2;
+  position: relative;
+  left: 29%;
 }
 
 .beds {
-  grid-area: "beds";
+  /*grid-area: "beds";*/
   position: relative;
   left: 6%;
+  grid-column: 1;
+  grid-row: 1;
+  top:2%;
 }
 
 .apartment-type {
-  grid-area: "type";
+  /*grid-area: "type";*/
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .amenities {
-  grid-area: "amenities";
+  /*grid-area: "amenities";*/
   width: 180px;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .amenities-select-icon {
@@ -596,11 +591,11 @@ h2 {
   background-color: #dddddd;
 }
 
-[type="checkbox"]:checked {
+input[type="checkbox"]:checked {
   background-color: var(--brand-color) !important;
 }
 
-[type="checkbox"]:hover {
+input[type="checkbox"]:hover {
   background-color: var(--brand-color-hover) !important;
 }
 
@@ -608,5 +603,17 @@ h2 {
   font-size: 20px;
   margin-top: 20px;
   text-align: center;
+}
+
+input[type="number"] {
+  height: 31px;
+  font-size: 20px;
+  width: 50px;
+  margin-top: -4px;
+  margin-left: 10px;
+  border-top-style: hidden;
+  border-left-style: hidden;
+  border-right-style: hidden;
+  border-color: var(--medium-text-color);
 }
 </style>
