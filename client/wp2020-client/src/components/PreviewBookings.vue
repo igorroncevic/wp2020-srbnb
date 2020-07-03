@@ -2,7 +2,7 @@
   <div class="grid-container">
     <!-- Title -->
     <div class="title-wrapper">
-      <h1>Preview Bookings</h1>
+      <h1>Preview reservations</h1>
     </div>
     <div id="searchbar-wrapper">
       <!-- Search form -->
@@ -16,7 +16,7 @@
         <div class="form-item minified" tabindex="2">
           <div class="nest stacked">
             <label for="dates" class="label">DATES</label>
-            <input type="text" name="dates" placeholder="Search by booking dates" />
+            <input type="text" name="dates" placeholder="Search by reservation dates" />
           </div>
         </div>
         <div class="form-item minified" tabindex="3">
@@ -31,7 +31,7 @@
       </form>
       <!-- End of the form -->
     </div>
-    <table id="bookings" v-if="bookings.length != 0">
+    <table id="reservations" v-if="reservations.length != 0">
       <tr>
         <th>Customer</th>
         <th>Check-in</th>
@@ -41,24 +41,24 @@
         <th>Guests</th>
         <th>Status</th>
       </tr>
-      <tr v-for="(booking,i) in bookings" :key="i">
-        <td class="customer">{{booking.customer}}</td>
-        <td>{{booking.checkin}}</td>
-        <td>{{booking.checkout}}</td>
-        <td>{{booking.message}}</td>
-        <td>{{booking.apartment}}</td>
-        <td>{{booking.guests}}</td>
-        <td>{{booking.status}}</td>
+      <tr v-for="(reservation,i) in reservations" :key="i">
+        <td class="customer">{{reservation.customer}}</td>
+        <td>{{reservation.checkin}}</td>
+        <td>{{reservation.checkout}}</td>
+        <td>{{reservation.message}}</td>
+        <td>{{reservation.apartment}}</td>
+        <td>{{reservation.guests}}</td>
+        <td>{{reservation.status}}</td>
       </tr>
     </table>
     <div
-      class="no-active-bookings"
-      v-if="bookings.length == 0"
-    >There are no active bookings!</div>
-    <div id="pending-bookings-title">
-      <h2>Pending Bookings</h2>
+      class="no-active-reservations"
+      v-if="reservations.length == 0"
+    >There are no active reservations!</div>
+    <div id="pending-reservations-title">
+      <h2>Pending reservations</h2>
     </div>
-    <table id="pending-bookings" v-if="bookings.length != 0">
+    <table id="pending-reservations" v-if="reservations.length != 0">
       <tr>
         <th>Customer</th>
         <th>Check-in</th>
@@ -69,13 +69,13 @@
         <th></th>
         <th></th>
       </tr>
-      <tr v-for="(booking,i) in bookings" :key="i">
-        <td class="customer">{{booking.customer}}</td>
-        <td>{{booking.checkin}}</td>
-        <td>{{booking.checkout}}</td>
-        <td>{{booking.message}}</td>
-        <td>{{booking.apartment}}</td>
-        <td>{{booking.guests}}</td>
+      <tr v-for="(reservation,i) in reservations" :key="i">
+        <td class="customer">{{reservation.customer}}</td>
+        <td>{{reservation.checkin}}</td>
+        <td>{{reservation.checkout}}</td>
+        <td>{{reservation.message}}</td>
+        <td>{{reservation.apartment}}</td>
+        <td>{{reservation.guests}}</td>
         <td>
           <Button text="Accept" width="96" height="34" fontsize="16" />
         </td>
@@ -84,18 +84,29 @@
         </td>
       </tr>
     </table>
-    <div class="no-pending-bookings" v-if="bookings.length == 0">There are no pending bookings!</div>
+    <div
+      class="no-pending-reservations"
+      v-if="reservations.length == 0"
+    >There are no pending reservations!</div>
   </div>
 </template>
 
 <script>
 import Button from "./form-components/Button.vue";
+import ReservationsService from "./../services/ReservationsService";
 
 export default {
   components: { Button },
+  async beforeMount() {
+    this.reservations = await ReservationsService.getReservations();
+  },
+  mounted() {
+    this.$forceUpdate();
+  },
   data() {
     return {
-      bookings: [
+       reservations: [],
+      /*reservations: [
         {
           customer: "Jovan Jovanovic",
           checkin: "25/5/2020",
@@ -140,15 +151,15 @@ export default {
           apartment: "Apartment Peric",
           guests: 4,
           status: "Active"
-        },
-      ]
+        }
+      ]*/
     };
   }
 };
 </script>
 
 <style>
-#bookings {
+#reservations {
   grid-row: 3/9;
   grid-column: 2/14;
   margin-top: 5px;
@@ -170,28 +181,28 @@ td {
   font-weight: 600;
 }
 
-#pending-bookings-title {
+#pending-reservations-title {
   grid-row: 10;
   grid-column: 1/5;
   font-size: 18px;
 }
 
-#pending-bookings {
+#pending-reservations {
   grid-row: 11;
   grid-column: 2/15;
   margin-top: -25px;
-    border-collapse: separate;
+  border-collapse: separate;
   border-spacing: 0em 2.5em;
 }
 
-.no-active-bookings {
+.no-active-reservations {
   font-size: 22px;
   font-weight: 500;
   grid-row: 6;
   grid-column: 6/10;
 }
 
-.no-pending-bookings {
+.no-pending-reservations {
   font-size: 22px;
   font-weight: 500;
   grid-row: 12;

@@ -27,6 +27,22 @@ class ReservationsService {
       });
     return success;
   }
+
+  async getReservations() {
+    var reservations = this.apiClient
+      .get("/reservations")
+      .then((response) => {
+        if (response.status == 200) {
+          return response.data;
+        }
+        return [];
+      })
+      .catch((err) => {
+        console.log(err);
+        return [];
+      });
+    return reservations;
+  }
 }
 
 const reservationsService = new ReservationsService();
