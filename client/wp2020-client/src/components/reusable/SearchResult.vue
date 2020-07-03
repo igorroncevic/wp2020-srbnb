@@ -11,7 +11,7 @@
         <span style="font-weight: bold">${{apartment.pricePerNight}}</span>/night
       </span>
       <router-link
-        :to="{name: 'apartment-preview', params: {apartmentId: apartment.id}}"
+        :to="{name: 'apartment-preview', params: {id: apartment.id}}"
       >
         <Button text="Visit" width="100" height="33" fontsize="15" id="visit-button" />
       </router-link>

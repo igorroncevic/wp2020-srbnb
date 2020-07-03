@@ -1,9 +1,9 @@
 <template>
   <div id="grid-container">
     <div id="header-wrapper">
-      <h1>Apartments Perić</h1>
+      <h1>{{apartment.name}}</h1>
       <div id="city-edit">
-        <p>Novi Sad, Serbia</p>
+        <p>{{apartment.location.adress.place}}</p>
         <div id="edit-btn">
           <svg style="width:20px;height:20px" viewBox="0 0 24 24">
             <path
@@ -38,7 +38,7 @@
       <div id="right-col">
         <div id="card-container">
           <div id="price-per-night">
-            <span style="font-weight: 600;">$40</span> / night
+            <span style="font-weight: 600;">${{apartment.pricePerNight}}</span> / night
           </div>
           <div id="booking-info">
             <div class="form-item checkin" style="width: 39.7%" tabindex="1">
@@ -71,14 +71,15 @@
             </div>
             <div class="form-item guests" style="width: 84.2%;" tabindex="1">
               <div class="stacked nest">
-                <label for="checkin-dates" class="label-style">GUESTS</label>
-                <input type="number" min="0" name="checkin-dates" placeholder="Number of guests" />
+                <label for="guests" class="label-style">GUESTS</label>
+                <input type="number" min="0" :max="apartment.numberOfGuest"  name="guests" placeholder="Number of guests" />
               </div>
             </div>
           </div>
           <div id="message-for-the-host">
             <label for="message" style="font-size: 22px; margin-left: 26px;">Message for the host</label>
             <textarea
+              v-model="reservationMessage"
               name="message"
               style="resize: none; outline: none; width; 200px; overflow: auto;"
               rows="5"
@@ -122,6 +123,7 @@ import ReviewItem from "./reusable/ReviewItem.vue";
 import StarRating from "./reusable/StarRating.vue";
 import Datepicker from "vuejs-datepicker";
 import moment from "moment";
+import ApartmentsService from "./../services/ApartmentsService";
 
 export default {
   components: {
@@ -131,9 +133,42 @@ export default {
     Datepicker
   },
   name: "ApartmentPreview",
+  async beforeMount() {
+     // Get apartment
+    this.apartment = await ApartmentsService.getApartmentById(
+      this.$route.params.id
+    );
+    if (this.apartment == null) {
+      this.$toasted.global.noApartmentWithThisId();
+      this.$router.go(-1);
+      return;
+    }
+    console.log(this.apartment);
+    this.disabledStartDates.to = moment(this.apartment.daysForRent[0], "dd-mm-yyyy");
+    this.disabledStartDates.from = moment(this.apartment.daysForRent[1], "dd-mm-yyyy");
+    this.disabledEndDates.to = moment(this.apartment.daysForRent[0], "dd-mm-yyyy");
+    this.disabledEndDates.from = moment(this.apartment.daysForRent[1], "dd-mm-yyyy");
+
+    // Get amenities
+    //this.amenities = await AmenitiesService.getAmenitiesForApartment(this.$route.params.id);
+  },
+  mounted() {
+    this.$forceUpdate();
+  },
   data() {
     return {
-      amenities: [
+      apartments: null,
+      disabledStartDates: {
+        to: new Date(),
+        from: new Date()
+      },
+      disabledEndDates: {
+        to: new Date(),
+        from: new Date()
+      },
+      amenities: [],
+      reservationMessage:"",
+      /*amenities: [
         "Private parking",
         "Microwave",
         "Stovetop",
@@ -179,7 +214,7 @@ export default {
       },
       disabledEndDates: {
         to: new Date(Date.now() - 8640000)
-      }
+      }*/
     };
   },
   methods: {
@@ -367,8 +402,8 @@ input[type="number"]::placeholder {
   color: var(--light-text-color);
 }
 
-input[type="number"]{
-   width: 200px;
+input[type="number"] {
+  width: 200px;
 }
 
 .checkin {

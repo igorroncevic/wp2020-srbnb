@@ -53,12 +53,13 @@ export default [
     ],
   },
   {
-    path: "apartment-preview/:apartmentId",
+    path: "apartment-preview/:id",
     name: "apartment-preview",
     component: ApartmentPreview,
     meta: {
       title: " - Apartment Preview",
     },
+    props: true
   },
   {
     path: "user-profile",

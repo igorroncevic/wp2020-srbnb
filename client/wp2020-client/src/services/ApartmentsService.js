@@ -15,17 +15,35 @@ class ApartmentsService {
   async searchApartments(params) {
     var searchParams = JSON.stringify(params);
     //prebaciti u get
-    await this.apiClient
+    var apartments = await this.apiClient
       .post("/search/apartments", searchParams)
       .then((response) => {
-        console.log(response);
-        console.log(response.data);
         if (response.status == 200) {
           return response.data;
-        } else {
-          return null;
         }
+        return [];
+      })
+      .catch((err) => {
+        console.log(err);
+        return [];
       });
+    return apartments;
+  }
+
+  async getApartmentById(id) {
+    var apartment = await this.apiClient
+      .get(`/apartments/${id}`)
+      .then((response) => {
+        if (response.status == 200) {
+          return response.data;
+        }
+        return null;
+      })
+      .catch((err) => {
+        console.log(err);
+        return null;
+      });
+    return apartment;
   }
 }
 
