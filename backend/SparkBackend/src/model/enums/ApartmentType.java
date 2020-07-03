@@ -1,6 +1,6 @@
 package model.enums;
 
 public enum ApartmentType {
-	Ful_Apartment,
+	Full_Apartment,
 	Room
 }

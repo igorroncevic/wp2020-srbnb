@@ -137,38 +137,18 @@ public class ApartmentsDAO {
 		return active;
 	}
 	
-	public List<Apartment> getInactiveApartments() {
-		List<Apartment> inactive = new ArrayList<Apartment>();
-		
-		for(Apartment apartment : apartments.values())
-			if(apartment.getStatus() == ApartmentStatus.Inactive)
-				inactive.add(apartment);
-		
-		return inactive;
-	}
-	
-	public List<Apartment> getMyActiveApartments(String host) {
+	public List<Apartment> getMyApartments(String host) {
 		List<Apartment> myApartments = new ArrayList<Apartment>();
 		
 		for(Apartment apartment : apartments.values())
-			if(apartment.getHost().equals(host) && apartment.getStatus() == ApartmentStatus.Active)
+			if(apartment.getHost().equals(host))
 				myApartments.add(apartment);
 		
 		return myApartments;
 	}
 	
-	public List<Apartment> getMyInactiveApartments(String host) {
-		List<Apartment> myInactiveApartments = new ArrayList<Apartment>();
-		
-		for(Apartment apartment : apartments.values())
-			if(apartment.getHost().equals(host) && apartment.getStatus() == ApartmentStatus.Inactive)
-				myInactiveApartments.add(apartment);
-		
-		return myInactiveApartments;
-	}
-	
-	public Collection<Apartment> getApartments() {
-		return apartments.values();
+	public List<Apartment> getApartments() {
+		return new ArrayList<Apartment>(apartments.values());
 	}
 	
 	public void deleteAmenity(int id) {

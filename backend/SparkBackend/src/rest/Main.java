@@ -153,32 +153,20 @@ public class Main {
 				}
 			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
 				if(req.queryParams().isEmpty()) {
-					return g.toJson(ApartmentsDAO.getInstance().getMyActiveApartments(username));
+					return g.toJson(ApartmentsDAO.getInstance().getMyApartments(username));
 				} else {
 					ApartmentSearch search = new ApartmentSearch(req);
-					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getMyActiveApartments(username)));
+					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getMyApartments(username)));
 				}
 			} else {
 				if(req.queryParams().isEmpty()) {
-					return g.toJson(ApartmentsDAO.getInstance().getActiveApartments());
+					return g.toJson(ApartmentsDAO.getInstance().getApartments());
 				} else {
 					ApartmentSearch search = new ApartmentSearch(req);
-					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getActiveApartments()));
+					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getApartments()));
 				}
 			}
 			
-		});
-		
-		get("/apartments/inactive", (req, res) -> {
-			String username = Utils.authenticate(req);
-			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-				res.status(403);
-				return "You cant access inactive apartments";
-			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
-				return g.toJson(ApartmentsDAO.getInstance().getMyInactiveApartments(username));
-			} else {
-				return g.toJson(ApartmentsDAO.getInstance().getInactiveApartments());
-			}
 		});
 		
 		put("/apartments/:id", (req, res) -> {
