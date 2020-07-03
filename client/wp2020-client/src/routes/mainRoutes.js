@@ -3,7 +3,6 @@ import Login from "./../screens/Login.vue";
 import Signup from "./../screens/Signup.vue";
 import NotFound from "./../screens/NotFound.vue";
 import Subroutes from "./subRoutes";
-//import UserService from "./../services/UserService";
 
 export default [
   {
@@ -17,15 +16,7 @@ export default [
     component: Login,
     meta: {
       title: " -  Login",
-    },
-    /*beforeEnter: function(to, from, next) {
-      if (UserService.getToken()) {
-        //this.$toasted.global.alreadyLoggedIn();  //baca error "Cannot read property toasted of undefined"
-        //this.$router.push({ name: "home" });
-      } else {
-        next();
-      }
-    },*/
+    }
   },
   {
     path: "/signup",
@@ -33,15 +24,7 @@ export default [
     component: Signup,
     meta: {
       title: " - Signup",
-    },
-    /*beforeEnter: function(to, from, next) {
-      if (UserService.getToken()) {
-        //this.$toasted.global.alreadyLoggedIn();
-        this.$router.push({ name: "home" });
-      } else {
-        next();
-      }
-    },*/
+    }
   },
   {
     path: "*",

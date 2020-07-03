@@ -71,6 +71,11 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    icon: 'error_outline',
  })
 
+ Vue.toasted.register('noPermission', 'You do not have permission to access this page!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
  Vue.toasted.register('signupError', 'Username already exists!', {
    type: 'error',
    icon: 'error_outline',

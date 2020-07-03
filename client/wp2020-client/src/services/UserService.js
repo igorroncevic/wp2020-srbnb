@@ -1,4 +1,5 @@
 import axios from "axios";
+import Vue from 'vue';
 
 class UsersService {
   constructor() {
@@ -17,7 +18,8 @@ class UsersService {
       .post("/users/login", userInfo)
       .then((response) => {
         if (response.status == 200) {
-          this.loginUser(response.data);
+          this.loginUser(response.data.JWT);
+          Vue.prototype.$userType = response.data.UserType;
           return true;
         }
         return false;
@@ -56,6 +58,7 @@ class UsersService {
 
   logoutUser() {
     window.localStorage.removeItem("jwt");
+    Vue.prototype.$userType = '';
   }
 }
 

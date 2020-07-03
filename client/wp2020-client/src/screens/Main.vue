@@ -14,6 +14,18 @@
           </li>
         </ul>
         <ul v-if="isLoggedIn">
+          <li v-if="isUserHost || isUserAdmin">
+            <router-link to="/search-users">Search Users</router-link>
+          </li>
+          <li>
+            <router-link to="/preview-bookings">Preview Bookings</router-link>
+          </li>
+          <li v-if="isUserHost && !isUserAdmin">
+            <router-link to="/add-apartment">Add Apartment</router-link>
+          </li>
+          <li v-if="isUserAdmin">
+            <router-link to="/amenities">Manage Amenities</router-link>
+          </li>
           <li>
             <router-link to="/settings">Settings</router-link>
           </li>
@@ -35,6 +47,12 @@ export default {
   computed: {
     isLoggedIn() {
       return UserService.getToken() === null ? false : true;
+    },
+    isUserHost(){
+       return this.$root.$userType == 'Host' ? true : false; 
+    },
+    isUserAdmin(){
+       return this.$root.$userType == 'Admin' ? true : false;
     }
   },
   methods: {
