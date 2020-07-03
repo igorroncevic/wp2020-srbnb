@@ -160,5 +160,65 @@ public class ApartmentsDAO {
 			if(apartment.getAmenities().contains(id))
 				apartment.getAmenities().remove(id);
 	}
+	
+	public boolean setDaysRented(int apartmentId, Date startDate, Date endDate) {
+		Apartment apartment = apartments.get(apartmentId);
+		for(int i = 0; i < apartment.getAvailableDaysForRent().size(); i = i + 2) {
+			Date start = apartment.getAvailableDaysForRent().get(i);
+			Date end = apartment.getAvailableDaysForRent().get(i+1);
+			if(startDate.compareTo(start) == 0 && endDate.compareTo(end) == 0) {
+				apartment.getAvailableDaysForRent().remove(i);
+				apartment.getAvailableDaysForRent().remove(i+1);
+				saveData();
+				return true;
+			} else if(startDate.compareTo(start) == 0 && endDate.compareTo(end) < 0) {
+				apartment.getAvailableDaysForRent().remove(i);
+				apartment.getAvailableDaysForRent().add(i, endDate);
+				saveData();
+				return true;
+			} else if(startDate.compareTo(start) > 0 && endDate.compareTo(end) == 0) {
+				apartment.getAvailableDaysForRent().remove(i+1);
+				apartment.getAvailableDaysForRent().add(i+1, startDate);
+				saveData();
+				return true;
+			} else if(startDate.compareTo(start) > 0 && endDate.compareTo(end) < 0) {
+				apartment.getAvailableDaysForRent().add(i+1, startDate);
+				apartment.getAvailableDaysForRent().add(i+2, endDate);
+				saveData();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void removeRentedDays(int apartmentId, Date startDate, Date endDate) {
+		Apartment apartment = apartments.get(apartmentId);
+		for(int i = 1; i < apartment.getAvailableDaysForRent().size(); i = i + 2) {
+			Date start = apartment.getAvailableDaysForRent().get(i);
+			Date end = apartment.getAvailableDaysForRent().get(i+1);
+			if(startDate.compareTo(start) == 0 && endDate.compareTo(end) == 0) {
+				apartment.getAvailableDaysForRent().remove(i);
+				apartment.getAvailableDaysForRent().remove(i+1);
+				saveData();
+				break;
+			} else if(startDate.compareTo(start) == 0 && endDate.compareTo(end) < 0) {
+				apartment.getAvailableDaysForRent().remove(i);
+				apartment.getAvailableDaysForRent().add(i, endDate);
+				saveData();
+				break;
+			} else if(startDate.compareTo(start) > 0 && endDate.compareTo(end) == 0) {
+				apartment.getAvailableDaysForRent().remove(i+1);
+				apartment.getAvailableDaysForRent().add(i+1, startDate);
+				saveData();
+				break;
+			} else if(startDate.compareTo(start) > 0 && endDate.compareTo(end) < 0) {
+				apartment.getAvailableDaysForRent().add(i+1, startDate);
+				apartment.getAvailableDaysForRent().add(i+2, endDate);
+				saveData();
+				break;
+			}
+		}
+	}
+	
 
 }

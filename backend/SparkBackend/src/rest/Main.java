@@ -429,8 +429,10 @@ public class Main {
 				String payload = req.body();
 				Reservation newReservation = g.fromJson(payload, Reservation.class);
 				newReservation.setGuest(username);
-				ReservationsDAO.getInstance().addNewReservation(newReservation);
-				return "Success";
+				if(ReservationsDAO.getInstance().addNewReservation(newReservation))
+					return "Success";
+				else
+					return "Error";
 			}
 		});
 		

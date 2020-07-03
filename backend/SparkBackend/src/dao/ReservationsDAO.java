@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,10 +67,19 @@ public class ReservationsDAO {
 	public boolean addNewReservation(Reservation newReservation) {
 		newReservation.setId(reservations.size());
 		newReservation.setStatus(ReservationStatus.Created);
-		//TODO Izracunati ukupnu cenu
-		reservations.put(newReservation.getId(), newReservation);
-		saveData();
-		return true;
+		
+		Date startDate = newReservation.getCheckInDay();
+		Calendar c = Calendar.getInstance();
+		c.setTime(startDate);
+		c.add(Calendar.DAY_OF_MONTH, newReservation.getNightsStaying());
+		Date endDate = c.getTime();
+		if(ApartmentsDAO.getInstance().setDaysRented(newReservation.getApartment(), startDate, endDate)) {
+			reservations.put(newReservation.getId(), newReservation);
+			saveData();
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -110,6 +121,12 @@ public class ReservationsDAO {
 			return false;
 		else {
 			if(reservations.get(id).getStatus() == ReservationStatus.Created || reservations.get(id).getStatus() == ReservationStatus.Accepted) {
+				Date startDate = reservations.get(id).getCheckInDay();
+				Calendar c = Calendar.getInstance();
+				c.setTime(startDate);
+				c.add(Calendar.DAY_OF_MONTH, reservations.get(id).getNightsStaying());
+				Date endDate = c.getTime();
+				ApartmentsDAO.getInstance().removeRentedDays(reservations.get(id).getApartment(), startDate, endDate);
 				reservations.get(id).setStatus(ReservationStatus.Canceled);
 				saveData();
 				return true;
@@ -138,6 +155,12 @@ public class ReservationsDAO {
 			return false;
 		else {
 			if(reservations.get(id).getStatus() == ReservationStatus.Created || reservations.get(id).getStatus() == ReservationStatus.Accepted) {
+				Date startDate = reservations.get(id).getCheckInDay();
+				Calendar c = Calendar.getInstance();
+				c.setTime(startDate);
+				c.add(Calendar.DAY_OF_MONTH, reservations.get(id).getNightsStaying());
+				Date endDate = c.getTime();
+				ApartmentsDAO.getInstance().removeRentedDays(reservations.get(id).getApartment(), startDate, endDate);
 				reservations.get(id).setStatus(ReservationStatus.Declined);
 				saveData();
 				return true;
