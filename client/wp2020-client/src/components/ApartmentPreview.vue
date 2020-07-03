@@ -1,7 +1,7 @@
 <template>
   <div id="grid-container">
     <div id="header-wrapper">
-      <h1>Apartmani Peric</h1>
+      <h1>{{apartment.name}}</h1>
       <div id="city-edit">
         <p>{{apartment.location.address.street}} {{apartment.location.address.number}}, {{apartment.location.address.place}}</p>
         <div id="edit-btn">
@@ -32,7 +32,7 @@
               <svg style="width:24px;height:24px; margin-bottom: -4px;" viewBox="0 0 24 24">
                 <path fill="#e8394d" d="M12,2L1,21H23M12,6L19.53,19H4.47" />
               </svg>
-              {{amenityItem}}
+              {{amenityItem.name}}
             </div>
           </div>
           <p
@@ -113,7 +113,6 @@
     </div>
     <div id="my-review">
       <div class="my-review-title">Write a Review</div>
-      <div class="review-my-photo"></div>
       <div class="review-my-rating" style="font-size: 18px; margin-left: 110px;">
         <star-rating v-model="rating"></star-rating>
       </div>
@@ -141,6 +140,8 @@ import moment from "moment";
 import ApartmentsService from "./../services/ApartmentsService";
 import ReservationsService from "./../services/ReservationsService";
 import UserService from "./../services/UserService";
+import AmenitiesService from "./../services/AmenitiesService";
+import CommentsService from "./../services/CommentsService";
 
 export default {
   components: {
@@ -194,7 +195,12 @@ export default {
       this.disabledEndDates.ranges.push(oneRange);
     }
     // Get amenities
-    //this.amenities = await AmenitiesService.getAmenitiesForApartment(this.$route.params.id);
+    this.amenities = await AmenitiesService.getAmenitiesForApartment(
+      this.$route.params.id
+    );
+    this.reviews = await CommentsService.getCommentsForApartment(
+      this.$route.params.id
+    );
   },
   data() {
     return {
@@ -255,14 +261,22 @@ export default {
     };
   },
   methods: {
-    publishReview() {
-      this.reviews.push({
-        user: this.user,
+    async publishReview() {
+      var review = {
+        apartment: this.apartmentId,
         rating: this.rating,
-        text: this.text
-      });
-      this.text = "";
-      this.rating = 0;
+        content: this.text
+      };
+      var success = await CommentsService.postComment(review);
+      if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1500);
+        return;
+      } else {
+        this.$toasted.global.cantPostComment();
+      }
     },
     async placeReservation() {
       var start = moment(this.startDate);
@@ -274,19 +288,22 @@ export default {
         return;
       }
 
-      if(!UserService.getToken()){
-         this.$toasted.global.notLoggedIn();
-         return;
+      if (!UserService.getToken()) {
+        this.$toasted.global.notLoggedIn();
+        return;
       }
 
       var success = await ReservationsService.placeReservation({
         apartment: this.apartment.id,
         checkInDay: moment(this.startDate, "dd-mm-yyyy"),
         nightsStaying: nightsStaying,
-        //reservationMessage: this.reservationMessage
+        reservationMessage: this.reservationMessage
       });
       if (success) {
         this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1500);
       } else {
         this.$toasted.global.unsuccessfulReservation();
       }
@@ -357,7 +374,7 @@ p {
   grid-row: 2;
   display: grid;
   grid-template-columns: 400px 150px;
-  column-gap: 72.5%;
+  column-gap: 72.4%;
 }
 #edit-btn {
   position: relative;

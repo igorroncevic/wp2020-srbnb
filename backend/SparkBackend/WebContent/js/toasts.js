@@ -84,7 +84,11 @@ Vue.toasted.register('noApartmentWithThisId', 'Apartment with this id does not e
    type: 'error',
    icon: 'error_outline',
  })
-
+ 
+ Vue.toasted.register('cantPostComment', 'There was an error while posting a comment!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
 
 
  // Authorization errors

@@ -1,7 +1,7 @@
 import axios from "axios";
 import usersService from "./UserService";
 
-class AmenitiesService {
+class CommentsService {
   constructor() {
     this.apiClient = axios.create({
       baseURL: "http://localhost:8080",
@@ -12,9 +12,9 @@ class AmenitiesService {
     });
   }
 
-  async getAllAmenities() {
-    var amenities = await this.apiClient
-      .get("/amenities")
+  async getCommentsForApartment(id) {
+    var comments = await this.apiClient
+      .get(`/apartments/${id}/comments`)
       .then((response) => {
         if (response.status == 200) {
           return response.data;
@@ -25,26 +25,26 @@ class AmenitiesService {
         console.log(err);
         return [];
       });
-    return amenities;
+    return comments;
   }
 
-  async getAmenitiesForApartment(id) {
-   var amenities = await this.apiClient
-     .get(`/apartments/${id}/amenities`)
+  async postComment(comment) {
+   var success = await this.apiClient
+     .post(`/comments`, comment)
      .then((response) => {
        if (response.status == 200) {
-         return response.data;
+         return true;
        }
-       return [];
+       return false;
      })
      .catch((err) => {
        console.log(err);
-       return [];
+       return false;
      });
-   return amenities;
+   return success;
  }
 }
 
-const amenitiesService = new AmenitiesService();
+const commentsService = new CommentsService();
 
-export default amenitiesService;
+export default commentsService;

@@ -1,7 +1,7 @@
 <template>
   <div class="review-item">
     <div class="review-user-photo"></div>
-    <div class="review-user-name">{{review.user}}</div>
+    <div class="review-user-name">{{review.author}}</div>
     <div class="review-rating" style="font-size: 18px;">
       {{review.rating}}/5
       <svg
@@ -14,7 +14,7 @@
         />
       </svg>
     </div>
-    <div class="review-text">{{review.text}}</div>
+    <div class="review-text">{{review.content}}</div>
   </div>
 </template>
 
