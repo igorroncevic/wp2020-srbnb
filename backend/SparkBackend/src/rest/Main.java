@@ -212,6 +212,25 @@ public class Main {
 			
 		});
 		
+		get("/apartments/:id/comments", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int apartmentId = Integer.parseInt(req.params("id"));
+			if(username == null) {
+				res.status(401);
+				return "You must login first";
+			} else {
+				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+					return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
+			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
+			    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username))
+			    		return "You dont have permission to view comments for this apartment";
+			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    } else {
+			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    }
+			}
+		});
+		
 		put("/apartments/:id", (req, res) -> {
 			String username = Utils.authenticate(req);
 			int id = Integer.parseInt(req.params("id"));
@@ -470,19 +489,24 @@ public class Main {
 		
 		get("/comments/:id", (req, res) -> {
 			String username = Utils.authenticate(req);
-			int apartmentId = Integer.parseInt(req.params("id"));
+			int id = Integer.parseInt(req.params("id"));
+			Comment comment = CommentsDAO.getInstance().getComment(id);
 			if(username == null) {
 				res.status(401);
 				return "You must login first";
 			} else {
 				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-					return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
+					if(comment.isVisibleToGuests())
+						return g.toJson(comment);
+					else
+						return "You cant see this comment";
 			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-			    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username))
+			    	if(!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username))
 			    		return "You dont have permission to view comments for this apartment";
-			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    	else
+			    		return g.toJson(comment);
 			    } else {
-			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    	return g.toJson(comment);
 			    }
 			}
 		});
