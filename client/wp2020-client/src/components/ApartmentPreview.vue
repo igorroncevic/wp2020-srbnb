@@ -1,9 +1,9 @@
 <template>
   <div id="grid-container">
     <div id="header-wrapper">
-      <h1>{{apartment.name}}</h1>
+      <h1>Apartmani Peric</h1>
       <div id="city-edit">
-        <p>{{apartment.location.adress.place}}</p>
+        <p>{{apartment.location.address.street}} {{apartment.location.address.number}}, {{apartment.location.address.place}}</p>
         <div id="edit-btn">
           <svg style="width:20px;height:20px" viewBox="0 0 24 24">
             <path
@@ -19,8 +19,10 @@
     <div id="main-info-grid">
       <div id="left-col">
         <div id="apartment-header">
-          <div id="app-type">Entire apartment hosted by Petar</div>
-          <div id="amenities-preview">4 guests * 1 bedroom * 2 beds * 1 bath</div>
+          <div id="app-type">{{apartment.type}} hosted by {{apartment.host}}</div>
+          <div
+            id="amenities-preview"
+          >{{apartment.numberOfGuest}} guests * {{apartment.numberOfRooms}} room(s)</div>
           <div id="owner-photo"></div>
         </div>
         <div>
@@ -33,6 +35,10 @@
               {{amenityItem}}
             </div>
           </div>
+          <p
+            v-if="amenities.length == 0"
+            style="color: var(--main-text-color); font-weight: 400; margin-top: 20px; font-size:18px;"
+          >No amenities available.</p>
         </div>
       </div>
       <div id="right-col">
@@ -72,7 +78,13 @@
             <div class="form-item guests" style="width: 84.2%;" tabindex="1">
               <div class="stacked nest">
                 <label for="guests" class="label-style">GUESTS</label>
-                <input type="number" min="0" :max="apartment.numberOfGuest"  name="guests" placeholder="Number of guests" />
+                <input
+                  type="number"
+                  min="0"
+                  :max="apartment.numberOfGuest"
+                  name="guests"
+                  placeholder="Number of guests"
+                />
               </div>
             </div>
           </div>
@@ -86,7 +98,7 @@
             ></textarea>
           </div>
           <div id="button">
-            <Button text="Book" width="400" fontsize="24" height="50" />
+            <Button text="Book" width="400" fontsize="24" height="50" @clicked="placeReservation" />
           </div>
         </div>
       </div>
@@ -94,11 +106,14 @@
     <div id="reviews-title">Reviews</div>
     <div id="reviews-wrapper">
       <review-item v-for="(review, i) in reviews" :key="i" :review="review" />
+      <p
+        v-if="reviews.length == 0"
+        style="color: var(--main-text-color); font-weight: 400; margin-top: 20px; font-size:18px;"
+      >No reviews yet.</p>
     </div>
     <div id="my-review">
       <div class="my-review-title">Write a Review</div>
       <div class="review-my-photo"></div>
-      <div class="review-my-name">Petar Peric</div>
       <div class="review-my-rating" style="font-size: 18px; margin-left: 110px;">
         <star-rating v-model="rating"></star-rating>
       </div>
@@ -124,6 +139,8 @@ import StarRating from "./reusable/StarRating.vue";
 import Datepicker from "vuejs-datepicker";
 import moment from "moment";
 import ApartmentsService from "./../services/ApartmentsService";
+import ReservationsService from "./../services/ReservationsService";
+import UserService from "./../services/UserService";
 
 export default {
   components: {
@@ -134,7 +151,7 @@ export default {
   },
   name: "ApartmentPreview",
   async beforeMount() {
-     // Get apartment
+    // Get apartment
     this.apartment = await ApartmentsService.getApartmentById(
       this.$route.params.id
     );
@@ -144,30 +161,55 @@ export default {
       return;
     }
     console.log(this.apartment);
-    this.disabledStartDates.to = moment(this.apartment.daysForRent[0], "dd-mm-yyyy");
-    this.disabledStartDates.from = moment(this.apartment.daysForRent[1], "dd-mm-yyyy");
-    this.disabledEndDates.to = moment(this.apartment.daysForRent[0], "dd-mm-yyyy");
-    this.disabledEndDates.from = moment(this.apartment.daysForRent[1], "dd-mm-yyyy");
-
+    //Za slucaj da ima vise prekida u datumima
+    for (
+      var i = 0, j = -1;
+      j < this.apartment.availableDaysForRent.length;
+      i += 2, j += 2
+    ) {
+      let oneRange = {};
+      if (i == 0) {
+        oneRange.from = new Date(0, 0, 0);
+        oneRange.to = new Date(Date.now() - 8640000);
+        this.disabledStartDates.ranges.push(oneRange);
+        this.disabledEndDates.ranges.push(oneRange);
+        continue;
+      }
+      if (j == this.apartment.availableDaysForRent.length - 1) {
+        oneRange.from = this.toDate(this.apartment.availableDaysForRent[j]);
+        oneRange.to = new Date(86400000000000); //skoro max datum
+        this.disabledStartDates.ranges.push(oneRange);
+        this.disabledEndDates.ranges.push(oneRange);
+        continue;
+      }
+      if (
+        moment() > moment(this.apartment.availableDaysForRent[i]) &&
+        moment() > moment(this.apartment.availableDaysForRent[j])
+      ) {
+        continue;
+      }
+      oneRange.from = this.toDate(this.apartment.availableDaysForRent[j]);
+      oneRange.to = this.toDate(this.apartment.availableDaysForRent[i]);
+      this.disabledStartDates.ranges.push(oneRange);
+      this.disabledEndDates.ranges.push(oneRange);
+    }
     // Get amenities
     //this.amenities = await AmenitiesService.getAmenitiesForApartment(this.$route.params.id);
   },
-  mounted() {
-    this.$forceUpdate();
-  },
   data() {
     return {
-      apartments: null,
+      apartment: {},
       disabledStartDates: {
-        to: new Date(),
-        from: new Date()
+        ranges: []
       },
       disabledEndDates: {
-        to: new Date(),
-        from: new Date()
+        ranges: []
       },
       amenities: [],
-      reservationMessage:"",
+      reservationMessage: "",
+      startDate: "",
+      endDate: "",
+      reviews: []
       /*amenities: [
         "Private parking",
         "Microwave",
@@ -209,12 +251,7 @@ export default {
       user: "Jelena Maravic",
       startDate: "", //add 7 days
       endDate: "", //add 10 days
-      disabledStartDates: {
-        to: new Date(Date.now() - 8640000)
-      },
-      disabledEndDates: {
-        to: new Date(Date.now() - 8640000)
-      }*/
+      */
     };
   },
   methods: {
@@ -227,8 +264,39 @@ export default {
       this.text = "";
       this.rating = 0;
     },
+    async placeReservation() {
+      var start = moment(this.startDate);
+      var end = moment(this.endDate);
+      var nightsStaying = end.diff(start, "days");
+
+      if (nightsStaying <= 0) {
+        this.$toasted.global.startDateAfterEndDate();
+        return;
+      }
+
+      if(!UserService.getToken()){
+         this.$toasted.global.notLoggedIn();
+         return;
+      }
+
+      var success = await ReservationsService.placeReservation({
+        apartment: this.apartment.id,
+        checkInDay: moment(this.startDate, "dd-mm-yyyy"),
+        nightsStaying: nightsStaying,
+        //reservationMessage: this.reservationMessage
+      });
+      if (success) {
+        this.$toasted.global.successMessage();
+      } else {
+        this.$toasted.global.unsuccessfulReservation();
+      }
+    },
     customFormatter(date) {
       return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
+    },
+    toDate(date) {
+      var parts = date.split("-");
+      return new Date(parts[2], parts[1] - 1, parts[0]);
     }
   }
 };
@@ -267,7 +335,7 @@ input[data-v-8dc7cce2] {
 #grid-container {
   display: grid;
   grid-template-columns: repeat(19, 1fr);
-  margin-bottom: 150px;
+  margin-bottom: 250px;
 }
 #header-wrapper {
   grid-column: 2/18;
@@ -288,8 +356,8 @@ p {
 #city-edit {
   grid-row: 2;
   display: grid;
-  grid-template-columns: repeat(2, 150px);
-  column-gap: 85%;
+  grid-template-columns: 400px 150px;
+  column-gap: 72.5%;
 }
 #edit-btn {
   position: relative;
@@ -451,7 +519,7 @@ input[type="number"] {
 #message-for-the-host {
   grid-row: 3;
   display: grid;
-  margin-bottom: 11%;
+  margin-bottom: 8%;
 }
 textarea {
   position: relative;
@@ -475,7 +543,8 @@ textarea:focus-within {
 
 /* Reviews */
 #reviews-wrapper {
-  margin-top: 70px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   grid-row: 3;
   grid-column: 2/18;
   display: grid;
@@ -493,10 +562,13 @@ textarea:focus-within {
 #my-review {
   grid-row: 5;
   grid-column: 5/18;
+  position: relative;
+  left: 28%;
   display: grid;
   grid-template-columns: 3rem 25rem 15rem;
   grid-template-rows: 4rem 3rem auto 3rem;
-  margin-top: 50px;
+  margin-top: 25px;
+  margin-bottom: 50px;
 }
 .my-review-title {
   grid-row: 1;

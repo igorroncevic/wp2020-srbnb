@@ -10,6 +10,11 @@ Vue.use(Toasted, {
 
 
 // Info messages
+Vue.toasted.register('notLoggedIn', 'You are not logged in. Please log in to continue', {
+   type: 'info',
+   icon: 'info',
+ })
+
 Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    type: 'info',
    icon: 'info',
@@ -20,6 +25,9 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    icon: 'info',
  })
 
+
+
+ //Success messages
  Vue.toasted.register('successMessage', 'Success!', {
    type: 'success',
    icon: 'done_outline',
@@ -62,13 +70,20 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    icon: 'error_outline',
  })
 
- Vue.toasted.register('noApartmentWithThisId', 'Apartment with this id does not exist!', {
+
+
+ 
+// Backend errors
+
+Vue.toasted.register('noApartmentWithThisId', 'Apartment with this id does not exist!', {
    type: 'error',
    icon: 'error_outline',
  })
 
- 
-
+ Vue.toasted.register('unsuccessfulReservation', 'There was an error while placing reservation! Please check your parametres.', {
+   type: 'error',
+   icon: 'error_outline',
+ })
 
 
 
