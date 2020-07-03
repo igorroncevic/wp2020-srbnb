@@ -70,6 +70,11 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    icon: 'error_outline',
  })
 
+ Vue.toasted.register('badEmail', 'Bad email format! (example@srbnb.com)', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
 
 
  

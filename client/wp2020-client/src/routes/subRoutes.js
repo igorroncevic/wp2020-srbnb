@@ -2,8 +2,6 @@ import Home from "./../components/Home.vue";
 import SearchResults from "./../components/SearchResults.vue";
 import Settings from "./../components/Settings.vue";
 import ApartmentPreview from "./../components/ApartmentPreview.vue";
-import EditUserInfo from "./../components/EditUserInfo.vue";
-import ChangePassword from "./../components/ChangePassword.vue";
 import UserProfile from "./../components/UserProfile.vue";
 import SearchUsers from "./../components/SearchUsers.vue";
 import PreviewBookings from "./../components/PreviewBookings.vue";
@@ -33,24 +31,9 @@ export default [
   {
     path: "/settings",
     component: Settings,
-    children: [
-      {
-        path: "",
-        component: EditUserInfo,
-        name: "editUserInfo",
-        meta: {
-          title: " - Edit Your Profile",
-        },
-      },
-      {
-        path: "change-password",
-        component: ChangePassword,
-        name: "changePassword",
-        meta: {
-          title: " - Change Your Password",
-        },
-      },
-    ],
+    meta: {
+      title: " - Edit Your Profile",
+    },
   },
   {
     path: "apartment-preview/:id",
@@ -59,7 +42,7 @@ export default [
     meta: {
       title: " - Apartment Preview",
     },
-    props: true
+    props: true,
   },
   {
     path: "user-profile",
@@ -76,8 +59,8 @@ export default [
     meta: {
       title: " - Search Users",
     },
-    beforeEnter: (to, from, next) =>{
-       console.log(Vue.prototype.$userType);
+    beforeEnter: (to, from, next) => {
+      console.log(Vue.prototype.$userType);
       if (
         Vue.prototype.$userType != "Admin" &&
         Vue.prototype.$userType != "Host"
@@ -111,7 +94,7 @@ export default [
     meta: {
       title: " - Manage Amenities",
     },
-    beforeEnter: (to, from, next) =>{
+    beforeEnter: (to, from, next) => {
       if (Vue.prototype.$userType != "Admin") {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",
@@ -134,7 +117,7 @@ export default [
     meta: {
       title: " - Add New Apartment",
     },
-    beforeEnter: (to, from, next) =>{
+    beforeEnter: (to, from, next) => {
       if (Vue.prototype.$userType != "Host") {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",

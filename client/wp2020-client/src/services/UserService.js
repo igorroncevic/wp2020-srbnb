@@ -1,5 +1,5 @@
 import axios from "axios";
-import Vue from 'vue';
+import Vue from "vue";
 
 class UsersService {
   constructor() {
@@ -28,7 +28,7 @@ class UsersService {
         console.log(err);
         return false;
       });
-      return success;
+    return success;
   }
 
   async signup(userInfo) {
@@ -45,7 +45,40 @@ class UsersService {
         console.log(JSON.stringify(err));
         return false;
       });
-      return success;
+    return success;
+  }
+
+  async getMyInfo() {
+    const myData = await this.apiClient
+      .get("/users/myinfo")
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200) {
+          return response.data;
+        }
+        return null;
+      })
+      .catch((err) => {
+        console.log(err);
+        return null;
+      });
+    return myData;
+  }
+
+  async updateUserData(data) {
+    const success = await this.apiClient
+      .put("/users", data)
+      .then((response) => {
+        if (response.status == 200) {
+          return true;
+        }
+        return false;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
   }
 
   getToken() {
@@ -58,7 +91,7 @@ class UsersService {
 
   logoutUser() {
     window.localStorage.removeItem("jwt");
-    Vue.prototype.$userType = '';
+    Vue.prototype.$userType = "";
   }
 }
 

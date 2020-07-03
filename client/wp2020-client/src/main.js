@@ -6,7 +6,6 @@ import VueRouter from "vue-router";
 import "./../public/css/styles.css";
 import "./../public/js/toasts.js";
 import routes from "./routes/mainRoutes";
-import UserService from "./services/UserService";
 
 Vue.use(VueRouter);
 
@@ -24,11 +23,6 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   document.title = "Srbnb";
   if (to.meta.title) document.title += to.meta.title;
-  if (UserService.getToken() === null) {
-    console.log("nema tokena");
-  } else {
-    console.log("ulogovan");
-  }
   next();
 });
 
