@@ -298,6 +298,25 @@ public class Main {
 			}
 		});
 		
+		get("/apartments/:id/amenities", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			Apartment apartment = ApartmentsDAO.getInstance().getApartment(id);
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				if(apartment.getStatus() == ApartmentStatus.Inactive)
+					return "You can't view inactive apartments";
+				else
+					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				if(!apartment.getHost().equals(username))
+					return "You can't view this apartment";
+				else
+					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
+			} else {
+				return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
+			}
+		});
+		
 		get("/amenities", (req, res) -> {
 			String username = Utils.authenticate(req);
 			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
