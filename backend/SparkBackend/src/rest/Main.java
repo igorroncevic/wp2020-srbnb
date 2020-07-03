@@ -13,6 +13,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Date;
 import java.security.Key;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import io.jsonwebtoken.security.Keys;
 import model.*;
 import model.enums.ReservationStatus;
@@ -40,8 +43,16 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class Main {
 
-	public static JsonSerializer<Date> ser = (src, typeOfSrc, context) -> src == null ? null : new JsonPrimitive(src.getTime());
-	public static JsonDeserializer<Date> deser = (jSon, typeOfT, context) -> jSon == null ? null : new Date(jSon.getAsLong());
+	public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	public static JsonSerializer<Date> ser = (src, typeOfSrc, context) -> src == null ? null : new JsonPrimitive(dateFormat.format(src));
+	public static JsonDeserializer<Date> deser = (jSon, typeOfT, context) -> {
+		try {
+			return jSon == null ? null : dateFormat.parse(jSon.getAsString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	};
 	public static Gson g = new GsonBuilder()
 			   .registerTypeAdapter(Date.class, ser)
 			   .registerTypeAdapter(Date.class, deser).create();

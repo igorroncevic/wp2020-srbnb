@@ -1,1 +1,112 @@
-[{"id":0,"numberOfRooms":3,"numberOfGuest":6,"location":{"latitude":45.2818875,"longitude":19.8936123,"address":{"street":"Gogoljeva","number":"7A","place":"Novi Sad, Serbia","zipCode":21000}},"daysForRent":[1593258773158,1593345173158,1593431573158],"availableDaysForRent":[1593258773158,1593345173158,1593431573158],"host":"zoransijan","images":[],"pricePerNight":15.0,"checkInTime":14,"checkOutTime":10,"status":"Active","amenities":[0,1,2]},{"id":1,"numberOfRooms":2,"numberOfGuest":4,"location":{"latitude":45.2518875,"longitude":19.8336123,"address":{"street":"Antona Cehova","number":"BB","place":"Novi Sad, Serbia","zipCode":21000}},"daysForRent":[1593258773158,1593345173158,1593431573158],"availableDaysForRent":[1593258773158,1593345173158,1593431573158],"host":"zoransijan","images":[],"pricePerNight":20.0,"checkInTime":14,"checkOutTime":10,"status":"Active","amenities":[0,2]},{"id":2,"numberOfRooms":2,"numberOfGuest":4,"location":{"latitude":45.3018875,"longitude":19.8136123,"address":{"street":"Somborski Bulevar","number":"15","place":"Novi Sad, Serbia","zipCode":21000}},"daysForRent":[1593258773158,1593345173158,1593431573158],"availableDaysForRent":[1593258773158,1593345173158,1593431573158],"host":"vojapetrovic","images":[],"pricePerNight":20.0,"checkInTime":14,"checkOutTime":10,"status":"Inactive","amenities":[0,2]},{"id":3,"numberOfRooms":2,"numberOfGuest":4,"location":{"latitude":45.2831875,"longitude":19.8924123,"address":{"street":"Somborski Bulevar","number":"15","place":"Novi Sad, Serbia","zipCode":21000}},"daysForRent":[1593258773158,1593345173158,1593431573158],"images":[],"pricePerNight":20.0,"checkInTime":14,"checkOutTime":10,"amenities":[0,2]}]
+[
+   {
+      "id":0,
+      "numberOfRooms":3,
+      "numberOfGuest":6,
+      "location":{
+         "latitude":45.2818875,
+         "longitude":19.8936123,
+         "address":{
+            "street":"Gogoljeva",
+            "number":"7A",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         "01-04-2020",
+         "01-08-2020"
+      ],
+      "availableDaysForRent":[
+         "01-04-2020",
+         "01-08-2020"
+      ],
+      "host":"zoransijan",
+      "images":[
+
+      ],
+      "pricePerNight":15.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Active",
+      "amenities":[
+         0,
+         1,
+         2
+      ]
+   },
+   {
+      "id":1,
+      "numberOfRooms":2,
+      "numberOfGuest":4,
+      "location":{
+         "latitude":45.2518875,
+         "longitude":19.8336123,
+         "address":{
+            "street":"Antona Cehova",
+            "number":"BB",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         "15-05-2020",
+         "31-12-2020"
+      ],
+      "availableDaysForRent":[
+         "15-05-2020",
+         "31-12-2020"
+      ],
+      "host":"zoransijan",
+      "images":[
+
+      ],
+      "pricePerNight":20.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Active",
+      "amenities":[
+         0,
+         2
+      ]
+   },
+   {
+      "id":2,
+      "numberOfRooms":2,
+      "numberOfGuest":4,
+      "location":{
+         "latitude":45.3018875,
+         "longitude":19.8136123,
+         "address":{
+            "street":"Somborski Bulevar",
+            "number":"15",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         "01-05-2020.",
+         "01-08-2020.",
+         "15-08-2020.",
+         "01-09-2020"
+      ],
+      "availableDaysForRent":[
+         "01-05-2020.",
+         "01-08-2020.",
+         "15-08-2020.",
+         "01-09-2020"
+      ],
+      "host":"vojapetrovic",
+      "images":[
+
+      ],
+      "pricePerNight":20.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Active",
+      "amenities":[
+         0,
+         2
+      ]
+   }
+]
