@@ -56,7 +56,8 @@ public class Main {
 	};
 	public static Gson g = new GsonBuilder()
 			   .registerTypeAdapter(Date.class, ser)
-			   .registerTypeAdapter(Date.class, deser).create();
+			   .registerTypeAdapter(Date.class, deser)
+			   .create();
 	
 	public static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -145,24 +146,22 @@ public class Main {
 			}
 		});
 		
+		get("/users/myinfo", (req, res) -> {
+			String username = Utils.authenticate(req);
+			User user = UsersDAO.getInstance().getUser(username);
+			if(username == null) {
+				res.status(403);
+				return "You are not logged in";
+			} else {
+				return g.toJson(user);
+			}
+		});
+		
 		get("/users/:user", (req, res) -> {
 			String username = Utils.authenticate(req);
 			String usernameToGet = req.params("user");
 			User user = UsersDAO.getInstance().getUser(usernameToGet);
-			if(usernameToGet.equals(username))
-				return g.toJson(user);
-			
-			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-				res.status(403);
-				return "You can't view users";
-			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
-				return g.toJson(user);
-			} else {
-				if(!UsersDAO.getInstance().isMyGuest(username, usernameToGet))
-					return "You can't get this user";
-				else 
-					return g.toJson(user);
-			}
+			return g.toJson(user);
 		});
 		
 		get("/apartments", (req, res) -> {
@@ -210,6 +209,25 @@ public class Main {
 				return g.toJson(apartment);
 			}
 			
+		});
+		
+		get("/apartments/:id/comments", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int apartmentId = Integer.parseInt(req.params("id"));
+			if(username == null) {
+				res.status(401);
+				return "You must login first";
+			} else {
+				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+					return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
+			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
+			    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username))
+			    		return "You dont have permission to view comments for this apartment";
+			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    } else {
+			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    }
+			}
 		});
 		
 		put("/apartments/:id", (req, res) -> {
@@ -276,6 +294,25 @@ public class Main {
 				newApartment.setHost(username);
 				ApartmentsDAO.getInstance().addNewApartment(newApartment);
 				return "Success";
+			}
+		});
+		
+		get("/apartments/:id/amenities", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			Apartment apartment = ApartmentsDAO.getInstance().getApartment(id);
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				if(apartment.getStatus() == ApartmentStatus.Inactive)
+					return "You can't view inactive apartments";
+				else
+					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				if(!apartment.getHost().equals(username))
+					return "You can't view this apartment";
+				else
+					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
+			} else {
+				return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
 			}
 		});
 		
@@ -470,19 +507,24 @@ public class Main {
 		
 		get("/comments/:id", (req, res) -> {
 			String username = Utils.authenticate(req);
-			int apartmentId = Integer.parseInt(req.params("id"));
+			int id = Integer.parseInt(req.params("id"));
+			Comment comment = CommentsDAO.getInstance().getComment(id);
 			if(username == null) {
 				res.status(401);
 				return "You must login first";
 			} else {
 				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-					return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
+					if(comment.isVisibleToGuests())
+						return g.toJson(comment);
+					else
+						return "You cant see this comment";
 			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-			    	if(!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username))
+			    	if(!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username))
 			    		return "You dont have permission to view comments for this apartment";
-			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    	else
+			    		return g.toJson(comment);
 			    } else {
-			    	return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
+			    	return g.toJson(comment);
 			    }
 			}
 		});

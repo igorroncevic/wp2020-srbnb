@@ -10,6 +10,7 @@ import model.enums.ApartmentType;
 public class Apartment {
 
 	private int id;
+	private String apartmentname;
 	private ApartmentType type;
 	private int numberOfRooms;
 	private int numberOfGuest;
@@ -25,10 +26,11 @@ public class Apartment {
 	
 	
 
-	public Apartment(ApartmentType type, int numberOfRooms, int numberOfGuest, Location location, List<Date> daysForRent, 
+	public Apartment(ApartmentType type, String apartmentname, int numberOfRooms, int numberOfGuest, Location location, List<Date> daysForRent, 
 					 List<Date> availableDaysForRent, String host, double pricePerNight, ApartmentStatus status) {
 		super();
 		this.type = type;
+		this.apartmentname = apartmentname;
 		this.numberOfRooms = numberOfRooms;
 		this.numberOfGuest = numberOfGuest;
 		this.location = location;
@@ -46,6 +48,14 @@ public class Apartment {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getApartmentname() {
+		return apartmentname;
+	}
+
+	public void setApartmentname(String apartmentname) {
+		this.apartmentname = apartmentname;
 	}
 
 	public ApartmentType getType() {

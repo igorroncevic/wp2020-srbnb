@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -92,5 +93,14 @@ public class AmenitiesDAO {
 	
 	public Collection<Amenity> getAmenities() {
 		return amenities.values();
+	}
+	
+	public List<Amenity> getAmenitiesForApartment(Apartment apartment) {
+		List<Amenity> amenitiesInApartment = new ArrayList<Amenity>();
+		
+		for(int id : apartment.getAmenities())
+			amenitiesInApartment.add(this.amenities.get(id));
+		
+		return amenitiesInApartment;
 	}
 }
