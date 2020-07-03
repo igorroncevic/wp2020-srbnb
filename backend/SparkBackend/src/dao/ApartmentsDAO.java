@@ -151,6 +151,10 @@ public class ApartmentsDAO {
 		return new ArrayList<Apartment>(apartments.values());
 	}
 	
+	public Apartment getApartment(int id) {
+		return apartments.get(id);
+	}
+	
 	public void deleteAmenity(int id) {
 		for(Apartment apartment : apartments.values())
 			if(apartment.getAmenities().contains(id))

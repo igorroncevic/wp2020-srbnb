@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 
 import io.jsonwebtoken.security.Keys;
 import model.*;
+import model.enums.ApartmentStatus;
 import model.enums.ReservationStatus;
 import model.enums.UserType;
 import requests.ApartmentSearch;
@@ -165,6 +166,26 @@ public class Main {
 					ApartmentSearch search = new ApartmentSearch(req);
 					return g.toJson(ApartmentsDAO.getInstance().searchApartments(search, ApartmentsDAO.getInstance().getApartments()));
 				}
+			}
+			
+		});
+		
+		get("/apartments/:id", (req, res) -> {
+			String username = Utils.authenticate(req);
+			int id = Integer.parseInt(req.params("id"));
+			Apartment apartment = ApartmentsDAO.getInstance().getApartment(id);
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				if(apartment.getStatus() == ApartmentStatus.Inactive)
+					return "You can't view inactive apartments";
+				else
+					return g.toJson(apartment);
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Host){
+				if(!apartment.getHost().equals(username))
+					return "You can't view this apartment";
+				else
+					return g.toJson(apartment);
+			} else {
+				return g.toJson(apartment);
 			}
 			
 		});

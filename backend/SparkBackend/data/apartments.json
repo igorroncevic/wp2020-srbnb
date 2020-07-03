@@ -69,7 +69,7 @@
    {
       "id":2,
       "type":"Room",
-      "numberOfRooms":2,
+      "numberOfRooms":1,
       "numberOfGuest":4,
       "location":{
          "latitude":45.3018875,
@@ -88,9 +88,9 @@
          "01-09-2020"
       ],
       "availableDaysForRent":[
-         "01-05-2020.",
-         "01-08-2020.",
-         "15-08-2020.",
+         "01-05-2020",
+         "01-08-2020",
+         "15-08-2020",
          "01-09-2020"
       ],
       "host":"vojapetrovic",
@@ -98,6 +98,39 @@
       "checkInTime":14,
       "checkOutTime":10,
       "status":"Active",
+      "amenities":[
+         0,
+         2
+      ]
+   },
+   {
+      "id":3,
+      "type":"Room",
+      "numberOfRooms":1,
+      "numberOfGuest":4,
+      "location":{
+         "latitude":45.244383,
+         "longitude":19.828988,
+         "address":{
+            "street":"Doza Djerdja",
+            "number":"70",
+            "place":"Novi Sad, Serbia",
+            "zipCode":21000
+         }
+      },
+      "daysForRent":[
+         "01-01-2020",
+         "31-12-2020"
+      ],
+      "availableDaysForRent":[
+         "01-01-2020",
+         "31-12-2020"
+      ],
+      "host":"vojapetrovic",
+      "pricePerNight":20.0,
+      "checkInTime":14,
+      "checkOutTime":10,
+      "status":"Inactive",
       "amenities":[
          0,
          2
