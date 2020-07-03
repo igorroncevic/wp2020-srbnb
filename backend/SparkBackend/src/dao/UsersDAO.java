@@ -131,6 +131,14 @@ public class UsersDAO {
 		return myGuests;
 	}
 	
+	public boolean isMyGuest(String host, String guest) {
+		for(Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host))
+			if(reservation.getGuest().equals(guest))
+				return true;
+		
+		return false;
+	}
+	
 	public List<User> searchMyGuests(String host, String search) {
 		List<User> match = new ArrayList<User>();
 		

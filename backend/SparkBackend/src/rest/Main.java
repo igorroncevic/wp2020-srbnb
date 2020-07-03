@@ -143,6 +143,26 @@ public class Main {
 			}
 		});
 		
+		get("/users/:user", (req, res) -> {
+			String username = Utils.authenticate(req);
+			String usernameToGet = req.params("user");
+			User user = UsersDAO.getInstance().getUser(usernameToGet);
+			if(usernameToGet.equals(username))
+				return g.toJson(user);
+			
+			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
+				res.status(403);
+				return "You can't view users";
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
+				return g.toJson(user);
+			} else {
+				if(!UsersDAO.getInstance().isMyGuest(username, usernameToGet))
+					return "You can't get this user";
+				else 
+					return g.toJson(user);
+			}
+		});
+		
 		get("/apartments", (req, res) -> {
 			String username = Utils.authenticate(req);
 			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
