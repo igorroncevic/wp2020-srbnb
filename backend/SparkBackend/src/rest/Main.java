@@ -81,7 +81,9 @@ public class Main {
 				res.status(400);
 				return "Failed to login";
 			} else {
-				return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date()).signWith(key).compact();
+				String jwt = Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date()).signWith(key).compact();
+				String userType = user.getType().toString();
+				return "{\"JWT\":\"" + jwt + "\",\"UserType\":\"" + userType + "\"}";
 			}
 			
 		});
