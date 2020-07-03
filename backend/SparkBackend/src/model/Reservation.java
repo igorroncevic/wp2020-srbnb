@@ -11,7 +11,7 @@ public class Reservation {
 	private Date checkInDay;
 	private int nightsStaying = 1;
 	private double totalPrice;
-	private String reservationMessage;
+	private String reservationMessage = "";
 	private String guest;
 	private ReservationStatus status;
 	
@@ -19,13 +19,14 @@ public class Reservation {
 		
 	}
 	
-	public Reservation(int apartment, Date checkInDay, int nightsStaying, String guest) {
+	public Reservation(int apartment, Date checkInDay, int nightsStaying, String guest, String reservationMessage) {
 		super();
 		this.apartment = apartment;
 		this.checkInDay = checkInDay;
 		this.nightsStaying = nightsStaying;
 		this.guest = guest;
 		this.status = ReservationStatus.Created;
+		this.reservationMessage = reservationMessage;
 	}
 
 	public int getApartment() {

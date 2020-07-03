@@ -56,7 +56,8 @@ public class Main {
 	};
 	public static Gson g = new GsonBuilder()
 			   .registerTypeAdapter(Date.class, ser)
-			   .registerTypeAdapter(Date.class, deser).create();
+			   .registerTypeAdapter(Date.class, deser)
+			   .create();
 	
 	public static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -160,17 +161,7 @@ public class Main {
 			String username = Utils.authenticate(req);
 			String usernameToGet = req.params("user");
 			User user = UsersDAO.getInstance().getUser(usernameToGet);
-			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-				res.status(403);
-				return "You can't view users";
-			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
-				return g.toJson(user);
-			} else {
-				if(!UsersDAO.getInstance().isMyGuest(username, usernameToGet))
-					return "You can't get this user";
-				else 
-					return g.toJson(user);
-			}
+			return g.toJson(user);
 		});
 		
 		get("/apartments", (req, res) -> {
