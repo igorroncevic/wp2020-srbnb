@@ -2,7 +2,7 @@
   <div class="search-result">
     <div id="app-picture">Picture</div>
     <div id="type">{{apartment.type}}</div>
-    <div id="title">{{apartment.name}}</div>
+    <div id="title">{{apartment.apartmentname}}</div>
     <div
       id="features"
     >{{apartment.guests}} guests • {{apartment.beds}} beds • {{apartment.bedrooms}} bedrooms</div>

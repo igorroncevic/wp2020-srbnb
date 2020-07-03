@@ -82,10 +82,6 @@ export default {
     this.gender = userData.gender;
     this.type = userData.type;
     this.setGender(this.gender);
-    this.$forceUpdate();
-  },
-  mounted() {
-    this.$forceUpdate();
   },
   data() {
     return {

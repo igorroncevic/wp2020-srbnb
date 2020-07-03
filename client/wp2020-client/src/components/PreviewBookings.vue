@@ -31,51 +31,47 @@
       </form>
       <!-- End of the form -->
     </div>
-    <table id="reservations" v-if="reservations.length != 0">
+    <table id="reservations" v-if="reservationsNonPending.length != 0">
       <tr>
         <th>Customer</th>
         <th>Check-in</th>
         <th>Check-out</th>
         <th>Message</th>
         <th>Apartment</th>
-        <th>Guests</th>
         <th>Status</th>
       </tr>
-      <tr v-for="(reservation,i) in reservations" :key="i">
-        <td class="customer">{{reservation.customer}}</td>
-        <td>{{reservation.checkin}}</td>
-        <td>{{reservation.checkout}}</td>
-        <td>{{reservation.message}}</td>
+      <tr v-for="(reservation,i) in reservationsNonPending" :key="i">
+        <td class="customer">{{reservation.guest}}</td>
+        <td>{{reservation.checkInDay}}</td>
+        <td>{{reservation.checkOutDay}}</td>
+        <td>{{reservation.reservationMessage}}</td>
         <td>{{reservation.apartment}}</td>
-        <td>{{reservation.guests}}</td>
         <td>{{reservation.status}}</td>
       </tr>
     </table>
     <div
       class="no-active-reservations"
-      v-if="reservations.length == 0"
+      v-if="reservationsNonPending.length == 0"
     >There are no active reservations!</div>
     <div id="pending-reservations-title">
       <h2>Pending reservations</h2>
     </div>
-    <table id="pending-reservations" v-if="reservations.length != 0">
+    <table id="pending-reservations" v-if="reservationsPending.length != 0">
       <tr>
-        <th>Customer</th>
+        <th>Guest</th>
         <th>Check-in</th>
         <th>Check-out</th>
         <th>Message</th>
         <th>Apartment</th>
-        <th>Guests</th>
         <th></th>
         <th></th>
       </tr>
-      <tr v-for="(reservation,i) in reservations" :key="i">
-        <td class="customer">{{reservation.customer}}</td>
-        <td>{{reservation.checkin}}</td>
-        <td>{{reservation.checkout}}</td>
-        <td>{{reservation.message}}</td>
+      <tr v-for="(reservation,i) in reservationsPending" :key="i">
+        <td class="customer">{{reservation.guest}}</td>
+        <td>{{reservation.checkInDay}}</td>
+        <td>{{reservation.checkOutDay}}</td>
+        <td>{{reservation.reservationMessage}}</td>
         <td>{{reservation.apartment}}</td>
-        <td>{{reservation.guests}}</td>
         <td>
           <Button text="Accept" width="96" height="34" fontsize="16" />
         </td>
@@ -86,7 +82,7 @@
     </table>
     <div
       class="no-pending-reservations"
-      v-if="reservations.length == 0"
+      v-if="reservationsPending.length == 0"
     >There are no pending reservations!</div>
   </div>
 </template>
@@ -94,18 +90,50 @@
 <script>
 import Button from "./form-components/Button.vue";
 import ReservationsService from "./../services/ReservationsService";
+import ApartmentsService from "./../services/ApartmentsService";
+import moment from "moment";
 
 export default {
   components: { Button },
   async beforeMount() {
     this.reservations = await ReservationsService.getReservations();
+
+    this.reservations.forEach(async reserv => {
+      console.log(reserv);
+      var app = await ApartmentsService.getApartmentById(reserv.apartment);
+      if (reserv.status != "Created") {
+        this.reservationsNonPending.push({
+          id: reserv.id,
+          guest: reserv.guest,
+          checkInDay: reserv.checkInDay,
+          checkOutDay: this.checkOutDay(reserv.apartment),
+          reservationMessage: reserv.reservationMessage == "" ? "None" : reserv.reservationMessage,
+          apartment: app.apartmentname,
+          status: reserv.status
+        });
+      } else if (reserv.status == "Created") {
+        this.reservationsPending.push({
+          id: reserv.id,
+          guest: reserv.guest,
+          checkInDay: reserv.checkInDay,
+          checkOutDay: this.checkOutDay(reserv.apartment),
+          reservationMessage: reserv.reservationMessage == "" ? "None" : reserv.reservationMessage,
+          apartment: app.apartmentname,
+          status: reserv.status
+        });
+      }
+    });
+    console.log(this.reservationsNonPending);
+    console.log(this.reservationsPending);
   },
   mounted() {
     this.$forceUpdate();
   },
   data() {
     return {
-       reservations: [],
+      reservations: [],
+      reservationsNonPending: [],
+      reservationsPending: []
       /*reservations: [
         {
           customer: "Jovan Jovanovic",
@@ -154,6 +182,15 @@ export default {
         }
       ]*/
     };
+  },
+  methods: {
+    checkOutDay(reservation) {
+      var date = moment(reservation.checkInDay).add(
+        reservation.nightsStaying,
+        "days"
+      );
+      return date.format("DD-MM-YYYY");
+    }
   }
 };
 </script>
@@ -213,7 +250,7 @@ td {
 .title-wrapper {
   grid-row: 0;
   margin-top: -10px;
-  grid-column: 1/4;
+  grid-column: 1/5;
   position: relative;
 }
 h1 {

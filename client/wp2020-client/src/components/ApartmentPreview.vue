@@ -1,7 +1,7 @@
 <template>
   <div id="grid-container">
     <div id="header-wrapper">
-      <h1>{{apartment.name}}</h1>
+      <h1>{{apartment.apartmentname}}</h1>
       <div id="city-edit">
         <p>{{apartment.location.address.street}} {{apartment.location.address.number}}, {{apartment.location.address.place}}</p>
         <div id="edit-btn">

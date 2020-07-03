@@ -52,15 +52,11 @@ class UsersService {
     const myData = await this.apiClient
       .get("/users/myinfo")
       .then((response) => {
-        console.log(response);
-        if (response.status == 200) {
-          return response.data;
-        }
-        return null;
+        return response.data;
       })
       .catch((err) => {
         console.log(err);
-        return null;
+        return {};
       });
     return myData;
   }
