@@ -44,6 +44,39 @@ class ReservationsService {
       });
     return reservations;
   }
+
+  async acceptReservation(reservation) {
+   const headers = usersService.setHeaders();
+   var success = this.apiClient
+     .put(`/reservations/${reservation.id}/accept`, reservation, {
+       headers,
+     })
+     .then(() => {
+       return true;
+     })
+     .catch((err) => {
+       console.log(err);
+       return false;
+     });
+   return success;
+ }
+
+ async declineReservation(reservation) {
+   const headers = usersService.setHeaders();
+   var success = this.apiClient
+     .put(`/reservations/${reservation.id}/decline`, reservation, {
+       headers,
+     })
+     .then(() => {
+       return true;
+     })
+     .catch((err) => {
+       console.log(err);
+       return false;
+     });
+   return success;
+ }
+
 }
 
 const reservationsService = new ReservationsService();

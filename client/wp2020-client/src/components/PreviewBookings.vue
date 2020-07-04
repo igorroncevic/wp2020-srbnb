@@ -73,10 +73,22 @@
         <td>{{reservation.reservationMessage}}</td>
         <td>{{reservation.apartment}}</td>
         <td>
-          <Button text="Accept" width="96" height="34" fontsize="16" />
+          <Button
+            text="Accept"
+            width="96"
+            height="34"
+            fontsize="16"
+            @clicked="acceptReservation(reservation)"
+          />
         </td>
         <td>
-          <Button text="Decline" width="96" height="34" fontsize="16" />
+          <Button
+            text="Decline"
+            width="96"
+            height="34"
+            fontsize="16"
+            @clicked="declineReservation(reservation)"
+          />
         </td>
       </tr>
     </table>
@@ -106,9 +118,12 @@ export default {
           id: reserv.id,
           guest: reserv.guest,
           checkInDay: reserv.checkInDay,
-          checkOutDay: this.checkOutDay(reserv.apartment),
-          reservationMessage: reserv.reservationMessage == "" ? "None" : reserv.reservationMessage,
-          apartment: app.apartmentname,
+          checkOutDay: this.checkOutDay(reserv),
+          reservationMessage:
+            reserv.reservationMessage == ""
+              ? "None"
+              : reserv.reservationMessage,
+          apartment: app.name,
           status: reserv.status
         });
       } else if (reserv.status == "Created") {
@@ -116,9 +131,12 @@ export default {
           id: reserv.id,
           guest: reserv.guest,
           checkInDay: reserv.checkInDay,
-          checkOutDay: this.checkOutDay(reserv.apartment),
-          reservationMessage: reserv.reservationMessage == "" ? "None" : reserv.reservationMessage,
-          apartment: app.apartmentname,
+          checkOutDay: this.checkOutDay(reserv),
+          reservationMessage:
+            reserv.reservationMessage == ""
+              ? "None"
+              : reserv.reservationMessage,
+          apartment: app.name,
           status: reserv.status
         });
       }
@@ -185,11 +203,33 @@ export default {
   },
   methods: {
     checkOutDay(reservation) {
-      var date = moment(reservation.checkInDay).add(
+      var date = moment(reservation.checkInDay, "DD-MM-YYYY").add(
         reservation.nightsStaying,
         "days"
       );
       return date.format("DD-MM-YYYY");
+    },
+    async acceptReservation(reservation) {
+      var success = await ReservationsService.acceptReservation(reservation);
+      if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1500);
+      } else {
+        this.$toasted.global.unknownError();
+      }
+    },
+    async declineReservation(reservation) {
+      var success = await ReservationsService.declineReservation(reservation);
+      if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1500);
+      } else {
+        this.$toasted.global.unknownError();
+      }
     }
   }
 };

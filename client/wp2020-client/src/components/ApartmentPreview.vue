@@ -201,6 +201,8 @@ export default {
     this.reviews = await CommentsService.getCommentsForApartment(
       this.$route.params.id
     );
+    console.log(this.amenities);
+    console.log(this.reviews);
   },
   data() {
     return {
@@ -212,52 +214,10 @@ export default {
         ranges: []
       },
       amenities: [],
+      reviews: [],
       reservationMessage: "",
       startDate: "",
       endDate: "",
-      reviews: []
-      /*amenities: [
-        "Private parking",
-        "Microwave",
-        "Stovetop",
-        "Kitchen",
-        "Wifi",
-        "Elevator",
-        "Garden",
-        "Refrigerator"
-      ],
-      reviews: [
-        {
-          user: "Marko Jovanovic",
-          rating: 4,
-          text:
-            "My stay at Apartments Peric was delightful! I loved every second of it and the owner was wonderful. Wish I could've stayed more."
-        },
-        {
-          user: "Petar Peric",
-          rating: 5,
-          text:
-            "My stay at Apartments Peric was delightful! I loved every second of it and the owner was wonderful. Wish I could've stayed more."
-        },
-        {
-          user: "Ivica Ivic",
-          rating: 4,
-          text:
-            "My stay at Apartments Peric was delightful! I loved every second of it and the owner was wonderful. Wish I could've stayed more."
-        },
-        {
-          user: "Marko Jovanovic",
-          rating: 3,
-          text:
-            "My stay at Apartments Peric was delightful! I loved every second of it and the owner was wonderful. Wish I could've stayed more."
-        }
-      ],
-      rating: 0,
-      text: "",
-      user: "Jelena Maravic",
-      startDate: "", //add 7 days
-      endDate: "", //add 10 days
-      */
     };
   },
   methods: {
@@ -271,7 +231,7 @@ export default {
       if (success) {
         this.$toasted.global.successMessage();
         setTimeout(() => {
-          //this.$router.go();
+          this.$router.go();
         }, 1500);
         return;
       } else {
@@ -536,7 +496,7 @@ input[type="number"] {
 #message-for-the-host {
   grid-row: 3;
   display: grid;
-  margin-bottom: 8%;
+  margin-bottom: 4%;
 }
 textarea {
   position: relative;
@@ -582,24 +542,18 @@ textarea:focus-within {
   position: relative;
   left: 28%;
   display: grid;
-  grid-template-columns: 3rem 25rem 15rem;
+  grid-template-columns: 3rem 22rem 5rem 15rem;
   grid-template-rows: 4rem 3rem auto 3rem;
   margin-top: 25px;
   margin-bottom: 50px;
 }
 .my-review-title {
-  grid-row: 1;
+  grid-row: 2;
   grid-column: 1/3;
   color: var(--main-text-color);
-  font-size: 28px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 400;
   margin-bottom: 10px;
-}
-.review-my-photo {
-  grid-column: 0;
-  grid-row: 2;
-  background: var(--brand-color);
-  border-radius: 50%;
 }
 .review-my-name {
   grid-column: 2;
@@ -612,7 +566,7 @@ textarea:focus-within {
   margin-bottom: 5px;
 }
 .review-my-rating {
-  grid-column: 3;
+  grid-column: 4;
   grid-row: 2;
   position: relative;
   top: 6%;
