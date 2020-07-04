@@ -263,7 +263,7 @@ export default {
   methods: {
     async publishReview() {
       var review = {
-        apartment: this.apartmentId,
+        apartment: this.apartment.id,
         rating: this.rating,
         content: this.text
       };
@@ -295,7 +295,7 @@ export default {
 
       var success = await ReservationsService.placeReservation({
         apartment: this.apartment.id,
-        checkInDay: moment(this.startDate, "dd-mm-yyyy"),
+        checkInDay: moment(start).format("DD-MM-YYYY"),
         nightsStaying: nightsStaying,
         reservationMessage: this.reservationMessage
       });
