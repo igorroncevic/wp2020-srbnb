@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import model.Reservation;
 import model.User;
 import model.enums.ReservationStatus;
+import requests.ReservationSearch;
 import rest.Main;
 
 public class ReservationsDAO {
@@ -108,12 +109,25 @@ public class ReservationsDAO {
 		return guestReservations;
 	}
 	
-	public Collection<Reservation> getReservations() {
-		return reservations.values();
+	public List<Reservation> getReservations() {
+		return new ArrayList<Reservation>(reservations.values());
 	}
 	
 	public Reservation getReservation(int id) {
 		return reservations.get(id);
+	}
+	
+	public List<Reservation> searchReservations(ReservationSearch search, List<Reservation> reservations) {
+		List<Reservation> match = new ArrayList<Reservation>();
+		
+		for(Reservation reservation : reservations) {
+			if(search.getGuest() != null && !reservation.getGuest().toLowerCase().contains(search.getGuest().toLowerCase())) continue;
+			if(search.getStatus() != null && reservation.getStatus() != search.getStatus()) continue;
+			
+			match.add(reservation);
+		}
+		
+		return match;
 	}
 	
 	public boolean cancleReservation(int id) {

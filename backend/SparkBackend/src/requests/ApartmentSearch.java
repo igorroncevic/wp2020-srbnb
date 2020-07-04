@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import model.enums.ApartmentStatus;
 import model.enums.ApartmentType;
 import rest.Main;
 import spark.Request;
@@ -22,6 +23,7 @@ public class ApartmentSearch {
 	private int numberOfGuests = -1;
 	private ApartmentType type = null;
 	private List<Integer> amenities= null;
+	private ApartmentStatus status = null;
 	
 	public ApartmentSearch(Request req) {
 		String sDateStart = req.queryParams("startdate");
@@ -75,7 +77,22 @@ public class ApartmentSearch {
 				this.amenities.add(a);
 			}
 		}
+		
+		String sStatus = req.queryParams("status");
+		if(sStatus != null && (sStatus.equals("Active") || sStatus.equals("Inactive")))
+			this.status = ApartmentStatus.valueOf(sStatus);
 	}
+	
+
+	public ApartmentStatus getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(ApartmentStatus status) {
+		this.status = status;
+	}
+
 
 	public Date getCheckInDate() {
 		return checkInDate;

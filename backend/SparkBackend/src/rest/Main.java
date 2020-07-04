@@ -23,6 +23,7 @@ import model.enums.ReservationStatus;
 import model.enums.UserType;
 import requests.ApartmentSearch;
 import requests.Login;
+import requests.ReservationSearch;
 import requests.UserSearch;
 
 import org.eclipse.jetty.security.UserAuthentication;
@@ -377,11 +378,27 @@ public class Main {
 				return "You must login first";
 			} else {
 				if(UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-			    	return g.toJson(ReservationsDAO.getInstance().getGuestReservations(username));
+					if(req.queryParams().isEmpty())
+						return g.toJson(ReservationsDAO.getInstance().getGuestReservations(username));
+					else {
+						ReservationSearch search = new ReservationSearch(req);
+						return g.toJson(ReservationsDAO.getInstance().searchReservations(search, ReservationsDAO.getInstance().getGuestReservations(username)));
+					}
 			    } else if(UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-			    	return g.toJson(ReservationsDAO.getInstance().getHostReservations(username));
+			    	if(req.queryParams().isEmpty())
+			    		return g.toJson(ReservationsDAO.getInstance().getHostReservations(username));
+					else {
+						ReservationSearch search = new ReservationSearch(req);
+						return g.toJson(ReservationsDAO.getInstance().searchReservations(search, ReservationsDAO.getInstance().getHostReservations(username)));
+					}
 			    } else {
-			    	return g.toJson(ReservationsDAO.getInstance().getReservations());
+			    	if(req.queryParams().isEmpty())
+			    		return g.toJson(ReservationsDAO.getInstance().getReservations());
+					else {
+						ReservationSearch search = new ReservationSearch(req);
+						return g.toJson(ReservationsDAO.getInstance().searchReservations(search, ReservationsDAO.getInstance().getReservations()));
+					}
+			    	
 			    }
 			}
 			

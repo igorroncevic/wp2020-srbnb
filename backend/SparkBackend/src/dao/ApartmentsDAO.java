@@ -113,8 +113,6 @@ public class ApartmentsDAO {
 	public List<Apartment> searchApartments(ApartmentSearch search, List<Apartment> apartments) {
 		List<Apartment> searchResult = new ArrayList<Apartment>();
 		
-		System.out.println(search.getAmenities());
-		
 		search:
 		for(Apartment apartment : apartments) {
 			if(search.getCheckInDate() != null && search.getCheckOutDate() != null && !isApartmentAvaliable(apartment.getId(), search.getCheckInDate(), search.getCheckOutDate())) continue;
@@ -129,6 +127,7 @@ public class ApartmentsDAO {
 				for(int amenity : search.getAmenities())
 					if(!apartment.getAmenities().contains(amenity))
 						continue search;
+			if(search.getStatus() != null && apartment.getStatus() != search.getStatus()) continue;
 			
 			searchResult.add(apartment);
 		}
