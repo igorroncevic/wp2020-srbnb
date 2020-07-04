@@ -2,17 +2,13 @@
   <div class="search-result">
     <div id="app-picture">Picture</div>
     <div id="type">{{apartment.type}}</div>
-    <div id="title">{{apartment.apartmentname}}</div>
-    <div
-      id="features"
-    >{{apartment.guests}} guests • {{apartment.beds}} beds • {{apartment.bedrooms}} bedrooms</div>
+    <div id="title">{{apartment.name}}</div>
+    <div id="features">{{apartment.numberOfGuest}} guests • {{apartment.numberOfRooms}} rooms</div>
     <div id="main-info">
       <span style="margin-bottom: 6px; font-size: 18px;">
         <span style="font-weight: bold">${{apartment.pricePerNight}}</span>/night
       </span>
-      <router-link
-        :to="{name: 'apartment-preview', params: {id: apartment.id}}"
-      >
+      <router-link :to="{name: 'apartment-preview', params: {id: apartment.id}}">
         <Button text="Visit" width="100" height="33" fontsize="15" id="visit-button" />
       </router-link>
     </div>
@@ -23,9 +19,20 @@
 import Button from "./../form-components/Button.vue";
 
 export default {
-  props: ["apartment"],
+  props: {
+    apartment: {
+      type: Object
+    }
+  },
   name: "SearchResult",
-  components: { Button }
+  components: { Button },
+  computed: {
+    apartmentType() {
+      return this.apartment.type == "Full_Apartment"
+        ? "Full apartment"
+        : this.apartment.type;
+    }
+  }
 };
 </script>
 

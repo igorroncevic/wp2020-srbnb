@@ -302,7 +302,7 @@ export default {
       if (success) {
         this.$toasted.global.successMessage();
         setTimeout(() => {
-          //this.$router.go();
+          this.$router.go();
         }, 1500);
       } else {
         this.$toasted.global.unsuccessfulReservation();

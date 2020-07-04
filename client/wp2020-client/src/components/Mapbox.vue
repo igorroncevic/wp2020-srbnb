@@ -7,10 +7,7 @@ import mapboxgl from "mapbox-gl";
 export default {
   props: {
     apartments: {
-      type: Array,
-      default() {
-        return [];
-      }
+      type: Array
     }
   },
   data() {
@@ -18,12 +15,29 @@ export default {
       accessToken: process.env.VUE_APP_MAPBOX_APIKEY
     };
   },
-  mounted() {
-    this.createMap();
+  created() {
+    setTimeout(() => {}, 2500);
+  },
+  beforeMount() {
+    this.$nextTick(() => {
+      this.createMap();
+    });
   },
   methods: {
     createMap() {
       mapboxgl.accessToken = this.accessToken;
+      if (this.apartments.length == 0) {
+        this.map = new mapboxgl.Map({
+          container: "map",
+          style: "mapbox://styles/mapbox/streets-v11",
+          minZoom: 12,
+          maxZoom: 17,
+          center: [19.8311387, 45.2506721], // Novi Sad je default
+          zoom: 14
+        });
+        return;
+      }
+
       this.map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/mapbox/streets-v11",
@@ -34,7 +48,6 @@ export default {
       });
 
       const bounds = new mapboxgl.LngLatBounds();
-      console.log(this.apartments);
       this.apartments.forEach(app => {
         //Create marker
         const el = document.createElement("div");
@@ -50,7 +63,7 @@ export default {
 
         //Add popup
         new mapboxgl.Popup({
-           closeOnClick: false
+          closeOnClick: false
         })
           .setLngLat([app.location.longitude, app.location.latitude])
           .setHTML(`<p>$${app.pricePerNight}</p>`)
@@ -79,7 +92,7 @@ export default {
   scale: 50%;
 }
 .mapboxgl-popup-content {
-   font-weight: 700;
+  font-weight: 700;
   font-size: 18px;
   padding-bottom: 1.5rem;
   padding-top: 0px;

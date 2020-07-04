@@ -11,7 +11,7 @@ class ApartmentsService {
   async searchApartments(params) {
    const headers = usersService.setHeaders();
     var apartments = await this.apiClient
-      .get("/search/apartments", params, {
+      .get("/apartments", params, {
          headers
       })
       .then((response) => {

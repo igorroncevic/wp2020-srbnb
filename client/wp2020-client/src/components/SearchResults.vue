@@ -7,17 +7,11 @@
         class="search-params"
       >{{guests}} guests • {{startDate}} - {{endDate}} • {{price}} • {{rooms}}</div>
       <div class="filters">
-        <!-- Beds -->
-        <div class="counter beds">
-          <p style="font-size: 20px; margin: 0px 5px 0 0;">Beds:</p>
-          <input type="number" v-model="beds" />
-        </div>
         <div id="apartment-type">
           <div class="dropdown-container">
             <select v-model="selectedType">
-              <!-- normal options -->
               <option value="Any_type">Any type</option>
-              <option value="Full_apartment">Full apartment</option>
+              <option value="Full_Apartment">Full apartment</option>
               <option value="Room">Room</option>
             </select>
             <div class="select-icon">
@@ -47,21 +41,20 @@
             </div>
           </div>
           <div id="checkboxes">
-            <label for="one">
-              <input type="checkbox" value="Hair dryer" id="one" /> Hair dryer
-            </label>
-            <label for="two">
-              <input type="checkbox" id="two" /> Fridge
-            </label>
-            <label for="three">
-              <input type="checkbox" id="three" /> Wi-Fi
-            </label>
-            <label for="three">
-              <input type="checkbox" id="three" /> TV
+            <label for="one" v-for="amenity in amenities" :key="amenity.id">
+              <input @change="addAmenity(amenity)" type="checkbox" :value="amenity.id" />
+              {{amenity.name}}
             </label>
           </div>
         </div>
-        <Button text="Apply filters" width="100" height="33" fontsize="15" class="filter-button" />
+        <Button
+          text="Apply filters"
+          width="100"
+          height="33"
+          fontsize="15"
+          class="filter-button"
+          @clicked="applyFilters"
+        />
       </div>
     </header>
     <main>
@@ -85,14 +78,15 @@
         >No apartments matching search criteria.</div>
       </div>
     </main>
-   <Mapbox :apartments="filteredApartments" class="map-container"></Mapbox>
+    <Mapbox v-if="apartmentsLoaded" :apartments="filteredApartments" class="map-container"></Mapbox>
   </div>
 </template>
 
 <script>
 import SearchResult from "./reusable/SearchResult.vue";
 import Mapbox from "./Mapbox.vue";
-//import ApartmentsService from "./../services/ApartmentsService";
+import ApartmentsService from "./../services/ApartmentsService";
+import AmenitiesService from "./../services/AmenitiesService";
 import Button from "./form-components/Button.vue";
 import moment from "moment";
 
@@ -104,22 +98,46 @@ export default {
     Button
   },
   async beforeMount() {
-    /*this.apartments = await ApartmentsService.searchApartments({
-      location: this.$route.query.location,
-      guests: this.$route.query.guests,
-      startDate: moment(this.$route.query.startDate).format("MM/DD/YYYY"),
-      endDate: moment(this.$route.query.endDate).format("MM/DD/YYYY"),
-      minRooms: this.$route.query.minRooms,
-      maxRooms: this.$route.query.maxRooms,
-      minPrice: this.$route.query.minPrice,
-      maxPrice: this.$route.query.maxPrice
-    });*/
+    if (this.$route.query.amenities) {
+      this.apartments = await ApartmentsService.searchApartments({
+        location: this.$route.query.location,
+        guests: this.$route.query.guests,
+        startDate: moment(this.$route.query.startDate).format("DD-MM-YYYY"),
+        endDate: moment(this.$route.query.endDate).format("DD-MM-YYYY"),
+        minRooms: this.$route.query.minRooms,
+        maxRooms: this.$route.query.maxRooms,
+        minPrice: this.$route.query.minPrice,
+        maxPrice: this.$route.query.maxPrice,
+        amenites: this.$route.query.amenities,
+        type: this.$route.query.selectedType
+      });
+    } else {
+      this.apartments = await ApartmentsService.searchApartments({
+        location: this.$route.query.location,
+        guests: this.$route.query.guests,
+        startDate: moment(this.$route.query.startDate).format("DD-MM-YYYY"),
+        endDate: moment(this.$route.query.endDate).format("DD-MM-YYYY"),
+        minRooms: this.$route.query.minRooms,
+        maxRooms: this.$route.query.maxRooms,
+        minPrice: this.$route.query.minPrice,
+        maxPrice: this.$route.query.maxPrice,
+        type: this.$route.query.selectedType
+      });
+    }
+
+    this.amenities = await AmenitiesService.getAllAmenities();
 
     this.location = this.$route.query.location;
-    var startDateParts = moment(this.$route.query.startDate)
+    var startDateQuery = this.$route.query.startDate.split("-");
+    var endDateQuery = this.$route.query.endDate.split("-");
+    var startDateParts = moment(
+      startDateQuery[1] + " " + startDateQuery[0] + "-" + startDateQuery[2]
+    )
       .format("MMMM Do YYYY")
       .split(" ");
-    var endDateParts = moment(this.$route.query.endDate)
+    var endDateParts = moment(
+      endDateQuery[1] + " " + endDateQuery[0] + "-" + endDateQuery[2]
+    )
       .format("MMMM Do YYYY")
       .split(" ");
     this.startDate = startDateParts[0] + " " + startDateParts[1];
@@ -164,6 +182,10 @@ export default {
         this.$route.query.maxPrice;
     }
     this.filteredApartments = [...this.apartments];
+    console.log(this.filteredApartments);
+    this.$nextTick(() => {
+      this.apartmentsLoaded = true;
+    });
     this.sortApartments();
   },
   mounted() {
@@ -181,8 +203,11 @@ export default {
       beds: 0,
       selectedType: "Any_type",
       amenitiesExpanded: false,
-      //apartments: [],
-      apartments: [
+      apartmentsLoaded: false,
+      apartments: [],
+      amenities: [],
+      selectedAmenities: [],
+      /*apartments: [
         {
           id: 1,
           name: "Apartments Perić",
@@ -262,14 +287,9 @@ export default {
             longitude: 19.8845322
           }
         }
-      ],
+      ],*/
       filteredApartments: []
     };
-  },
-  computed: {
-    bedsCounter() {
-      return this.beds;
-    }
   },
   methods: {
     chooseSort() {
@@ -300,48 +320,6 @@ export default {
         console.log(this.apartments);
       }
     },
-    /*handleTypeChange() {
-      if (this.selectedType == "Penthouse") {
-        this.filteredApartments = this.apartments.filter(
-          app => app.type == "Penthouse" && app.beds >= this.bedsCounter
-        );
-      } else if (this.selectedType == "Deluxe apartment") {
-        this.filteredApartments = this.apartments.filter(
-          app => app.type == "Deluxe apartment" && app.beds >= this.bedsCounter
-        );
-      } else if (this.selectedType == "Single room") {
-        this.filteredApartments = this.apartments.filter(
-          app => app.type == "Single room" && app.beds >= this.bedsCounter
-        );
-      } else if (this.selectedType == "Entire apartment") {
-        this.filteredApartments = this.apartments.filter(
-          app => app.type == "Entire apartment" && app.beds >= this.bedsCounter
-        );
-      } else if (this.selectedType == "Any type") {
-        this.filteredApartments = this.apartments.filter(
-          app => app.beds >= this.bedsCounter
-        );
-      }
-    },
-    filterByBeds() {
-      if (this.selectedType != "Any type") {
-        this.filteredApartments = this.apartments.filter(
-          app => app.beds >= this.bedsCounter && app.type == this.selectedType
-        );
-      } else {
-        this.filteredApartments = this.apartments.filter(
-          app => app.beds >= this.bedsCounter
-        );
-      }
-    },*/
-    incrementBeds() {
-      this.beds++;
-    },
-    decrementBeds() {
-      if (this.beds > 0) {
-        this.beds--;
-      }
-    },
     showCheckboxes() {
       var checkboxes = document.getElementById("checkboxes");
       if (!this.amenitiesExpanded) {
@@ -351,6 +329,85 @@ export default {
         checkboxes.style.display = "none";
         this.amenitiesExpanded = false;
       }
+    },
+    applyFilters() {
+      console.log(this.selectedType);
+      console.log(this.selectedAmenities);
+      if (
+        this.selectedAmenities.length == 0 &&
+        this.selectedType == "Any_type"
+      ) {
+        return;
+      }
+      var selectedAmenitiesString = this.selectedAmenities.reduce(curr => {
+        return curr + ",";
+      }, "");
+      selectedAmenitiesString = selectedAmenitiesString.substr(
+        0,
+        selectedAmenitiesString.length - 1
+      );
+      console.log(selectedAmenitiesString);
+
+      if (selectedAmenitiesString != "") {
+        this.$router.replace({
+          name: "search-results",
+          query: {
+            location: this.$route.query.location,
+            guests: this.$route.query.guests,
+            startDate: moment(this.$route.query.startDate).format("DD-MM-YYYY"),
+            endDate: moment(this.$route.query.endDate).format("DD-MM-YYYY"),
+            minRooms:
+              this.$route.query.minRooms < 0 ? 0 : this.$route.query.minRooms,
+            maxRooms:
+              this.$route.query.maxRooms < this.$route.query.minRooms
+                ? this.$route.query.minRooms
+                : this.$route.query.maxRooms,
+            minPrice:
+              this.$route.query.minPrice < 0 ? 0 : this.$route.query.minPrice,
+            maxPrice:
+              this.$route.query.maxPrice < this.$route.query.minPrice
+                ? this.$route.query.minPrice
+                : this.$route.query.maxPrice,
+            amenities: selectedAmenitiesString,
+            type: this.selectedType
+          }
+        });
+      } else {
+        this.$router.replace({
+          name: "search-results",
+          query: {
+            location: this.$route.query.location,
+            guests: this.$route.query.guests,
+            startDate: moment(this.$route.query.startDate).format("DD-MM-YYYY"),
+            endDate: moment(this.$route.query.endDate).format("DD-MM-YYYY"),
+            minRooms:
+              this.$route.query.minRooms < 0 ? 0 : this.$route.query.minRooms,
+            maxRooms:
+              this.$route.query.maxRooms < this.$route.query.minRooms
+                ? this.$route.query.minRooms
+                : this.$route.query.maxRooms,
+            minPrice:
+              this.$route.query.minPrice < 0 ? 0 : this.$route.query.minPrice,
+            maxPrice:
+              this.$route.query.maxPrice < this.$route.query.minPrice
+                ? this.$route.query.minPrice
+                : this.$route.query.maxPrice,
+            type: this.selectedType
+          }
+        });
+      }
+
+      this.$router.go();
+    },
+    addAmenity(amenity) {
+      if (!this.selectedAmenities.includes(amenity.id)) {
+        this.selectedAmenities.push(amenity.id);
+      } else {
+        this.selectedAmenities = this.selectedAmenities.filter(
+          id => id !== amenity.id
+        );
+      }
+      console.log(this.selectedAmenities);
     }
   }
 };
@@ -511,41 +568,31 @@ h2 {
   margin-top: 30px;
   width: 38%;
   display: grid;
-  grid-template-columns: 9rem 16rem 17rem;
+  grid-template-columns: 16rem 16rem 5rem;
   grid-template-rows: 3rem 3rem;
-  /*-moz-animation-delay: ;grid-template-areas:
-    "beds type amenities"
-    ". . button";*/
 }
 
 .filter-button {
-  /*grid-area: "button";*/
   grid-column: 3;
-  grid-row: 2;
-  position: relative;
-  left: 29%;
-}
-
-.beds {
-  /*grid-area: "beds";*/
-  position: relative;
-  left: 6%;
-  grid-column: 1;
   grid-row: 1;
-  top:2%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
 }
 
 .apartment-type {
-  /*grid-area: "type";*/
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
 }
 
 .amenities {
-  /*grid-area: "amenities";*/
   width: 180px;
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
+  margin-top: -2px;
+  margin-left: 10px;
 }
 
 .amenities-select-icon {

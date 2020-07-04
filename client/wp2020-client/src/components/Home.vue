@@ -164,17 +164,20 @@ export default {
       } else if (this.location == "") {
         this.$toasted.global.emptyLocation();
       } else {
+        console.log(this.startDate);
+        console.log(this.endDate);
         this.$router.push({
           name: "search-results",
           query: {
             location: this.location,
             guests: this.guests,
-            startDate: this.startDate, //formatiranje u pravi date unutar SearchResults
-            endDate: this.endDate,
-            minRooms: this.minRooms == "" ? 0 : this.$route.query.minRooms,
-            maxRooms: this.maxRooms == "" ? 0 : this.$route.query.maxRooms,
-            minPrice: this.minPrice == "" ? 0 : this.$route.query.minPrice,
-            maxPrice: this.maxPrice == "" ? 0 : this.$route.query.maxPrice,
+            startDate: moment(this.startDate).format("DD-MM-YYYY"), //formatiranje u pravi date unutar SearchResults
+            endDate: moment(this.endDate).format("DD-MM-YYYY"),
+            minRooms: this.minRooms == "" ? 0 : this.minRooms,
+            maxRooms: this.maxRooms == "" ? 0 : this.maxRooms,
+            minPrice: this.minPrice == "" ? 0 : this.minPrice,
+            maxPrice: this.maxPrice == "" ? 0 : this.maxPrice,
+            type: "Any_type"
           }
         });
       }

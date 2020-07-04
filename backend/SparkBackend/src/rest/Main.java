@@ -317,13 +317,13 @@ public class Main {
 		});
 		
 		get("/amenities", (req, res) -> {
-			String username = Utils.authenticate(req);
-			if(username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
-				res.status(403);
-				return "You cant view amenities";
-			} else {
+			//String username = Utils.authenticate(req);
+			//if(username == null) { || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {	//treba da mogu i obicni korisnici, za dodavanje i filtriranje
+				//res.status(403);
+				//return "You cant view amenities";
+			//} else {
 				return g.toJson(AmenitiesDAO.getInstance().getAmenities());
-			}
+			//}
 			
 		});
 		
