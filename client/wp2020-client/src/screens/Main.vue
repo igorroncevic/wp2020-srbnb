@@ -61,7 +61,7 @@ export default {
       this.$toasted.global.loggedOut();
       setTimeout(() => {
         window.location.reload();
-      }, 1500);
+      }, 500);
     }
   }
 };

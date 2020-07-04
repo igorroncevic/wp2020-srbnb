@@ -5,16 +5,15 @@ class AmenitiesService {
   constructor() {
     this.apiClient = axios.create({
       baseURL: "http://localhost:8080",
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + usersService.getToken(),
-      },
     });
   }
 
   async getAllAmenities() {
+    const headers = usersService.setHeaders();
     var amenities = await this.apiClient
-      .get("/amenities")
+      .get("/amenities", {
+        headers,
+      })
       .then((response) => {
         if (response.status == 200) {
           return response.data;
@@ -29,20 +28,23 @@ class AmenitiesService {
   }
 
   async getAmenitiesForApartment(id) {
-   var amenities = await this.apiClient
-     .get(`/apartments/${id}/amenities`)
-     .then((response) => {
-       if (response.status == 200) {
-         return response.data;
-       }
-       return [];
-     })
-     .catch((err) => {
-       console.log(err);
-       return [];
-     });
-   return amenities;
- }
+    const headers = usersService.setHeaders();
+    var amenities = await this.apiClient
+      .get(`/apartments/${id}/amenities`, {
+        headers,
+      })
+      .then((response) => {
+        if (response.status == 200) {
+          return response.data;
+        }
+        return [];
+      })
+      .catch((err) => {
+        console.log(err);
+        return [];
+      });
+    return amenities;
+  }
 }
 
 const amenitiesService = new AmenitiesService();

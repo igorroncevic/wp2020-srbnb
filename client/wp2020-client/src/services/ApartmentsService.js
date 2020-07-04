@@ -4,19 +4,16 @@ import usersService from "./UserService";
 class ApartmentsService {
   constructor() {
     this.apiClient = axios.create({
-      baseURL: "http://localhost:8080",
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + usersService.getToken(),
-      },
+      baseURL: "http://localhost:8080"
     });
   }
 
   async searchApartments(params) {
-    var searchParams = JSON.stringify(params);
-    //prebaciti u get
+   const headers = usersService.setHeaders();
     var apartments = await this.apiClient
-      .post("/search/apartments", searchParams)
+      .get("/search/apartments", params, {
+         headers
+      })
       .then((response) => {
         if (response.status == 200) {
           return response.data;
@@ -31,8 +28,11 @@ class ApartmentsService {
   }
 
   async getApartmentById(id) {
+   const headers = usersService.setHeaders();
     var apartment = await this.apiClient
-      .get(`/apartments/${id}`)
+      .get(`/apartments/${id}`, {
+         headers
+      })
       .then((response) => {
         if (response.status == 200) {
           return response.data;

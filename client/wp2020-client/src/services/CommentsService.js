@@ -5,21 +5,17 @@ class CommentsService {
   constructor() {
     this.apiClient = axios.create({
       baseURL: "http://localhost:8080",
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + usersService.getToken(),
-      },
     });
   }
 
   async getCommentsForApartment(id) {
+    const headers = usersService.setHeaders();
     var comments = await this.apiClient
-      .get(`/apartments/${id}/comments`)
+      .get(`/apartments/${id}/comments`, {
+        headers,
+      })
       .then((response) => {
-        if (response.status == 200) {
-          return response.data;
-        }
-        return [];
+        return response.data;
       })
       .catch((err) => {
         console.log(err);
@@ -29,20 +25,21 @@ class CommentsService {
   }
 
   async postComment(comment) {
-   var success = await this.apiClient
-     .post(`/comments`, comment)
-     .then((response) => {
-       if (response.status == 200) {
-         return true;
-       }
-       return false;
-     })
-     .catch((err) => {
-       console.log(err);
-       return false;
-     });
-   return success;
- }
+    const headers = usersService.setHeaders();
+    var success = await this.apiClient
+      .post(`/comments`, comment, {
+        headers,
+      })
+      .then((response) => {
+        console.log(response);
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
+  }
 }
 
 const commentsService = new CommentsService();
