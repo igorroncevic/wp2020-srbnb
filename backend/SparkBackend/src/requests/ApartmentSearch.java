@@ -26,7 +26,7 @@ public class ApartmentSearch {
 	private ApartmentStatus status = null;
 	
 	public ApartmentSearch(Request req) {
-		String sDateStart = req.queryParams("startdate");
+		String sDateStart = req.queryParams("startDate");
 		if(sDateStart != null)
 			try {
 				this.checkInDate = Main.dateFormat.parse(sDateStart);
@@ -34,7 +34,7 @@ public class ApartmentSearch {
 				System.out.print("Error while parsing check in date");
 			}
 		
-		String sDateEnd = req.queryParams("enddate");
+		String sDateEnd = req.queryParams("endDate");
 		if(sDateEnd != null)
 			try {
 				this.checkOutDate = Main.dateFormat.parse(sDateEnd);
@@ -44,19 +44,19 @@ public class ApartmentSearch {
 		
 		this.location = req.queryParams("location");
 		
-		String sMinPrice = req.queryParams("minprice");
+		String sMinPrice = req.queryParams("minPrice");
 		if(sMinPrice != null)
 			this.minPrice = Double.parseDouble(sMinPrice);
 		
-		String sMaxPrice = req.queryParams("maxprice");
+		String sMaxPrice = req.queryParams("maxPrice");
 		if(sMaxPrice != null)
 			this.maxPrice = Double.parseDouble(sMaxPrice);
 		
-		String sMinRooms = req.queryParams("minrooms");
+		String sMinRooms = req.queryParams("minRooms");
 		if(sMinRooms != null)
 			this.minRooms = Integer.parseInt(sMinRooms);
 		
-		String sMaxRooms = req.queryParams("maxrooms");
+		String sMaxRooms = req.queryParams("maxRooms");
 		if(sMaxRooms != null)
 			this.maxRooms = Integer.parseInt(sMaxRooms);
 		
