@@ -233,6 +233,9 @@ public class Main {
 		put("/apartments/:id", (req, res) -> {
 			String username = Utils.authenticate(req);
 			int id = Integer.parseInt(req.params("id"));
+			String payload = req.body();
+			Apartment newData = g.fromJson(payload, Apartment.class);
+			newData.setId(id);
 			if(username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
 				res.status(403);
 				return "You cant update apartments";
@@ -241,16 +244,12 @@ public class Main {
 					res.status(403);
 					return "You dont have permission to update this apartment";
 				}
-				String payload = req.body();
-				Apartment newData = g.fromJson(payload, Apartment.class);
 		    	if(ApartmentsDAO.getInstance().updateApartment(newData))
 		    		return "Success";
 		    	else
 		    		return "Error";
 		    	
 			} else {
-				String payload = req.body();
-				Apartment newData = g.fromJson(payload, Apartment.class);
 				if(ApartmentsDAO.getInstance().updateApartment(newData))
 		    		return "Success";
 		    	else
@@ -469,7 +468,7 @@ public class Main {
 				if(ReservationsDAO.getInstance().addNewReservation(newReservation))
 					return "Success";
 				else
-					return "Error";
+					return "You can't make reservation for selected dates";
 			}
 		});
 		

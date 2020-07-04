@@ -1,10 +1,10 @@
 [
 	{
 		"id": 0,
+		"name": "Apartman Deluxe",
 		"type": "Full_Apartment",
 		"numberOfRooms": 3,
 		"numberOfGuest": 6,
-		"name": "Apartman Deluxe",
 		"location": {
 			"latitude": 45.2818875,
 			"longitude": 19.8936123,
@@ -38,9 +38,9 @@
 	},
 	{
 		"id": 1,
+		"name": "Apartman Sijan",
 		"type": "Full_Apartment",
 		"numberOfRooms": 2,
-		"name": "Apartman Sijan",
 		"numberOfGuest": 4,
 		"location": {
 			"latitude": 45.2518875,
@@ -72,10 +72,10 @@
 	},
 	{
 		"id": 2,
+		"name": "Apartman Petrovic",
 		"type": "Room",
 		"numberOfRooms": 1,
 		"numberOfGuest": 4,
-		"name": "Apartman Petrovic",
 		"location": {
 			"latitude": 45.3018875,
 			"longitude": 19.8136123,
@@ -110,10 +110,10 @@
 	},
 	{
 		"id": 3,
+		"name": "Tri Sesira",
 		"type": "Room",
 		"numberOfRooms": 1,
 		"numberOfGuest": 4,
-		"name": "Tri Sesira",
 		"location": {
 			"latitude": 44.818121,
 			"longitude": 20.464829,
@@ -135,7 +135,7 @@
 		"host": "vojapetrovic",
 		"pricePerNight": 20.0,
 		"checkInTime": 14,
-		"checkOutTime": 10,
+		"checkOutTime": 11,
 		"status": "Inactive",
 		"amenities": [
 			0,

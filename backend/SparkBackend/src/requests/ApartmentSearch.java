@@ -2,8 +2,11 @@ package requests;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import model.enums.ApartmentType;
 import rest.Main;
 import spark.Request;
 
@@ -17,6 +20,8 @@ public class ApartmentSearch {
 	private int minRooms = -1;
 	private int maxRooms = -1;
 	private int numberOfGuests = -1;
+	private ApartmentType type = null;
+	private List<Integer> amenities= null;
 	
 	public ApartmentSearch(Request req) {
 		String sDateStart = req.queryParams("startdate");
@@ -56,6 +61,20 @@ public class ApartmentSearch {
 		String sNumberOfGuests = req.queryParams("guests");
 		if(sNumberOfGuests != null)
 			this.numberOfGuests = Integer.parseInt(sNumberOfGuests);
+		
+		String sType = req.queryParams("type");
+		if(sType != null && (sType.equals("Full_Apartment") || sType.equals("Room")))
+			this.type = ApartmentType.valueOf(sType);
+		
+		String sAmenities = req.queryParams("amenities");
+		if(sAmenities != null) {
+			String[] values = sAmenities.split(",");
+			this.amenities = new ArrayList<Integer>();
+			for(String ameni : values) {
+				int a = Integer.parseInt(ameni);
+				this.amenities.add(a);
+			}
+		}
 	}
 
 	public Date getCheckInDate() {
@@ -121,5 +140,23 @@ public class ApartmentSearch {
 	public void setNumberOfGuests(int numberOfGuests) {
 		this.numberOfGuests = numberOfGuests;
 	}
+
+	public ApartmentType getType() {
+		return type;
+	}
+
+	public void setType(ApartmentType type) {
+		this.type = type;
+	}
+
+	public List<Integer> getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(List<Integer> amenities) {
+		this.amenities = amenities;
+	}
+	
+	
 
 }

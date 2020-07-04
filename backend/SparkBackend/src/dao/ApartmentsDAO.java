@@ -87,6 +87,8 @@ public class ApartmentsDAO {
 		if(apartments.get(newData.getId()) == null)
 			return false;
 		else {
+			newData.setDaysForRent(apartments.get(newData.getId()).getDaysForRent());
+			newData.setAvailableDaysForRent(apartments.get(newData.getId()).getAvailableDaysForRent());
 			apartments.replace(newData.getId(), newData);
 			saveData();
 			return true;
@@ -111,6 +113,9 @@ public class ApartmentsDAO {
 	public List<Apartment> searchApartments(ApartmentSearch search, List<Apartment> apartments) {
 		List<Apartment> searchResult = new ArrayList<Apartment>();
 		
+		System.out.println(search.getAmenities());
+		
+		search:
 		for(Apartment apartment : apartments) {
 			if(search.getCheckInDate() != null && search.getCheckOutDate() != null && !isApartmentAvaliable(apartment.getId(), search.getCheckInDate(), search.getCheckOutDate())) continue;
 			if(search.getLocation() != null && !apartment.getLocation().getAddress().getPlace().toLowerCase().contains(search.getLocation().toLowerCase())) continue;
@@ -119,6 +124,11 @@ public class ApartmentsDAO {
 			if(search.getMinRooms() != -1 && apartment.getNumberOfRooms() < search.getMinRooms()) continue;
 			if(search.getMaxRooms() != -1 && apartment.getNumberOfRooms() > search.getMaxRooms()) continue;
 			if(search.getNumberOfGuests() != -1 && apartment.getNumberOfGuest() < search.getNumberOfGuests()) continue;
+			if(search.getType() != null && apartment.getType() != search.getType()) continue;
+			if(search.getAmenities() != null)
+				for(int amenity : search.getAmenities())
+					if(!apartment.getAmenities().contains(amenity))
+						continue search;
 			
 			searchResult.add(apartment);
 		}
