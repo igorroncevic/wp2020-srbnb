@@ -40,6 +40,38 @@ class CommentsService {
       });
     return success;
   }
+
+  async hideComment(review) {
+    const headers = usersService.setHeaders();
+    var success = await this.apiClient
+      .put(`/comments/${review.id}/hide`, review, {
+        headers,
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
+  }
+
+  async showComment(review) {
+    const headers = usersService.setHeaders();
+    var success = await this.apiClient
+      .put(`/comments/${review.id}/visible`, review, {
+        headers,
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
+  }
 }
 
 const commentsService = new CommentsService();

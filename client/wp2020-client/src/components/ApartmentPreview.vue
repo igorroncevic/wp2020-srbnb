@@ -105,7 +105,7 @@
     </div>
     <div id="reviews-title">Reviews</div>
     <div id="reviews-wrapper">
-      <review-item v-for="(review, i) in reviews" :key="i" :review="review" />
+      <review-item v-for="(review, i) in reviews" :key="i" :review="review" @hideshow="hideShowReview(review)" />
       <p
         v-if="reviews.length == 0"
         style="color: var(--main-text-color); font-weight: 400; margin-top: 20px; font-size:18px;"
@@ -162,6 +162,11 @@ export default {
       return;
     }
     console.log(this.apartment);
+    if (typeof this.apartment !== "object") {
+      this.$toasted.global.youCantPreviewThisApartment();
+      this.$router.go(-1);
+      return;
+    }
     //Za slucaj da ima vise prekida u datumima
     for (
       var i = 0, j = -1;
@@ -217,7 +222,7 @@ export default {
       reviews: [],
       reservationMessage: "",
       startDate: "",
-      endDate: "",
+      endDate: ""
     };
   },
   methods: {
@@ -270,6 +275,22 @@ export default {
     },
     customFormatter(date) {
       return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
+    },
+    hideShowReview(review){
+       var success;
+       if(review.visibleToGuests){
+          success = CommentsService.hideComment(review);
+       }else{
+          success = CommentsService.showComment(review);
+       }
+       if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1000);
+      } else {
+        this.$toasted.global.unknownError();
+      }
     },
     toDate(date) {
       var parts = date.split("-");

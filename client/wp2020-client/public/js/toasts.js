@@ -79,7 +79,6 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
 
  
 // Backend errors
-
 Vue.toasted.register('noApartmentWithThisId', 'Apartment with this id does not exist!', {
    type: 'error',
    icon: 'error_outline',
@@ -107,6 +106,11 @@ Vue.toasted.register('noApartmentWithThisId', 'Apartment with this id does not e
    icon: 'error_outline',
  })
 
+ Vue.toasted.register('youCantPreviewThisApartment', 'You cannot preview this apartment!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
  Vue.toasted.register('signupError', 'Username already exists!', {
    type: 'error',
    icon: 'error_outline',
@@ -115,7 +119,7 @@ Vue.toasted.register('noApartmentWithThisId', 'Apartment with this id does not e
 
 
   // Global errors
- Vue.toasted.register('unknownError', 'Something went wrong!', {
+ Vue.toasted.register('unknownError', 'Oops, something went wrong!', {
    type: 'error',
    icon: 'report_problem',
  })

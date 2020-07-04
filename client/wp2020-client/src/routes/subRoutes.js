@@ -10,6 +10,7 @@ import Amenities from "./../components/Amenities.vue";
 import Vue from "vue";
 /*eslint-disable*/
 import toasts from "./../../public/js/toasts";
+import UserService from "./../services/UserService";
 
 export default [
   {
@@ -62,8 +63,8 @@ export default [
     beforeEnter: (to, from, next) => {
       console.log(Vue.prototype.$userType);
       if (
-        Vue.prototype.$userType != "Admin" &&
-        Vue.prototype.$userType != "Host"
+        UserService.getUserType() != "Admin" &&
+        UserService.getUserType() != "Host"
       ) {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",
@@ -95,7 +96,7 @@ export default [
       title: " - Manage Amenities",
     },
     beforeEnter: (to, from, next) => {
-      if (Vue.prototype.$userType != "Admin") {
+      if (UserService.getUserType() != "Admin") {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",
           icon: "error_outline",
@@ -118,7 +119,7 @@ export default [
       title: " - Add New Apartment",
     },
     beforeEnter: (to, from, next) => {
-      if (Vue.prototype.$userType != "Host") {
+      if (UserService.getUserType() != "Host") {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",
           icon: "error_outline",

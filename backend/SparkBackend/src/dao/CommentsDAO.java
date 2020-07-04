@@ -76,6 +76,11 @@ public class CommentsDAO {
 		saveData();
 	}
 	
+	public void hideComment(int id) {
+		comments.get(id).setVisibleToGuests(false);
+		saveData();
+	}
+	
 	public List<Comment> getVisibleComments(int apartment) {
 		List<Comment> visibleComments = new ArrayList<Comment>();
 		for(Comment comment : comments.values()) {
