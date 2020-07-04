@@ -23,6 +23,7 @@ import model.enums.ReservationStatus;
 import model.enums.UserType;
 import requests.ApartmentSearch;
 import requests.Login;
+import requests.UserSearch;
 
 import org.eclipse.jetty.security.UserAuthentication;
 
@@ -127,21 +128,20 @@ public class Main {
 				return "You cant view users";
 			} else {
 				if(UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
-					
-					String search = req.queryParams("search");
-					if(search == null)
+					if(req.queryParams().isEmpty())
 						return g.toJson(UsersDAO.getInstance().getAllUsers());
-					else
-						return g.toJson(UsersDAO.getInstance().searchUsers(search));
+					else {
+						UserSearch search = new UserSearch(req);
+						return g.toJson(UsersDAO.getInstance().searchUsers(search, UsersDAO.getInstance().getAllUsers()));
+					}
 					
 				} else {
-					
-					String search = req.queryParams("search");
-					if(search == null)
+					if(req.queryParams().isEmpty())
 						return g.toJson(UsersDAO.getInstance().getMyGuests(username));
-					else
-						return g.toJson(UsersDAO.getInstance().searchMyGuests(username, search));
-					
+					else {
+						UserSearch search = new UserSearch(req);
+						return g.toJson(UsersDAO.getInstance().searchUsers(search, UsersDAO.getInstance().getMyGuests(username)));
+					}
 				}
 			}
 		});

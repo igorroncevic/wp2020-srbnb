@@ -1,8 +1,10 @@
 package requests;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
+import rest.Main;
 import spark.Request;
 
 public class ApartmentSearch {
@@ -16,27 +18,44 @@ public class ApartmentSearch {
 	private int maxRooms = -1;
 	private int numberOfGuests = -1;
 	
-	public ApartmentSearch() {
-		
-	}
-	
-	public ApartmentSearch(Date checkInDate, Date checkOutDate, String location, double minPrice, double maxPrice,
-			int minRooms, int maxRooms, int numberOfGuests) {
-		this.checkInDate = checkInDate;
-		this.checkOutDate = checkOutDate;
-		this.location = location;
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
-		this.minRooms = minRooms;
-		this.maxRooms = maxRooms;
-		this.numberOfGuests = numberOfGuests;
-	}
-	
 	public ApartmentSearch(Request req) {
+		String sDateStart = req.queryParams("startdate");
+		if(sDateStart != null)
+			try {
+				this.checkInDate = Main.dateFormat.parse(sDateStart);
+			} catch (ParseException e) {
+				System.out.print("Error while parsing check in date");
+			}
+		
+		String sDateEnd = req.queryParams("enddate");
+		if(sDateEnd != null)
+			try {
+				this.checkOutDate = Main.dateFormat.parse(sDateEnd);
+			} catch (ParseException e) {
+				System.out.print("Error while parsing check out date");
+			}
+		
 		this.location = req.queryParams("location");
-		this.numberOfGuests = Integer.parseInt(req.queryParams("guests"));
-		//this.checkInDate = Date.parse(req.queryParams("startDate"));
-		//this.checkOutDate =
+		
+		String sMinPrice = req.queryParams("minprice");
+		if(sMinPrice != null)
+			this.minPrice = Double.parseDouble(sMinPrice);
+		
+		String sMaxPrice = req.queryParams("maxprice");
+		if(sMaxPrice != null)
+			this.maxPrice = Double.parseDouble(sMaxPrice);
+		
+		String sMinRooms = req.queryParams("minrooms");
+		if(sMinRooms != null)
+			this.minRooms = Integer.parseInt(sMinRooms);
+		
+		String sMaxRooms = req.queryParams("maxrooms");
+		if(sMaxRooms != null)
+			this.maxRooms = Integer.parseInt(sMaxRooms);
+		
+		String sNumberOfGuests = req.queryParams("guests");
+		if(sNumberOfGuests != null)
+			this.numberOfGuests = Integer.parseInt(sNumberOfGuests);
 	}
 
 	public Date getCheckInDate() {

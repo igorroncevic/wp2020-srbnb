@@ -112,9 +112,8 @@ public class ApartmentsDAO {
 		List<Apartment> searchResult = new ArrayList<Apartment>();
 		
 		for(Apartment apartment : apartments) {
-			//if(search.getCheckInDate() != null && UslovNijeIspunjen) continue;
-			//if(search.getCheckOutDate() != null && UslovNijeIspunjen) continue;
-			if(search.getLocation() != null && !apartment.getLocation().getAddress().getPlace().equals(search.getLocation())) continue;
+			if(search.getCheckInDate() != null && search.getCheckOutDate() != null && !isApartmentAvaliable(apartment.getId(), search.getCheckInDate(), search.getCheckOutDate())) continue;
+			if(search.getLocation() != null && !apartment.getLocation().getAddress().getPlace().toLowerCase().contains(search.getLocation().toLowerCase())) continue;
 			if(search.getMinPrice() != -1 && apartment.getPricePerNight() < search.getMinPrice()) continue;
 			if(search.getMaxPrice() != -1 && apartment.getPricePerNight() > search.getMaxPrice()) continue;
 			if(search.getMinRooms() != -1 && apartment.getNumberOfRooms() < search.getMinRooms()) continue;
@@ -185,6 +184,24 @@ public class ApartmentsDAO {
 				apartment.getAvailableDaysForRent().add(i+1, startDate);
 				apartment.getAvailableDaysForRent().add(i+2, endDate);
 				saveData();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isApartmentAvaliable(int apartmentId, Date startDate, Date endDate) {
+		Apartment apartment = apartments.get(apartmentId);
+		for(int i = 0; i < apartment.getAvailableDaysForRent().size(); i = i + 2) {
+			Date start = apartment.getAvailableDaysForRent().get(i);
+			Date end = apartment.getAvailableDaysForRent().get(i+1);
+			if(startDate.compareTo(start) == 0 && endDate.compareTo(end) == 0) {
+				return true;
+			} else if(startDate.compareTo(start) == 0 && endDate.compareTo(end) < 0) {
+				return true;
+			} else if(startDate.compareTo(start) > 0 && endDate.compareTo(end) == 0) {
+				return true;
+			} else if(startDate.compareTo(start) > 0 && endDate.compareTo(end) < 0) {
 				return true;
 			}
 		}

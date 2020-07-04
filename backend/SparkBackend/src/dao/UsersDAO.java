@@ -19,6 +19,7 @@ import model.Reservation;
 import model.User;
 import model.enums.UserType;
 import requests.Login;
+import requests.UserSearch;
 import rest.Main;
 
 public class UsersDAO {
@@ -98,16 +99,19 @@ public class UsersDAO {
 				
 	}
 	
-	public Collection<User> getAllUsers() {
-		return users.values();
+	public List<User> getAllUsers() {
+		return new ArrayList<User>(users.values());
 	}
 	
-	public List<User> searchUsers(String search) {
+	public List<User> searchUsers(UserSearch search, List<User> users) {
 		List<User> match = new ArrayList<User>();
 		
-		for(User user : users.values()) {
-			if(user.getName().contains(search) || user.getLastname().contains(search))
-				match.add(user);
+		for(User user : users) {
+			if(search.getType() != null && user.getType() != search.getType()) continue;
+			if(search.getGender() != null && user.getGender() != search.getGender()) continue;
+			if(search.getUsername() != null && !user.getUsername().contains(search.getUsername().toLowerCase())) continue;
+			
+			match.add(user);
 		}
 		
 		return match;
@@ -137,17 +141,6 @@ public class UsersDAO {
 				return true;
 		
 		return false;
-	}
-	
-	public List<User> searchMyGuests(String host, String search) {
-		List<User> match = new ArrayList<User>();
-		
-		for(User user : getMyGuests(host)) {
-			if(user.getName().contains(search) || user.getLastname().contains(search))
-				match.add(user);
-		}
-		
-		return match;
 	}
 	
 }

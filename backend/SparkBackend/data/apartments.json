@@ -113,15 +113,15 @@
 		"type": "Room",
 		"numberOfRooms": 1,
 		"numberOfGuest": 4,
-		"name": "Apartman Zvezda",
+		"name": "Tri Sesira",
 		"location": {
-			"latitude": 45.244383,
-			"longitude": 19.828988,
+			"latitude": 44.818121,
+			"longitude": 20.464829,
 			"address": {
-				"street": "Doza Djerdja",
-				"number": "70",
-				"place": "Novi Sad, Serbia",
-				"zipCode": 21000
+				"street": "Skadarska",
+				"number": "34",
+				"place": "Belgrade, Serbia",
+				"zipCode": 11000
 			}
 		},
 		"daysForRent": [
