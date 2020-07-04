@@ -1,5 +1,4 @@
 import axios from "axios";
-import Vue from "vue";
 
 class UsersService {
   constructor() {
@@ -15,12 +14,8 @@ class UsersService {
         headers,
       })
       .then((response) => {
-        if (response.status == 200) {
-          this.loginUser(response.data.JWT);
-          Vue.prototype.$userType = response.data.UserType;
-          return true;
-        }
-        return false;
+        this.loginUser(response.data);
+        return true;
       })
       .catch((err) => {
         console.log(err);
@@ -96,13 +91,18 @@ class UsersService {
     return localStorage.getItem("jwt");
   }
 
-  loginUser(token) {
-    window.localStorage.setItem("jwt", token);
+  getUserType() {
+   return localStorage.getItem("userType");
+ }
+
+  loginUser(data) {
+    window.localStorage.setItem("jwt", data.JWT);
+    window.localStorage.setItem("userType", data.UserType);
   }
 
   logoutUser() {
     window.localStorage.removeItem("jwt");
-    Vue.prototype.$userType = "";
+    window.localStorage.removeItem("userType");
   }
 }
 

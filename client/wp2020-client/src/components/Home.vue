@@ -187,20 +187,20 @@ export default {
 </script>
 
 <style scoped>
-.dates {
-  width: 24% !important;
+#searchbar .dates {
+  width: 23% !important;
 }
 
-input[data-v-8dc7cce2] {
+#searchbar input[data-v-8dc7cce2] {
   background: var(--background-color);
 }
 
-.vdp-datepicker[data-v-8dc7cce2] {
+#searchbar .vdp-datepicker[data-v-8dc7cce2] {
   width: 130px !important;
   margin-right: 10px;
 }
 
-.datepickers {
+#searchbar .datepickers {
   display: inline-flex;
   width: min-content;
   flex-direction: row;
@@ -208,7 +208,7 @@ input[data-v-8dc7cce2] {
   width: 50%;
 }
 
-.vdp-datepicker {
+#searchbar .vdp-datepicker {
   width: 170px !important;
   color: var(--main-text-color) !important;
   cursor: pointer;

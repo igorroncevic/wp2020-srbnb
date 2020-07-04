@@ -48,11 +48,11 @@ export default {
     isLoggedIn() {
       return UserService.getToken() === null ? false : true;
     },
-    isUserHost(){
-       return this.$root.$userType == 'Host' ? true : false; 
+    isUserHost() {
+      return this.getUserType() == "Host" ? true : false;
     },
-    isUserAdmin(){
-       return this.$root.$userType == 'Admin' ? true : false;
+    isUserAdmin() {
+      return this.getUserType() == "Admin" ? true : false;
     }
   },
   methods: {
@@ -62,6 +62,11 @@ export default {
       setTimeout(() => {
         window.location.reload();
       }, 500);
+    },
+    getUserType() {
+      var type = UserService.getUserType();
+      console.log(type);
+      return type;
     }
   }
 };

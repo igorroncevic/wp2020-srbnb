@@ -339,9 +339,11 @@ export default {
       ) {
         return;
       }
-      var selectedAmenitiesString = this.selectedAmenities.reduce(curr => {
-        return curr + ",";
-      }, "");
+      var selectedAmenitiesString = "";
+      this.selectedAmenities.forEach(amenity => {
+        selectedAmenitiesString += amenity + ",";
+      });
+
       selectedAmenitiesString = selectedAmenitiesString.substr(
         0,
         selectedAmenitiesString.length - 1
@@ -502,7 +504,7 @@ main {
 }
 
 .search-results {
-  margin-top: 20px;
+  margin-top: 5px;
   margin-left: 20px;
   grid-column: 1/3;
   grid-row: 2;
@@ -648,7 +650,8 @@ input[type="checkbox"]:hover {
 
 .no-results {
   font-size: 20px;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-left: -20px;
   text-align: center;
 }
 

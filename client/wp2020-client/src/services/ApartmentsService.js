@@ -4,21 +4,19 @@ import usersService from "./UserService";
 class ApartmentsService {
   constructor() {
     this.apiClient = axios.create({
-      baseURL: "http://localhost:8080"
+      baseURL: "http://localhost:8080",
     });
   }
 
   async searchApartments(params) {
-   const headers = usersService.setHeaders();
+    const headers = usersService.setHeaders();
     var apartments = await this.apiClient
-      .get("/apartments", params, {
-         headers
+      .get("/apartments", {
+        params,
+        headers,
       })
       .then((response) => {
-        if (response.status == 200) {
-          return response.data;
-        }
-        return [];
+        return response.data;
       })
       .catch((err) => {
         console.log(err);
@@ -28,16 +26,13 @@ class ApartmentsService {
   }
 
   async getApartmentById(id) {
-   const headers = usersService.setHeaders();
+    const headers = usersService.setHeaders();
     var apartment = await this.apiClient
       .get(`/apartments/${id}`, {
-         headers
+        headers,
       })
       .then((response) => {
-        if (response.status == 200) {
-          return response.data;
-        }
-        return null;
+        return response.data;
       })
       .catch((err) => {
         console.log(err);
