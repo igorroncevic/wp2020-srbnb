@@ -68,7 +68,7 @@ public class ReservationsDAO {
 	public boolean addNewReservation(Reservation newReservation) {
 		newReservation.setId(reservations.size());
 		newReservation.setStatus(ReservationStatus.Created);
-		
+		newReservation.setTotalPrice(ApartmentsDAO.getInstance().getApartment(newReservation.getApartment()).getPricePerNight() * newReservation.getNightsStaying());
 		Date startDate = newReservation.getCheckInDay();
 		Calendar c = Calendar.getInstance();
 		c.setTime(startDate);
