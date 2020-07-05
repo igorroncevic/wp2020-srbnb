@@ -7,7 +7,7 @@ public class Comment {
 	private int apartment;
 	private String content;
 	private double rating;
-	private boolean visibleToGuests;
+	private boolean visibleToGuests = true;
 	
 	public Comment(String author, int apartment, String content, double rating) {
 		super();
@@ -15,7 +15,6 @@ public class Comment {
 		this.apartment = apartment;
 		this.content = content;
 		this.rating = rating;
-		this.visibleToGuests = false;
 	}
 
 	public String getAuthor() {
