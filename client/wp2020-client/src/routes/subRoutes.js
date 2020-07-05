@@ -46,7 +46,7 @@ export default [
     props: true,
   },
   {
-    path: "user-profile",
+    path: "/user-profile/:username",
     name: "user-profile",
     component: UserProfile,
     meta: {
@@ -61,7 +61,6 @@ export default [
       title: " - Search Users",
     },
     beforeEnter: (to, from, next) => {
-      console.log(Vue.prototype.$userType);
       if (
         UserService.getUserType() != "Admin" &&
         UserService.getUserType() != "Host"
@@ -86,6 +85,21 @@ export default [
     component: PreviewBookings,
     meta: {
       title: " - Preview Bookings",
+    },
+    beforeEnter: (to, from, next) => {
+      if (UserService.getUserType() == "") {
+        Vue.toasted.show("You have no permissions to perform this action.", {
+          type: "error",
+          icon: "error_outline",
+          iconPack: "material",
+          position: "top-center",
+          duration: 2500,
+          singleton: true,
+        });
+        window.location.href = `${window.location.origin}/#/`;
+        return;
+      }
+      next();
     },
   },
   {

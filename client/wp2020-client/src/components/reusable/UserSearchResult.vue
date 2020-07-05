@@ -1,25 +1,30 @@
 <template>
-      <div class="border-around">
-        <div class="search-result">
-          <div id="picture">Picture</div>
-          <div id="title">{{user.name}}</div>
-          <div id="type">{{user.gender}} <span id="user-type-span">{{user.type}}</span></div>
-          <div id="features">Owns <span style="font-weight: bold;">{{user.apartments}} apartments.</span></div>
-          <div id="main-info">
-            <span style="margin-bottom: 6px; font-size: 18px;">
-              <Button text="Block" width="100" height="33" fontsize="15" id="block-button" />
-            </span>
-            <Button text="Visit" width="100" height="33" fontsize="15" id="visit-button" />
-          </div>
-        </div>
+  <div class="border-around">
+    <div class="search-result">
+      <div id="picture"></div>
+      <div id="title">{{user.name}} {{user.lastname}}</div>
+      <div id="features">{{user.username}}</div>
+      <div id="type">
+        {{user.gender}}
+        <span id="user-type-span">{{user.type}}</span>
       </div>
+      <div id="main-info">
+        <span style="margin-bottom: 6px; font-size: 18px;" v-if="currentUserType == 'Admin'">
+          <Button text="Block" width="100" height="35" fontsize="17" id="block-button" />
+        </span>
+        <router-link :to="{name: 'user-profile', params: {username: user.username}}">
+          <Button text="Visit" width="100" height="35" fontsize="17" id="visit-button" />
+        </router-link>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import Button from "./../form-components/Button.vue";
 
 export default {
-  props: ["user"],
+  props: ["user", "currentUserType"],
   name: "UserSearchResult",
   components: { Button }
 };
@@ -38,7 +43,7 @@ export default {
   display: grid;
   grid-template-columns: 10rem 18rem;
   column-gap: 1rem;
-  grid-template-rows: 0.8rem 2rem 1.5rem 1.8rem 2rem 3rem;
+  grid-template-rows: 1rem 1.8rem 1.6rem 1.6rem 2rem 2rem;
 }
 
 #picture {
@@ -58,27 +63,27 @@ export default {
   grid-row: 2;
   align-self: center;
   color: var(--main-text-color);
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 500;
 }
 
 #type {
   grid-column: 2;
-  grid-row: 3;
+  grid-row: 4;
   color: var(--light-text-color);
   align-self: center;
-  font-size: 16px;
+  font-size: 18px;
 }
 
-#user-type-span{
-   margin: 51px;
+#user-type-span {
+  margin: 51px;
 }
 
 #features {
   grid-column: 2;
-  grid-row: 4;
-  color: var(--main-text-color);
-  font-size: 16px;
+  grid-row: 3;
+  color: var(--light-text-color);
+  font-size: 18px;
   margin-top: 3px;
 }
 

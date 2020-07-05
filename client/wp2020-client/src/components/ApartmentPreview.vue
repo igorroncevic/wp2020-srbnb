@@ -601,8 +601,9 @@ textarea:focus-within {
 }
 .review-button-publish {
   grid-row: 4;
-  grid-column: 3;
-  margin-left: 73px;
+  grid-column: 4;
   margin-top: 10px;
+  text-align: right;
+  margin-right: 4px;
 }
 </style>

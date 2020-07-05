@@ -78,6 +78,24 @@ class UsersService {
     return success;
   }
 
+  async searchUsers(data) {
+    const headers = this.setHeaders();
+    console.log(data);
+    const users = await this.apiClient
+      .get("/users", {
+        params: data,
+        headers,
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return users;
+  }
+
   setHeaders() {
     const jwt = this.getToken();
     var headers = {
@@ -92,8 +110,8 @@ class UsersService {
   }
 
   getUserType() {
-   return localStorage.getItem("userType");
- }
+    return localStorage.getItem("userType");
+  }
 
   loginUser(data) {
     window.localStorage.setItem("jwt", data.JWT);

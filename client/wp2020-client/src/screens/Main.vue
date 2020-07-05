@@ -64,9 +64,7 @@ export default {
       }, 500);
     },
     getUserType() {
-      var type = UserService.getUserType();
-      console.log(type);
-      return type;
+      return UserService.getUserType();
     }
   }
 };

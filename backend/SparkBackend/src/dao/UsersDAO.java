@@ -23,72 +23,72 @@ import requests.UserSearch;
 import rest.Main;
 
 public class UsersDAO {
-	
+
 	private static UsersDAO instance;
-	
+
 	private String USERS_FILE_PATH = "data/users.json";
-	
+
 	private Map<String, User> users = new HashMap<String, User>();
 	private List<User> admins = new ArrayList<User>();
 	private List<User> guests = new ArrayList<User>();
 	private List<User> hosts = new ArrayList<User>();
-	
+
 	private UsersDAO() {
 		loadData();
 	}
-	
+
 	public static UsersDAO getInstance() {
-		if(instance == null)
+		if (instance == null)
 			instance = new UsersDAO();
-		
+
 		return instance;
 	}
-	
+
 	private void loadData() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(USERS_FILE_PATH));
-			List<User> data = Main.g.fromJson(br, new TypeToken<List<User>>(){}.getType());
-			for(User user : data) {
+			List<User> data = Main.g.fromJson(br, new TypeToken<List<User>>() {
+			}.getType());
+			for (User user : data) {
 				this.users.put(user.getUsername(), user);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void saveData() {
 		String json = Main.g.toJson(users.values());
-		
+
 		try {
 			FileWriter writer = new FileWriter(USERS_FILE_PATH);
 			writer.write(json);
 			writer.close();
-			  
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean addNewUser(User newUser) {
-		if(users.containsKey(newUser.getUsername()))
+		if (users.containsKey(newUser.getUsername()))
 			return false;
-		
+
 		users.put(newUser.getUsername(), newUser);
 		saveData();
 		return true;
 	}
-	
+
 	public User login(Login login) {
 		User user = users.get(login.getUsername());
-		if(user != null && user.getPassword().equals(login.getPassword()))
-			return user;			
-		
+		if (user != null && user.getPassword().equals(login.getPassword()))
+			return user;
+
 		return null;
 	}
-	
-	
+
 	public boolean updateUserData(User newData) {
-		if(users.get(newData.getUsername()) == null)
+		if (users.get(newData.getUsername()) == null)
 			return false;
 		else {
 			newData.setType(getUserType(newData.getUsername()));
@@ -96,51 +96,56 @@ public class UsersDAO {
 			saveData();
 			return true;
 		}
-				
+
 	}
-	
+
 	public List<User> getAllUsers() {
 		return new ArrayList<User>(users.values());
 	}
-	
+
 	public List<User> searchUsers(UserSearch search, List<User> users) {
 		List<User> match = new ArrayList<User>();
-		
-		for(User user : users) {
-			if(search.getType() != null && user.getType() != search.getType()) continue;
-			if(search.getGender() != null && user.getGender() != search.getGender()) continue;
-			if(search.getUsername() != null && !user.getUsername().contains(search.getUsername().toLowerCase())) continue;
-			
+
+		for (User user : users) {
+			if (search.getType() != null && user.getType() != search.getType())
+				continue;
+			if (search.getGender() != null && user.getGender() != search.getGender())
+				continue;
+			if (search.getUsername() != null && !user.getUsername().contains(search.getUsername().toLowerCase()))
+				continue;
+
 			match.add(user);
 		}
-		
+
 		return match;
 	}
-	
+
 	public User getUser(String username) {
 		return users.get(username);
 	}
-	
+
 	public UserType getUserType(String username) {
 		return users.get(username).getType();
 	}
-	
+
 	public List<User> getMyGuests(String host) {
 		List<User> myGuests = new ArrayList<User>();
-		
-		for(Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host)) {
-			myGuests.add(users.get(reservation.getGuest()));
+
+		for (Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host)) {
+			if (!myGuests.contains(users.get(reservation.getGuest()))) {	//unikatni gosti, ne rezervacije
+				myGuests.add(users.get(reservation.getGuest()));
+			}
 		}
-		
+
 		return myGuests;
 	}
-	
+
 	public boolean isMyGuest(String host, String guest) {
-		for(Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host))
-			if(reservation.getGuest().equals(guest))
+		for (Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host))
+			if (reservation.getGuest().equals(guest))
 				return true;
-		
+
 		return false;
 	}
-	
+
 }
