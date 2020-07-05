@@ -98,33 +98,31 @@ export default {
     Button
   },
   async beforeMount() {
+    var queryParams = {
+      location: this.$route.query.location,
+      guests: this.$route.query.guests,
+      startDate: this.$route.query.startDate,
+      endDate: this.$route.query.endDate,
+      type: this.$route.query.selectedType
+    };
+
     if (this.$route.query.amenities) {
-      this.apartments = await ApartmentsService.searchApartments({
-        location: this.$route.query.location,
-        guests: this.$route.query.guests,
-        startDate: moment(this.$route.query.startDate).format("DD-MM-YYYY"),
-        endDate: moment(this.$route.query.endDate).format("DD-MM-YYYY"),
-        minRooms: this.$route.query.minRooms,
-        maxRooms: this.$route.query.maxRooms,
-        minPrice: this.$route.query.minPrice,
-        maxPrice: this.$route.query.maxPrice,
-        amenites: this.$route.query.amenities,
-        type: this.$route.query.selectedType
-      });
-    } else {
-      this.apartments = await ApartmentsService.searchApartments({
-        location: this.$route.query.location,
-        guests: this.$route.query.guests,
-        startDate: moment(this.$route.query.startDate).format("DD-MM-YYYY"),
-        endDate: moment(this.$route.query.endDate).format("DD-MM-YYYY"),
-        minRooms: this.$route.query.minRooms,
-        maxRooms: this.$route.query.maxRooms,
-        minPrice: this.$route.query.minPrice,
-        maxPrice: this.$route.query.maxPrice,
-        type: this.$route.query.selectedType
-      });
+      queryParams.amenities = this.$route.query.amenities;
+    }
+    if (this.$route.query.minPrice) {
+      queryParams.minPrice = this.$route.query.minPrice;
+    }
+    if (this.$route.query.maxPrice) {
+      queryParams.maxPrice = this.$route.query.maxPrice;
+    }
+    if (this.$route.query.minRooms) {
+      queryParams.minRooms = this.$route.query.minRooms;
+    }
+    if (this.$route.query.maxRooms) {
+      queryParams.maxRooms = this.$route.query.maxRooms;
     }
 
+    this.apartments = await ApartmentsService.searchApartments(queryParams);
     this.amenities = await AmenitiesService.getAllAmenities();
 
     this.location = this.$route.query.location;
@@ -142,16 +140,19 @@ export default {
       .split(" ");
     this.startDate = startDateParts[0] + " " + startDateParts[1];
     this.endDate = endDateParts[0] + " " + endDateParts[1];
-    if (this.$route.query.minRooms == 0 && this.$route.query.maxRooms != 0) {
+    if (
+      this.$route.query.minRooms == null &&
+      this.$route.query.maxRooms != null
+    ) {
       this.rooms = "Up to " + this.$route.query.maxRooms + " rooms";
     } else if (
-      this.$route.query.maxRooms == 0 &&
-      this.$route.query.minRooms != 0
+      this.$route.query.maxRooms == null &&
+      this.$route.query.minRooms != null
     ) {
       this.rooms = "At least " + this.$route.query.minRooms + " rooms";
     } else if (
-      this.$route.query.minRooms == 0 &&
-      this.$route.query.maxRooms == 0
+      this.$route.query.minRooms == null &&
+      this.$route.query.maxRooms == null
     ) {
       this.rooms = "Any number of rooms";
     } else {
@@ -162,16 +163,19 @@ export default {
         this.$route.query.maxRooms;
     }
 
-    if (this.$route.query.minPrice == 0 && this.$route.query.maxPrice != 0) {
+    if (
+      this.$route.query.minPrice == null &&
+      this.$route.query.maxPrice != null
+    ) {
       this.price = "Up to $" + this.$route.query.maxPrice;
     } else if (
-      this.$route.query.maxPrice == 0 &&
-      this.$route.query.minPrice != 0
+      this.$route.query.maxPrice == null &&
+      this.$route.query.minPrice != null
     ) {
       this.price = "Up from $" + this.$route.query.minPrice;
     } else if (
-      this.$route.query.minPrice == 0 &&
-      this.$route.query.maxPrice == 0
+      this.$route.query.minPrice == null &&
+      this.$route.query.maxPrice == null
     ) {
       this.price = "Any price";
     } else {
