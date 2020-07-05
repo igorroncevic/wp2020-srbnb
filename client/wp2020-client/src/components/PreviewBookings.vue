@@ -22,9 +22,10 @@
           <div class="dropdown-container">
             <select v-model="status">
               <option value disabled selected>Search by status</option>
+              <option value="Created">Created</option>
               <option value="Declined">Declined</option>
-              <option value="Accepted">Accepted</option>
               <option value="Canceled">Canceled</option>
+              <option value="Accepted">Accepted</option>
               <option value="Completed">Completed</option>
             </select>
             <div class="select-icon">
@@ -50,18 +51,22 @@
         <th>Check-out</th>
         <th>Message</th>
         <th>Apartment</th>
+        <th>Total Price</th>
         <th>Status</th>
+        <th></th>
+        <th></th>
       </tr>
-      <tr v-for="(reservation,i) in reservationsNonPending" :key="i">
+      <tr v-for="reservation in reservationsNonPending" :key="reservation.id">
         <td class="customer">{{reservation.guest}}</td>
         <td>{{reservation.checkInDay}}</td>
         <td>{{reservation.checkOutDay}}</td>
         <td>{{reservation.reservationMessage}}</td>
         <td>{{reservation.apartment}}</td>
         <td>{{reservation.totalPrice}}</td>
+        <td>{{reservation.status}}</td>
         <td>
           <Button
-            v-if="completed(reservation) && !isUserGuest"
+            v-if="completed(reservation) && isUserHost"
             text="Complete"
             width="96"
             height="34"
@@ -69,14 +74,21 @@
             @clicked="completeReservation(reservation)"
           />
           <Button
-            v-if="isUserGuest && isReservationCancelable(reservation)"
+            v-if="isReservationCancelable(reservation)"
             text="Cancel"
             width="96"
             height="34"
             fontsize="16"
             @clicked="cancelReservation(reservation)"
           />
-          <p v-else>{{reservation.status}}</p>
+          <Button
+            v-if="isUserHost && canHostDecline(reservation)"
+            text="Decline"
+            width="96"
+            height="34"
+            fontsize="16"
+            @clicked="declineReservation(reservation)"
+          />
         </td>
       </tr>
     </table>
@@ -94,10 +106,11 @@
         <th>Check-out</th>
         <th>Message</th>
         <th>Apartment</th>
+        <th>Total Price</th>
         <th></th>
         <th></th>
       </tr>
-      <tr v-for="(reservation,i) in reservationsPending" :key="i">
+      <tr v-for="reservation in reservationsPending" :key="reservation.id">
         <td class="customer">{{reservation.guest}}</td>
         <td>{{reservation.checkInDay}}</td>
         <td>{{reservation.checkOutDay}}</td>
@@ -106,7 +119,7 @@
         <td>{{reservation.totalPrice}}</td>
         <td>
           <Button
-            v-if="!isUserGuest"
+            v-if="isUserHost && canHostDecline(reservation)"
             text="Accept"
             width="96"
             height="34"
@@ -116,7 +129,7 @@
         </td>
         <td>
           <Button
-            v-if="!isUserGuest"
+            v-if="isUserHost && canHostDecline(reservation)"
             text="Decline"
             width="96"
             height="34"
@@ -124,7 +137,7 @@
             @clicked="declineReservation(reservation)"
           />
           <Button
-            v-if="isUserGuest && isReservationCancelable(reservation)"
+            v-if="isReservationCancelable(reservation)"
             text="Cancel"
             width="96"
             height="34"
@@ -151,55 +164,37 @@ import usersService from "../services/UserService";
 export default {
   components: { Button },
   async beforeMount() {
-    if (this.$route.query.guest == "" && this.$route.query.guest == "") {
-      this.reservations = await ReservationsService.getReservations(null);
-    } else if (this.$route.query.guest == "") {
-      this.reservations = await ReservationsService.getReservations({
-        status: this.$route.query.status
-      });
-    } else if (this.$route.query.status == "") {
-      this.reservations = await ReservationsService.getReservations({
-        guest: this.$route.query.guest
-      });
-    } else {
-      this.reservations = await ReservationsService.getReservations({
-        status: this.$route.query.status,
-        guest: this.$route.query.guest
-      });
+    var queryParams = {};
+    if (this.$route.query.guest) {
+      queryParams.guest = this.$route.query.guest;
     }
+    if (this.$route.query.status) {
+      queryParams.status = this.$route.query.status;
+    }
+
+    if (Object.keys(queryParams).length === 0) queryParams = null;
+    this.reservations = await ReservationsService.getReservations(queryParams);
 
     this.reservations.forEach(async reserv => {
       var app = await ApartmentsService.getApartmentById(reserv.apartment);
+      var reservationInfo = {
+        id: reserv.id,
+        guest: reserv.guest,
+        checkInDay: reserv.checkInDay,
+        checkOutDay: this.checkOutDay(reserv),
+        reservationMessage:
+          reserv.reservationMessage == "" ? "None" : reserv.reservationMessage,
+        apartment: app.name,
+        status: reserv.status,
+        totalPrice: reserv.totalPrice
+      };
       if (reserv.status != "Created") {
-        this.reservationsNonPending.push({
-          id: reserv.id,
-          guest: reserv.guest,
-          checkInDay: reserv.checkInDay,
-          checkOutDay: this.checkOutDay(reserv),
-          reservationMessage:
-            reserv.reservationMessage == ""
-              ? "None"
-              : reserv.reservationMessage,
-          apartment: app.name,
-          status: reserv.status,
-          totalPrice: reserv.totalPrice
-        });
+        this.reservationsNonPending.push(reservationInfo);
       } else if (reserv.status == "Created") {
-        this.reservationsPending.push({
-          id: reserv.id,
-          guest: reserv.guest,
-          checkInDay: reserv.checkInDay,
-          checkOutDay: this.checkOutDay(reserv),
-          reservationMessage:
-            reserv.reservationMessage == ""
-              ? "None"
-              : reserv.reservationMessage,
-          apartment: app.name,
-          status: reserv.status,
-          totalPrice: reserv.totalPrice
-        });
+        this.reservationsPending.push(reservationInfo);
       }
     });
+    this.userType = usersService.getUserType();
   },
   mounted() {
     this.$forceUpdate();
@@ -211,7 +206,7 @@ export default {
       reservationsPending: [],
       status: "",
       selectedType: "",
-      username: ""
+      username: "",
       /*reservations: [
         {
           customer: "Jovan Jovanovic",
@@ -259,9 +254,16 @@ export default {
           status: "Active"
         }
       ]*/
+      userType: ""
     };
   },
   methods: {
+    isUserGuest() {
+      return this.userType == "Guest" ? true : false;
+    },
+    isUserHost() {
+      return this.userType == "Host" ? true : false;
+    },
     checkOutDay(reservation) {
       var date = moment(reservation.checkInDay, "DD-MM-YYYY").add(
         reservation.nightsStaying,
@@ -269,11 +271,22 @@ export default {
       );
       return date.format("DD-MM-YYYY");
     },
-    isUserGuest() {
-      return usersService.getUserType() == "Guest" ? true : false;
-    },
     isReservationCancelable(reservation) {
-      if (reservation.status == "Created" || reservation.status == "Accepted") {
+      if (
+        (reservation.status == "Created" || reservation.status == "Accepted") &&
+        this.isUserGuest()
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    canHostDecline(reservation) {
+      if (
+        moment(reservation.checkOutDay).isAfter(moment(), "day") &&
+        reservation.status == "Accepted" &&
+        this.isUserHost()
+      ) {
         return true;
       } else {
         return false;
@@ -449,7 +462,7 @@ h1 {
   box-shadow: 0px 4px 8px var(--dropshadow-color);
   border-radius: var(--border-radius);
   grid-row: 2;
-  grid-column: 3/13;
+  grid-column: 4/12;
 }
 #searchbar-bookings {
   position: relative;
@@ -496,7 +509,7 @@ h1 {
 
 .form-item-booking {
   display: inline-block;
-  padding: 2rem 0 0.5rem 1.5rem;
+  padding: 1.5rem 0 0.5rem 1.5rem;
   background: var(--background-color);
   width: 40%;
   border: 1px solid var(--background-color);
@@ -530,18 +543,17 @@ h1 {
 }
 
 .minified-booking {
-  padding: 0.5rem 0 2rem 1.5rem;
+  padding: 0.7rem 0 1.3rem 0rem;
 }
 
 .dropdown-container {
   width: 250px;
   position: relative;
-  top: 5%;
-  left: 8%;
+  left: 10%;
+  top: 20%;
 }
 select {
   width: 200px;
-  height: 46px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -551,12 +563,11 @@ select {
   border-bottom: 2px solid var(--medium-text-color);
   color: var(--main-text-color);
   appearance: none;
-  padding: 10px;
+  padding: 0px 10px 10px 10px;
   -webkit-appearance: none;
   -moz-appearance: none;
   transition: color 0.3s ease, background-color 0.3s ease,
     border-bottom-color 0.3s ease;
-  margin-top: 0;
 }
 select * {
   color: var(--main-text-color);
@@ -568,7 +579,6 @@ select::-ms-expand {
 }
 .select-icon {
   position: relative;
-  top: 11px;
   right: 2.8rem;
   pointer-events: none;
   transition: background-color 0.3s ease, border-color 0.3s ease;

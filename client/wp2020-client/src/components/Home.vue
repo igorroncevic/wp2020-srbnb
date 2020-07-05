@@ -199,7 +199,7 @@ export default {
 
 <style scoped>
 #searchbar .dates {
-  width: 25% !important;
+  width: 23% !important;
 }
 
 #searchbar input {
@@ -208,7 +208,7 @@ export default {
 
 #searchbar .vdp-datepickerr {
   margin-right: 10px !important;
-  width: 125px !important;
+  width: 120px !important;
   cursor: pointer;
 }
 

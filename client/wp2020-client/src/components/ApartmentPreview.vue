@@ -113,7 +113,7 @@
     </div>
     <div id="my-review">
       <div class="my-review-title">Write a Review</div>
-      <div class="review-my-rating" style="font-size: 18px; margin-left: 110px;">
+      <div class="review-my-rating" style="font-size: 18px; margin-left: 60px;">
         <star-rating v-model="rating"></star-rating>
       </div>
       <div class="review-my-text">
