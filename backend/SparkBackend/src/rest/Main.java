@@ -67,12 +67,7 @@ public class Main {
 		port(8080);
 
 		staticFiles.externalLocation(new File("./WebContent").getCanonicalPath());
-
-		get("/test", (req, res) -> {
-
-			return g.toJson(AmenitiesDAO.getInstance().getAmenities());
-		});
-
+		
 		post("/users/login", (req, res) -> {
 			String payload = req.body();
 			Login login = g.fromJson(payload, Login.class);
@@ -107,7 +102,7 @@ public class Main {
 			}
 
 		});
-
+		
 		put("/users", (req, res) -> {
 			String username = Utils.authenticate(req);
 			if (username == null)
@@ -158,7 +153,7 @@ public class Main {
 				return g.toJson(user);
 			}
 		});
-
+		
 		get("/users/:user", (req, res) -> {
 			String username = Utils.authenticate(req);
 			String usernameToGet = req.params("user");
@@ -216,7 +211,6 @@ public class Main {
 
 		});
 
-		//Stavio sam da su dostupni svima, da bi i neulogovani korisnik mogao da vidi komentare na nekom apartmanu.
 		get("/apartments/:id/comments", (req, res) -> {
 			String username = Utils.authenticate(req);
 			int apartmentId = Integer.parseInt(req.params("id"));
@@ -247,14 +241,18 @@ public class Main {
 					res.status(403);
 					return "You dont have permission to update this apartment";
 				}
-				if (ApartmentsDAO.getInstance().updateApartment(newData))
+				if (ApartmentsDAO.getInstance().updateApartment(newData)) {
+					ReservationsDAO.getInstance().updateReservations(id);
 					return "Success";
+				}
 				else
 					return "Error";
 
 			} else {
-				if (ApartmentsDAO.getInstance().updateApartment(newData))
+				if (ApartmentsDAO.getInstance().updateApartment(newData)) {
+					ReservationsDAO.getInstance().updateReservations(id);
 					return "Success";
+				}
 				else
 					return "Error";
 			}
@@ -319,16 +317,7 @@ public class Main {
 		});
 
 		get("/amenities", (req, res) -> {
-			// String username = Utils.authenticate(req);
-			// if(username == null) { || UsersDAO.getInstance().getUserType(username) !=
-			// UserType.Admin) { //treba da mogu i obicni korisnici, za dodavanje i
-			// filtriranje
-			// res.status(403);
-			// return "You cant view amenities";
-			// } else {
 			return g.toJson(AmenitiesDAO.getInstance().getAmenities());
-			// }
-
 		});
 
 		post("/amenities", (req, res) -> {

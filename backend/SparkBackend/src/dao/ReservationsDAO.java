@@ -15,6 +15,7 @@ import java.util.Map;
 
 import com.google.gson.reflect.TypeToken;
 
+import model.Apartment;
 import model.Reservation;
 import model.User;
 import model.enums.ReservationStatus;
@@ -113,6 +114,16 @@ public class ReservationsDAO {
 		return new ArrayList<Reservation>(reservations.values());
 	}
 	
+	public List<Reservation> getReservationsForApartment(int apartmentId) {
+		List<Reservation> reservations = new ArrayList<Reservation>();
+		
+		for(Reservation reservation : this.reservations.values())
+			if(reservation.getApartment() == apartmentId)
+				reservations.add(reservation);
+		
+		return reservations;
+	}
+	
 	public Reservation getReservation(int id) {
 		return reservations.get(id);
 	}
@@ -148,6 +159,21 @@ public class ReservationsDAO {
 			else
 				return false;
 		}
+	}
+	
+	public void updateReservations(int apartmentId) {
+		for(Reservation reservation : getReservationsForApartment(apartmentId)) {
+			
+			Date startDate = reservation.getCheckInDay();
+			Calendar c = Calendar.getInstance();
+			c.setTime(startDate);
+			c.add(Calendar.DAY_OF_MONTH, reservation.getNightsStaying());
+			Date endDate = c.getTime();
+			
+			if(!ApartmentsDAO.getInstance().setDaysRented(apartmentId, startDate, endDate))
+				reservation.setStatus(ReservationStatus.Canceled);
+		}
+		saveData();
 	}
 	
 	public boolean acceptReservation(int id) {

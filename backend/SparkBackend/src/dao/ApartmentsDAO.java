@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import com.google.gson.reflect.TypeToken;
 
 import model.Amenity;
 import model.Apartment;
+import model.Reservation;
 import model.User;
 import model.enums.ApartmentStatus;
 import requests.ApartmentSearch;
@@ -87,8 +89,7 @@ public class ApartmentsDAO {
 		if(apartments.get(newData.getId()) == null)
 			return false;
 		else {
-			newData.setDaysForRent(apartments.get(newData.getId()).getDaysForRent());
-			newData.setAvailableDaysForRent(apartments.get(newData.getId()).getAvailableDaysForRent());
+			newData.setAvailableDaysForRent(new ArrayList<Date>(newData.getDaysForRent()));
 			apartments.replace(newData.getId(), newData);
 			saveData();
 			return true;
