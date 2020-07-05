@@ -33,10 +33,11 @@
           </div>
           <div class="form-item dates" tabindex="2">
             <div class="nest stacked">
-              <label for="datepickers" class="label">CHECK IN / CHECK OUT</label>
-              <div class="datepickers">
+              <label for="datepickerss" class="label">CHECK IN / CHECK OUT</label>
+              <div class="datepickerss">
                 <datepicker
                   placeholder="Select check-in"
+                  class="vdp-datepickerr"
                   v-model="startDate"
                   :value="startDate"
                   name="startDate"
@@ -45,6 +46,7 @@
                 ></datepicker>
                 <datepicker
                   placeholder="Select check-out"
+                  class="vdp-datepickerr"
                   v-model="endDate"
                   :value="endDate"
                   name="endDate"
@@ -197,30 +199,25 @@ export default {
 
 <style scoped>
 #searchbar .dates {
-  width: 23% !important;
+  width: 25% !important;
 }
 
-#searchbar input[data-v-8dc7cce2] {
+#searchbar input {
   background: var(--background-color);
 }
 
-#searchbar .vdp-datepicker[data-v-8dc7cce2] {
-  width: 130px !important;
-  margin-right: 10px;
+#searchbar .vdp-datepickerr {
+  margin-right: 10px !important;
+  width: 125px !important;
+  cursor: pointer;
 }
 
-#searchbar .datepickers {
+#searchbar .datepickerss {
   display: inline-flex;
   width: min-content;
   flex-direction: row;
-  margin-top: 2px;
-  width: 50%;
-}
-
-#searchbar .vdp-datepicker {
-  width: 170px !important;
-  color: var(--main-text-color) !important;
-  cursor: pointer;
+  margin-top: 1px;
+  width: 50% !important;
 }
 
 /* Title */
@@ -247,7 +244,7 @@ h1 {
 /* Search bar */
 #searchbar-wrapper {
   position: relative;
-  width: 89%;
+  width: 90%;
   height: auto;
   background: var(--background-color);
   margin-bottom: 30px;
