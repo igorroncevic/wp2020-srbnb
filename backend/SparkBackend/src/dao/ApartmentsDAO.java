@@ -168,7 +168,8 @@ public class ApartmentsDAO {
 	public void deleteAmenity(int id) {
 		for(Apartment apartment : apartments.values())
 			if(apartment.getAmenities().contains(id))
-				apartment.getAmenities().remove(id);
+				apartment.getAmenities().remove(apartment.getAmenities().indexOf(id));
+		saveData();
 	}
 	
 	public boolean setDaysRented(int apartmentId, Date startDate, Date endDate) {

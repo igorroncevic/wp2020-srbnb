@@ -26,5 +26,25 @@
 	{
 		"id": 6,
 		"name": "Mini bar"
+	},
+	{
+		"id": 7,
+		"name": "Hair dryer"
+	},
+	{
+		"id": 8,
+		"name": "Jacuzzi"
+	},
+	{
+		"id": 9,
+		"name": "Sauna"
+	},
+	{
+		"id": 11,
+		"name": "Music player"
+	},
+	{
+		"id": 12,
+		"name": "Iron"
 	}
 ]
