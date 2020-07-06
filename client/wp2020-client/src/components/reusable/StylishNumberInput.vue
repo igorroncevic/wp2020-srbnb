@@ -7,7 +7,7 @@
       class="input"
       :name="name"
       :style="{width: width + 'px', height: height+'px'}"
-      :value="inputValue"
+      :value="value"
       @input="$emit('input', $event.target.value)"
       required
     />
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  props: ["labelText", "inputValue", "name", "width", "height", "labelColor"]
+  props: ["labelText", "value", "name", "width", "height", "labelColor"]
 };
 </script>
 

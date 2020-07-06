@@ -2,13 +2,13 @@
   <div class="grid-container">
     <!-- Title -->
     <div class="title-wrapper">
-      <h1 style="width:25rem; font-size: 32px;">Hi, Petar! Let's get started listing your space.</h1>
+      <h1 style="width:25rem; font-size: 32px;">Let's get started listing your space!</h1>
     </div>
     <div id="form">
       <StylishInput
         id="apartmentName"
         label-text="Pick a name for your space"
-        :value="''"
+        :value="apartmentName"
         v-model="apartmentName"
         width="600"
         height="38"
@@ -17,9 +17,12 @@
         <label class="label" for="dropdown-container">What kind of apartment do you have?</label>
         <div class="dropdown-container">
           <select required v-model="apartmentType">
-            <option value hidden>Select apartment type</option>
-            <option value="Full_Apartment">Full Apartment</option>
-            <option value="Room">Room</option>
+            <option value disabled hidden>Select apartment type</option>
+            <option
+              value="Full_Apartment"
+              :selected="apartmentType == 'Full_Apartment'"
+            >Full apartment</option>
+            <option value="Room" :selected="apartmentType == 'Room'">Room</option>
           </select>
           <div class="select-icon">
             <svg focusable="false" style="width:25px;height:25px" viewBox="0 0 24 24">
@@ -84,7 +87,7 @@
           style="margin-right: 20px;"
           id="apartmentName"
           label-text="Street"
-          :value="''"
+          :value="streetName"
           v-model="streetName"
           width="260"
           height="38"
@@ -93,6 +96,7 @@
           id="apartmentName"
           label-text="Number"
           name="streetNo"
+          :value="streetNo"
           v-model="streetNo"
           width="120"
           height="28"
@@ -100,7 +104,7 @@
         <StylishInput
           id="apartmentName"
           label-text="City"
-          :value="''"
+          :value="place"
           v-model="place"
           width="270"
           height="38"
@@ -109,6 +113,7 @@
           id="apartmentName"
           label-text="Zip"
           name="zipcode"
+          :value="zipCode"
           v-model="zipCode"
           width="120"
           height="28"
@@ -117,8 +122,8 @@
       <MapPreview
         v-if="mapReady"
         id="mapbox-preview"
-        :latitude="latitude"
-        :longitude="longitude"
+        :latitude="selectedLatitude"
+        :longitude="selectedLongitude"
         @markerChange="getLngLat"
         style="margin-top:0;"
       />
@@ -128,7 +133,7 @@
           <div class="single-amenity" v-for="(amenityItem, i) in amenities" :key="i">
             <Checkbox
               :value="amenityItem.name"
-              :checked="false"
+              :checked="selectedAmenities.includes(amenityItem.id)"
               @change="editAmenities($event.target.value)"
             />
           </div>
@@ -208,6 +213,7 @@
           label-text="Price"
           name="price"
           v-model="price"
+          :value="price"
           width="100"
           height="28"
         />
@@ -219,7 +225,7 @@
         fontsize="20"
         id="button"
         height="50"
-        @clicked="addApartment"
+        @clicked="updateApartment"
       />
     </div>
   </div>
@@ -248,15 +254,51 @@ export default {
     Datepicker
   },
   async beforeMount() {
+    this.apartment = await ApartmentsService.getApartmentById(
+      this.$route.params.id
+    );
+    if (this.apartment == null) {
+      this.$toasted.global.noApartmentWithThisId();
+      this.$router.go({ name: "home" });
+      return;
+    }
+
+    this.apartmentName = this.apartment.name;
+    this.apartmentType = this.apartment.type;
+    this.streetName = this.apartment.location.address.street;
+    this.streetNo = this.apartment.location.address.number;
+    this.place = this.apartment.location.address.place;
+    this.zipCode = this.apartment.location.address.zipCode;
+    this.numberOfRooms = this.apartment.numberOfRooms;
+    this.numberOfGuest = this.apartment.numberOfGuest;
+    this.checkin = this.apartment.checkInTime + ":00";
+    this.checkout = this.apartment.checkOutTime + ":00";
+    this.price = this.apartment.pricePerNight;
+    this.selectedLatitude = this.apartment.location.latitude;
+    this.selectedLongitude = this.apartment.location.longitude;
+    this.roomSelected = this.apartmentType == "Room" ? true : false;
+
+    this.selectedAmenities = [...this.apartment.amenities];
+    for (let i = 0; i < this.apartment.availableDaysForRent.length; i++) {
+      if (i % 2 == 0)
+        this.availableStartDates.push(this.apartment.availableDaysForRent[i]);
+      if (i % 2 == 1)
+        this.availableEndDates.push(this.apartment.availableDaysForRent[i]);
+    }
+
     this.amenities = await AmenitiesService.getAllAmenities();
+
+    console.log(this.apartment);
     this.$nextTick(() => {
       this.mapReady = true;
     });
   },
   data() {
     return {
+      apartment: null,
       apartmentName: "",
       apartmentType: "",
+      roomSelected: false,
       streetName: "",
       streetNo: "",
       place: "",
@@ -289,7 +331,7 @@ export default {
     }
   },
   methods: {
-    async addApartment() {
+    async updateApartment() {
       var daysForRent = [];
       for (var i = 0; i < this.availableStartDates.length; i++) {
         daysForRent.push(this.availableStartDates[i]);
@@ -301,7 +343,8 @@ export default {
         return;
       }
 
-      var success = await ApartmentsService.addApartment({
+      var updatedApartment = {
+        id: this.$route.params.id,
         name: this.apartmentName,
         type: this.apartmentType,
         numberOfRooms: this.numberOfRooms,
@@ -316,12 +359,16 @@ export default {
             zipCode: this.zipCode
           }
         },
+        host: this.apartment.host,
+        status: this.apartment.status,
         daysForRent: daysForRent,
         pricePerNight: this.price,
         checkInTime: this.checkin.split(":")[0],
         checkOutTime: this.checkout.split(":")[0],
         amenities: this.selectedAmenities
-      });
+      };
+      console.log(updatedApartment);
+      var success = await ApartmentsService.updateApartment(updatedApartment);
       if (success) {
         this.$toasted.global.successMessage();
         setTimeout(() => {

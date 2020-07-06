@@ -57,6 +57,22 @@ class ApartmentsService {
       });
     return success;
   }
+
+  async updateApartment(data) {
+    const headers = usersService.setHeaders();
+    var success = await this.apiClient
+      .put(`/apartments/${data.id}`, data, {
+        headers,
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
+  }
 }
 
 const apartmentsService = new ApartmentsService();

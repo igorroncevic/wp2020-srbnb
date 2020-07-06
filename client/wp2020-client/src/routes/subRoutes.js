@@ -6,6 +6,7 @@ import UserProfile from "./../components/UserProfile.vue";
 import SearchUsers from "./../components/SearchUsers.vue";
 import PreviewBookings from "./../components/PreviewBookings.vue";
 import AddApartment from "./../components/AddApartment.vue";
+import EditApartment from "./../components/EditApartment.vue";
 import Amenities from "./../components/Amenities.vue";
 import Vue from "vue";
 /*eslint-disable*/
@@ -126,11 +127,34 @@ export default [
     },
   },
   {
-    path: "add-apartment",
+    path: "/add-apartment",
     name: "add-apartment",
     component: AddApartment,
     meta: {
       title: " - Add New Apartment",
+    },
+    beforeEnter: (to, from, next) => {
+      if (UserService.getUserType() != "Host") {
+        Vue.toasted.show("You have no permissions to perform this action.", {
+          type: "error",
+          icon: "error_outline",
+          iconPack: "material",
+          position: "top-center",
+          duration: 2500,
+          singleton: true,
+        });
+        window.location.href = `${window.location.origin}/#/`;
+        return;
+      }
+      next();
+    },
+  },
+  {
+    path: "/edit-apartment/:id",
+    name: "edit-apartment",
+    component: EditApartment,
+    meta: {
+      title: " - Edit Apartment",
     },
     beforeEnter: (to, from, next) => {
       if (UserService.getUserType() != "Host") {

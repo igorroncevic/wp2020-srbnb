@@ -5,13 +5,15 @@
       <div id="city-edit">
         <p>{{apartment.location.address.street}} {{apartment.location.address.number}}, {{apartment.location.address.place}}</p>
         <div id="edit-btn">
-          <svg style="width:20px;height:20px" viewBox="0 0 24 24">
-            <path
-              fill="#b8b8b8"
-              d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
-            />
-          </svg>
-          <p style="float: right;">Edit</p>
+          <router-link :to="{name: 'edit-apartment', params: {id: apartment.id}}">
+            <svg style="width:20px;height:20px" viewBox="0 0 24 24">
+              <path
+                fill="#b8b8b8"
+                d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
+              />
+            </svg>
+            <p style="float: right;">Edit</p>
+          </router-link>
         </div>
       </div>
       <div id="app-photo">Cover photo</div>
@@ -105,7 +107,12 @@
     </div>
     <div id="reviews-title">Reviews</div>
     <div id="reviews-wrapper">
-      <review-item v-for="(review, i) in reviews" :key="i" :review="review" @hideshow="hideShowReview(review)" />
+      <review-item
+        v-for="(review, i) in reviews"
+        :key="i"
+        :review="review"
+        @hideshow="hideShowReview(review)"
+      />
       <p
         v-if="reviews.length == 0"
         style="color: var(--main-text-color); font-weight: 400; margin-top: 20px; font-size:18px;"
@@ -276,14 +283,14 @@ export default {
     customFormatter(date) {
       return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
     },
-    hideShowReview(review){
-       var success;
-       if(review.visibleToGuests){
-          success = CommentsService.hideComment(review);
-       }else{
-          success = CommentsService.showComment(review);
-       }
-       if (success) {
+    hideShowReview(review) {
+      var success;
+      if (review.visibleToGuests) {
+        success = CommentsService.hideComment(review);
+      } else {
+        success = CommentsService.showComment(review);
+      }
+      if (success) {
         this.$toasted.global.successMessage();
         setTimeout(() => {
           this.$router.go();

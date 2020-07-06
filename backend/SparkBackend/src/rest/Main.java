@@ -201,8 +201,10 @@ public class Main {
 				else
 					return g.toJson(apartment);
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-				if (!apartment.getHost().equals(username))
+				if (!apartment.getHost().equals(username)) {
+					res.status(403);
 					return "You can't view this apartment";
+				}
 				else
 					return g.toJson(apartment);
 			} else {
@@ -307,8 +309,10 @@ public class Main {
 				else
 					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-				if (!apartment.getHost().equals(username))
+				if (!apartment.getHost().equals(username)) {
+					res.status(403);
 					return "You can't view this apartment";
+				}
 				else
 					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
 			} else {

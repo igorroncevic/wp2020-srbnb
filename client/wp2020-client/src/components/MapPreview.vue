@@ -39,7 +39,6 @@ export default {
     },
     longitude(newVal, oldVal) {
       console.log("Old val " + oldVal + ", new val " + newVal);
-      this.createMap();
     }
   },
   methods: {
@@ -48,10 +47,10 @@ export default {
       this.map = new mapboxgl.Map({
         container: "mapbox-preview",
         style: "mapbox://styles/mapbox/streets-v11",
-        minZoom: 2,
+        minZoom: 7,
         maxZoom: 18,
         center: [this.longitude, this.latitude],
-        zoom: 3
+        zoom: 8
       });
 
       /*// Add geolocate control to the map.
