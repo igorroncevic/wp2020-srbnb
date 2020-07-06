@@ -80,6 +80,7 @@ public class ApartmentsDAO {
 	public boolean addNewApartment(Apartment newApartment) {
 		newApartment.setId(apartments.size());
 		newApartment.setAvailableDaysForRent(new ArrayList<Date>(newApartment.getDaysForRent()));
+		newApartment.setStatus(ApartmentStatus.Active);
 		apartments.put(newApartment.getId(), newApartment);
 		saveData();
 		return true;

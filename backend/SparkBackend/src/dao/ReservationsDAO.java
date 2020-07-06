@@ -27,8 +27,10 @@ public class ReservationsDAO {
 	private static ReservationsDAO instance;
 	
 	private String RESERVATIONS_FILE_PATH = "data/reservations.json";
+	private String HOLIDAYS_FILE_PATH = "data/holidays.json";
 	
 	private Map<Integer, Reservation> reservations = new HashMap<Integer, Reservation>();
+	private List<Date> holidays = new ArrayList<Date>();
 	
 	private ReservationsDAO() {
 		loadData();
@@ -48,6 +50,8 @@ public class ReservationsDAO {
 			for(Reservation reservation : data) {
 				reservations.put(reservation.getId(), reservation);
 			}
+			br = new BufferedReader(new FileReader(HOLIDAYS_FILE_PATH));
+			this.holidays = Main.g.fromJson(br, new TypeToken<List<Date>>(){}.getType());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -69,19 +73,56 @@ public class ReservationsDAO {
 	public boolean addNewReservation(Reservation newReservation) {
 		newReservation.setId(reservations.size());
 		newReservation.setStatus(ReservationStatus.Created);
-		newReservation.setTotalPrice(ApartmentsDAO.getInstance().getApartment(newReservation.getApartment()).getPricePerNight() * newReservation.getNightsStaying());
 		Date startDate = newReservation.getCheckInDay();
 		Calendar c = Calendar.getInstance();
 		c.setTime(startDate);
 		c.add(Calendar.DAY_OF_MONTH, newReservation.getNightsStaying());
 		Date endDate = c.getTime();
 		if(ApartmentsDAO.getInstance().setDaysRented(newReservation.getApartment(), startDate, endDate)) {
+			double pricePerNight = ApartmentsDAO.getInstance().getApartment(newReservation.getApartment()).getPricePerNight();
+			newReservation.setTotalPrice(calculatePrice(pricePerNight, startDate, newReservation.getNightsStaying()));
 			reservations.put(newReservation.getId(), newReservation);
 			saveData();
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	private double calculatePrice(double pricePerNight, Date startDate, int nightStaying) {
+		double price = 0;
+		
+		for(int i = 0; i < nightStaying; i++) {
+			
+			double variation = 1;
+			if(isHoliday(startDate))
+				variation += 0.05;
+			if(isWeekend(startDate))
+				variation -= 0.1;
+			price += pricePerNight * variation;
+				
+			Calendar c = Calendar.getInstance();
+			c.setTime(startDate);
+			c.add(Calendar.DAY_OF_MONTH, 1);
+			startDate = c.getTime();
+		}
+		
+		return price;
+	}
+	
+	private boolean isHoliday(Date date) {
+		for(Date holiday : holidays)
+			if(date.getDate() == holiday.getDate() && date.getMonth() == holiday.getMonth())
+				return true;
+		
+		return false;
+	}
+	
+	private boolean isWeekend(Date date) {
+		if(date.getDay() == 0 || date.getDay() == 5 || date.getDay() == 6)
+			return true;
+		else
+			return false;
 	}
 	
 	

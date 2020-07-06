@@ -31,42 +31,12 @@
 	},
 	{
 		"id": 4,
-		"apartment": 0,
-		"checkInDay": "29-07-2020",
-		"nightsStaying": 2,
-		"totalPrice": 0.0,
-		"reservationMessage": "asd",
-		"guest": "zukovicfilip",
-		"status": "Canceled"
-	},
-	{
-		"id": 5,
-		"apartment": 1,
-		"checkInDay": "20-05-2020",
-		"nightsStaying": 5,
-		"totalPrice": 100.0,
-		"reservationMessage": "",
-		"guest": "zukovicfilip",
-		"status": "Accepted"
-	},
-	{
-		"id": 6,
-		"apartment": 3,
-		"checkInDay": "01-12-2020",
+		"apartment": 4,
+		"checkInDay": "09-11-2020",
 		"nightsStaying": 10,
-		"totalPrice": 200.0,
+		"totalPrice": 97.5,
 		"reservationMessage": "",
 		"guest": "zukovicfilip",
-		"status": "Canceled"
-	},
-	{
-		"id": 7,
-		"apartment": 3,
-		"checkInDay": "06-08-2020",
-		"nightsStaying": 1,
-		"totalPrice": 20.0,
-		"reservationMessage": "Me and my girlfriend are coming over. Any quantity discount?",
-		"guest": "igorroncevic",
 		"status": "Created"
 	}
 ]

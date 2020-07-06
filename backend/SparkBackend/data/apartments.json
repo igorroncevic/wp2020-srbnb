@@ -167,17 +167,20 @@
 			}
 		},
 		"daysForRent": [
-			"07-07-2020",
-			"10-10-2020"
+			"01-07-2020",
+			"01-01-2021"
 		],
 		"availableDaysForRent": [
-			"07-07-2020",
-			"10-10-2020"
+			"01-07-2020",
+			"09-11-2020",
+			"19-11-2020",
+			"01-01-2021"
 		],
 		"host": "zoransijan",
-		"pricePerNight": 25.0,
+		"pricePerNight": 10.0,
 		"checkInTime": 11,
 		"checkOutTime": 10,
+		"status": "Active",
 		"amenities": [
 			0,
 			2,
@@ -212,6 +215,7 @@
 		"pricePerNight": 25.0,
 		"checkInTime": 11,
 		"checkOutTime": 13,
+		"status": "Active",
 		"amenities": [
 			0,
 			2,
