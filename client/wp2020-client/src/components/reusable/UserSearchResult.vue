@@ -53,6 +53,8 @@ export default {
   grid-row: 1/5;
   /*align-self: center;*/
   text-align: center;
+  background-image: url("./../../../public/img/user-photo.jpg");
+  background-size: 100% 100%;
 }
 
 #title {
