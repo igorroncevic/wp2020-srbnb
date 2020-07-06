@@ -1,1 +1,26 @@
-[{"id":0,"author":"zukovicfilip","apartment":2,"content":"Sve pohvale momci, top ste.","rating":5.0,"visibleToGuests":true},{"id":1,"author":"zukovicfilip","apartment":0,"content":"asddasasd","rating":5.0,"visibleToGuests":true},{"id":2,"author":"zukovicfilip","apartment":0,"content":"novi komentar","rating":5.0,"visibleToGuests":false}]
+[
+	{
+		"id": 0,
+		"author": "zukovicfilip",
+		"apartment": 2,
+		"content": "Sve pohvale momci, top ste.",
+		"rating": 5.0,
+		"visibleToGuests": true
+	},
+	{
+		"id": 1,
+		"author": "zukovicfilip",
+		"apartment": 0,
+		"content": "asddasasd",
+		"rating": 5.0,
+		"visibleToGuests": true
+	},
+	{
+		"id": 2,
+		"author": "zukovicfilip",
+		"apartment": 0,
+		"content": "novi komentar",
+		"rating": 5.0,
+		"visibleToGuests": false
+	}
+]

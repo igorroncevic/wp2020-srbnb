@@ -9,6 +9,7 @@ import java.util.List;
 import model.enums.ApartmentStatus;
 import model.enums.ApartmentType;
 import rest.Main;
+import rest.Utils;
 import spark.Request;
 
 public class ApartmentSearch {
@@ -29,7 +30,7 @@ public class ApartmentSearch {
 		String sDateStart = req.queryParams("startDate");
 		if(sDateStart != null)
 			try {
-				this.checkInDate = Main.dateFormat.parse(sDateStart);
+				this.checkInDate = Utils.dateFormat.parse(sDateStart);
 			} catch (ParseException e) {
 				System.out.print("Error while parsing check in date");
 			}
@@ -37,7 +38,7 @@ public class ApartmentSearch {
 		String sDateEnd = req.queryParams("endDate");
 		if(sDateEnd != null)
 			try {
-				this.checkOutDate = Main.dateFormat.parse(sDateEnd);
+				this.checkOutDate = Utils.dateFormat.parse(sDateEnd);
 			} catch (ParseException e) {
 				System.out.print("Error while parsing check out date");
 			}
