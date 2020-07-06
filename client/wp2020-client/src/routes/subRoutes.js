@@ -2,7 +2,6 @@ import Home from "./../components/Home.vue";
 import SearchResults from "./../components/SearchResults.vue";
 import Settings from "./../components/Settings.vue";
 import ApartmentPreview from "./../components/ApartmentPreview.vue";
-import UserProfile from "./../components/UserProfile.vue";
 import SearchUsers from "./../components/SearchUsers.vue";
 import PreviewBookings from "./../components/PreviewBookings.vue";
 import AddApartment from "./../components/AddApartment.vue";
@@ -45,14 +44,6 @@ export default [
       title: " - Apartment Preview",
     },
     props: true,
-  },
-  {
-    path: "/user-profile/:username",
-    name: "user-profile",
-    component: UserProfile,
-    meta: {
-      title: " - User Profile",
-    },
   },
   {
     path: "search-users",

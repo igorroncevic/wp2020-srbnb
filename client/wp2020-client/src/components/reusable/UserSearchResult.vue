@@ -12,9 +12,6 @@
         <span style="margin-bottom: 6px; font-size: 18px;" v-if="currentUserType == 'Admin'">
           <Button text="Block" width="100" height="35" fontsize="17" id="block-button" />
         </span>
-        <router-link :to="{name: 'user-profile', params: {username: user.username}}">
-          <Button text="Visit" width="100" height="35" fontsize="17" id="visit-button" />
-        </router-link>
       </div>
     </div>
   </div>
