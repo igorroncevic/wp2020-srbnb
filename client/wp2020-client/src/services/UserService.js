@@ -27,7 +27,7 @@ class UsersService {
   async signup(userInfo) {
     const headers = this.setHeaders();
     const success = await this.apiClient
-      .post("/register", userInfo, {
+      .post("/users", userInfo, {
         headers,
       })
       .then((response) => {

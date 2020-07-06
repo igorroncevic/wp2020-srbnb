@@ -26,6 +26,9 @@
           <li v-if="isUserAdmin">
             <router-link to="/amenities">Manage Amenities</router-link>
           </li>
+          <li v-if="isUserAdmin">
+            <router-link to="/signup">Register a Host</router-link>
+          </li>
           <li>
             <router-link to="/settings">Settings</router-link>
           </li>

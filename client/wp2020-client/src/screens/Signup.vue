@@ -42,6 +42,7 @@ import SimpleInput from "./../components/form-components/SimpleInput.vue";
 import Button from "./../components/form-components/Button.vue";
 import RadioButton from "./../components/form-components/RadioButton.vue";
 import UserService from "./../services/UserService";
+import usersService from "./../services/UserService";
 
 export default {
   name: "Signup",
@@ -51,7 +52,7 @@ export default {
     RadioButton
   },
   beforeCreate() {
-    if (UserService.getToken()) {
+    if (UserService.getToken() && UserService.getUserType() != "Admin") {
       this.$toasted.global.alreadyLoggedIn();
       this.$router.push({ name: "home" });
     }
@@ -97,8 +98,14 @@ export default {
 
         if (signupSuccess) {
           this.$toasted.global.successMessage();
+          if (usersService.getUserType() != "Admin") {
+            await usersService.login({
+              username: this.username,
+              password: this.password
+            });
+          }
           setTimeout(() => {
-            this.$router.push({ name: "login" });
+            this.$router.push({ name: "home" });
           }, 1000);
         } else {
           this.$toasted.global.signupError();
