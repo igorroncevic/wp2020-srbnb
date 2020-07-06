@@ -44,11 +44,17 @@
       </form>
       <!-- End of the form -->
     </div>
-    <div class="sortby" v-if="reservationsPending.length != 0 || reservationsNonPending.length != 0">
+    <div
+      class="sortby"
+      v-if="reservationsPending.length != 0 || reservationsNonPending.length != 0"
+    >
       Sort by Price
       <span class="sort-field" @click="chooseSort">
         {{this.sortParameter}}
-        <svg style="width:14px;height:14px;cursor:pointer;" viewBox="0 0 18 18">
+        <svg
+          style="width:14px;height:14px;cursor:pointer;"
+          viewBox="0 0 18 18"
+        >
           <path fill="var(--medium-text-color)" d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
         </svg>
       </span>
@@ -71,7 +77,7 @@
         <td>{{reservation.checkOutDay}}</td>
         <td>{{reservation.reservationMessage}}</td>
         <td>{{reservation.apartment}}</td>
-        <td>{{reservation.totalPrice}}</td>
+        <td>${{reservation.totalPrice}}</td>
         <td>{{reservation.status}}</td>
         <td>
           <Button
@@ -125,7 +131,7 @@
         <td>{{reservation.checkOutDay}}</td>
         <td>{{reservation.reservationMessage}}</td>
         <td>{{reservation.apartment}}</td>
-        <td>{{reservation.totalPrice}}</td>
+        <td>${{reservation.totalPrice}}</td>
         <td>
           <Button
             v-if="isUserHost && canHostDecline(reservation)"
@@ -309,7 +315,7 @@ export default {
     isReservationCancelable(reservation) {
       if (
         (reservation.status == "Created" || reservation.status == "Accepted") &&
-        this.isUserGuest()
+        this.userType == "Guest"
       ) {
         return true;
       } else {
@@ -318,9 +324,10 @@ export default {
     },
     canHostDecline(reservation) {
       if (
-        moment(reservation.checkOutDay).isAfter(moment(), "day") &&
-        reservation.status == "Accepted" &&
-        this.isUserHost()
+        moment(reservation.checkOutDay, "DD-MM-YYYY").isAfter(
+          moment(new Date()).format("DD-MM-YYYY")
+        ) &&
+        (reservation.status == "Accepted" || reservation.status == "Created") && this.userType == "Host"
       ) {
         return true;
       } else {
@@ -329,8 +336,10 @@ export default {
     },
     completed(reservation) {
       if (
-        moment(reservation.checkOutDay).isBefore(moment(), "day") &&
-        reservation.status == "Accepted"
+        moment(reservation.checkOutDay, "DD-MM-YYYY").isBefore(
+          moment(new Date()).format("DD-MM-YYYY")
+        ) &&
+        reservation.status == "Accepted" && this.userType == "Host"
       ) {
         return true;
       }
