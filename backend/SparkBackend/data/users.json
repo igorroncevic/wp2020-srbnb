@@ -1,11 +1,20 @@
 [
 	{
-		"username": "miroslavraduljica",
-		"password": "Sifra123",
-		"name": "Miroslav",
-		"lastname": "Raduljica",
+		"username": "milicakostic",
+		"password": "milicakostic",
+		"name": "Milica",
+		"lastname": "Kostic",
+		"gender": "Female",
+		"type": "Guest",
+		"blocked": false
+	},
+	{
+		"username": "stefanvukic",
+		"password": "Test123",
+		"name": "Stefan",
+		"lastname": "Vukic",
 		"gender": "Male",
-		"type": "Admin",
+		"type": "Host",
 		"blocked": false
 	},
 	{
@@ -15,15 +24,6 @@
 		"lastname": "Pekovic",
 		"gender": "Male",
 		"type": "Admin",
-		"blocked": false
-	},
-	{
-		"username": "milicakostic",
-		"password": "milicakostic",
-		"name": "Milica",
-		"lastname": "Kostic",
-		"gender": "Female",
-		"type": "Guest",
 		"blocked": false
 	},
 	{
@@ -45,24 +45,6 @@
 		"blocked": false
 	},
 	{
-		"username": "igorroncevic",
-		"password": "igorroncevic",
-		"name": "Igor",
-		"lastname": "Roncevic",
-		"gender": "Male",
-		"type": "Guest",
-		"blocked": false
-	},
-	{
-		"username": "zoransijan",
-		"password": "zoransijan",
-		"name": "Zoran",
-		"lastname": "Sijan",
-		"gender": "Male",
-		"type": "Host",
-		"blocked": false
-	},
-	{
 		"username": "vojapetrovic",
 		"password": "vojapetrovic",
 		"name": "Voja",
@@ -72,10 +54,28 @@
 		"blocked": false
 	},
 	{
-		"username": "stefanvukic",
-		"password": "Test123",
-		"name": "Stefan",
-		"lastname": "Vukic",
+		"username": "igorroncevic",
+		"password": "igorroncevic",
+		"name": "Igor",
+		"lastname": "Roncevic",
+		"gender": "Male",
+		"type": "Guest",
+		"blocked": false
+	},
+	{
+		"username": "miroslavraduljica",
+		"password": "Sifra123",
+		"name": "Miroslav",
+		"lastname": "Raduljica",
+		"gender": "Male",
+		"type": "Admin",
+		"blocked": false
+	},
+	{
+		"username": "zoransijan",
+		"password": "zoransijan",
+		"name": "Zoran",
+		"lastname": "Sijan",
 		"gender": "Male",
 		"type": "Host",
 		"blocked": false

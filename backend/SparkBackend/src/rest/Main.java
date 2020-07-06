@@ -61,18 +61,32 @@ public class Main {
 		});
 
 		post("/users", (req, res) -> {
+			String username = Utils.authenticate(req);
 			String payload = req.body();
 			User user = g.fromJson(payload, User.class);
-			user.setType(UserType.Guest);
-
-			boolean successful = UsersDAO.getInstance().addNewUser(user);
-
-			if (successful) {
-				res.status(200);
-				return "User successfully registered";
+			if (username == null) {
+				user.setType(UserType.Guest);
+				boolean successful = UsersDAO.getInstance().addNewUser(user);
+				if (successful) {
+					res.status(200);
+					return "User successfully registered";
+				} else {
+					res.status(400);
+					return "Username already exists";
+				}
+			} else if(UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
+				user.setType(UserType.Host);
+				boolean successful = UsersDAO.getInstance().addNewUser(user);
+				if (successful) {
+					res.status(200);
+					return "User successfully registered";
+				} else {
+					res.status(400);
+					return "Username already exists";
+				}
 			} else {
-				res.status(400);
-				return "Username already exists";
+				res.status(403);
+				return "You can't register another user";
 			}
 
 		});
