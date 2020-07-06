@@ -105,9 +105,10 @@ public class Main {
 		
 		put("/users", (req, res) -> {
 			String username = Utils.authenticate(req);
-			if (username == null)
-				return "You dont have right permission";
-			else {
+			if (username == null) {
+				res.status(403);
+				return "You must loggin first";
+			} else {
 				String payload = req.body();
 				User newData = g.fromJson(payload, User.class);
 				newData.setUsername(username);
@@ -120,7 +121,7 @@ public class Main {
 			String username = Utils.authenticate(req);
 			if (username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
 				res.status(403);
-				return "You cant view users";
+				return "You can't view users";
 			} else {
 				if (UsersDAO.getInstance().getUserType(username) == UserType.Admin) {
 					if (req.queryParams().isEmpty())
@@ -196,14 +197,16 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			Apartment apartment = ApartmentsDAO.getInstance().getApartment(id);
 			if (username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-				if (apartment.getStatus() == ApartmentStatus.Inactive)
+				if (apartment.getStatus() == ApartmentStatus.Inactive) {
+					res.status(403);
 					return "You can't view inactive apartments";
-				else
+				} else
 					return g.toJson(apartment);
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-				if (!apartment.getHost().equals(username))
+				if (!apartment.getHost().equals(username)) {
+					res.status(403);
 					return "You can't view this apartment";
-				else
+				} else
 					return g.toJson(apartment);
 			} else {
 				return g.toJson(apartment);
@@ -219,8 +222,10 @@ public class Main {
 			}else if (UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
 				return g.toJson(CommentsDAO.getInstance().getVisibleComments(apartmentId));
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-				if (!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username))
-					return "You dont have permission to view comments for this apartment";
+				if (!ApartmentsDAO.getInstance().getHost(apartmentId).getUsername().equals(username)) {
+					res.status(403);
+					return "You don't have permission to view comments for this apartment";
+				}
 				return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
 			} else {
 				return g.toJson(CommentsDAO.getInstance().getComments(apartmentId));
@@ -235,26 +240,30 @@ public class Main {
 			newData.setId(id);
 			if (username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
 				res.status(403);
-				return "You cant update apartments";
+				return "You can't update apartments";
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
 				if (!ApartmentsDAO.getInstance().getHost(id).getUsername().equals(username)) {
 					res.status(403);
-					return "You dont have permission to update this apartment";
+					return "You don't have permission to update this apartment";
 				}
 				if (ApartmentsDAO.getInstance().updateApartment(newData)) {
 					ReservationsDAO.getInstance().updateReservations(id);
 					return "Success";
 				}
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Can't find apartment with this id";
+				}
 
 			} else {
 				if (ApartmentsDAO.getInstance().updateApartment(newData)) {
 					ReservationsDAO.getInstance().updateReservations(id);
 					return "Success";
 				}
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Can't find apartment with this id";
+				}
 			}
 
 		});
@@ -264,22 +273,26 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
 				res.status(403);
-				return "You cant delete apartments";
+				return "You can't delete apartments";
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
 				if (!ApartmentsDAO.getInstance().getHost(id).getUsername().equals(username)) {
 					res.status(403);
-					return "You dont have permission to delete this apartment";
+					return "You don't have permission to delete this apartment";
 				}
 				if (ApartmentsDAO.getInstance().deleteApartment(id))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Can't find apartment with this id";
+				}
 
 			} else {
 				if (ApartmentsDAO.getInstance().deleteApartment(id))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Can't find apartment with this id";
+				}
 			}
 		});
 
@@ -287,7 +300,7 @@ public class Main {
 			String username = Utils.authenticate(req);
 			if (UsersDAO.getInstance().getUserType(username) != UserType.Host) {
 				res.status(403);
-				return "You cant add new apartment";
+				return "You can't add new apartment";
 			} else {
 				String payload = req.body();
 				Apartment newApartment = g.fromJson(payload, Apartment.class);
@@ -302,14 +315,16 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			Apartment apartment = ApartmentsDAO.getInstance().getApartment(id);
 			if (username == null || UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
-				if (apartment.getStatus() == ApartmentStatus.Inactive)
+				if (apartment.getStatus() == ApartmentStatus.Inactive) {
+					res.status(403);
 					return "You can't view inactive apartments";
-				else
+				} else
 					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
 			} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-				if (!apartment.getHost().equals(username))
+				if (!apartment.getHost().equals(username)) {
+					res.status(403);
 					return "You can't view this apartment";
-				else
+				} else
 					return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
 			} else {
 				return g.toJson(AmenitiesDAO.getInstance().getAmenitiesForApartment(apartment));
@@ -324,7 +339,7 @@ public class Main {
 			String username = Utils.authenticate(req);
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
 				res.status(403);
-				return "You cant add new amenity";
+				return "You can't add new amenity";
 			} else {
 				String payload = req.body();
 				Amenity newAmenity = g.fromJson(payload, Amenity.class);
@@ -338,14 +353,16 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
 				res.status(403);
-				return "You cant update amenities";
+				return "You can't update amenities";
 			} else {
 				String payload = req.body();
 				Amenity newData = g.fromJson(payload, Amenity.class);
 				if (AmenitiesDAO.getInstance().updateAmenityName(id, newData.getName()))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Can't find amenity with this id";
+				}
 			}
 		});
 
@@ -354,20 +371,22 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
 				res.status(403);
-				return "You cant delete amenities";
+				return "You can't delete amenities";
 			} else {
 				if (AmenitiesDAO.getInstance().deleteAmenity(id)) {
 					ApartmentsDAO.getInstance().deleteAmenity(id);
 					return "Success";
-				} else
-					return "Error";
+				} else {
+					res.status(400);
+					return "Can't find amenity with this id";
+				}
 			}
 		});
 
 		get("/reservations", (req, res) -> {
 			String username = Utils.authenticate(req);
 			if (username == null) {
-				res.status(401);
+				res.status(403);
 				return "You must login first";
 			} else {
 				if (UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
@@ -405,15 +424,19 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {
 				res.status(403);
-				return "You cant cancel reservation";
+				return "You can't cancel reservation";
 			} else {
 				Reservation toCancle = ReservationsDAO.getInstance().getReservation(id);
-				if (!toCancle.getGuest().equals(username))
+				if (!toCancle.getGuest().equals(username)) {
+					res.status(403);
 					return "You can't cancle this reservation";
+				}
 				if (ReservationsDAO.getInstance().cancleReservation(id))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Reservation must be in status created or accepted";
+				}
 			}
 
 		});
@@ -423,15 +446,19 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
 				res.status(403);
-				return "You cant accept reservations";
+				return "You can't accept reservations";
 			} else {
 				Reservation toAccept = ReservationsDAO.getInstance().getReservation(id);
-				if (!ApartmentsDAO.getInstance().getHost(toAccept.getApartment()).getUsername().equals(username))
-					return "You dont have permission to accept this reservation";
+				if (!ApartmentsDAO.getInstance().getHost(toAccept.getApartment()).getUsername().equals(username)) {
+					res.status(403);
+					return "You don't have permission to accept this reservation";
+				}
 				if (ReservationsDAO.getInstance().acceptReservation(id))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Reservation must be in status created";
+				}
 			}
 		});
 
@@ -440,15 +467,19 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
 				res.status(403);
-				return "You cant decline reservations";
+				return "You can't decline reservations";
 			} else {
 				Reservation toDecline = ReservationsDAO.getInstance().getReservation(id);
-				if (!ApartmentsDAO.getInstance().getHost(toDecline.getApartment()).getUsername().equals(username))
-					return "You dont have permission to decline this reservation";
+				if (!ApartmentsDAO.getInstance().getHost(toDecline.getApartment()).getUsername().equals(username)) {
+					res.status(403);
+					return "You don't have permission to decline this reservation";
+				}
 				if (ReservationsDAO.getInstance().declineReservation(id))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Reservation must be in status created or accepted";
+				}
 			}
 		});
 
@@ -457,15 +488,19 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
 				res.status(403);
-				return "You cant decline reservations";
+				return "You can't decline reservations";
 			} else {
 				Reservation toComplete = ReservationsDAO.getInstance().getReservation(id);
-				if (!ApartmentsDAO.getInstance().getHost(toComplete.getApartment()).getUsername().equals(username))
-					return "You dont have permission to complete this reservation";
+				if (!ApartmentsDAO.getInstance().getHost(toComplete.getApartment()).getUsername().equals(username)) {
+					res.status(403);
+					return "You don't have permission to complete this reservation";
+				}
 				if (ReservationsDAO.getInstance().completeReservation(id))
 					return "Success";
-				else
-					return "Error";
+				else {
+					res.status(400);
+					return "Reservation must be in status accepted";
+				}
 			}
 		});
 
@@ -473,15 +508,17 @@ public class Main {
 			String username = Utils.authenticate(req);
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {
 				res.status(403);
-				return "You cant make new reservations";
+				return "You can't make new reservations";
 			} else {
 				String payload = req.body();
 				Reservation newReservation = g.fromJson(payload, Reservation.class);
 				newReservation.setGuest(username);
 				if (ReservationsDAO.getInstance().addNewReservation(newReservation))
 					return "Success";
-				else
+				else {
+					res.status(400);
 					return "You can't make reservation for selected dates";
+				}
 			}
 		});
 
@@ -489,14 +526,16 @@ public class Main {
 			String username = Utils.authenticate(req);
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Guest) {
 				res.status(403);
-				return "You cant make new comment";
+				return "You can't make new comment";
 			} else {
 				String payload = req.body();
 				Comment newComment = g.fromJson(payload, Comment.class);
 				newComment.setAuthor(username);
 				if (!ReservationsDAO.getInstance().guestHasCompletedReservation(newComment.getAuthor(),
-						newComment.getApartment()))
-					return "You dont have permission to leave a comment on this apartment";
+						newComment.getApartment())) {
+					res.status(403);
+					return "You don't have permission to leave a comment on this apartment";
+				}
 				CommentsDAO.getInstance().addNewComment(newComment);
 				return "Success";
 			}
@@ -508,11 +547,13 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
 				res.status(403);
-				return "You cant make comments visible to guests";
+				return "You can't make comments visible to guests";
 			} else {
 				Comment comment = CommentsDAO.getInstance().getComment(id);
-				if (!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username))
-					return "You dont have permission to make this comment visible to guests";
+				if (!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username)) {
+					res.status(403);
+					return "You don't have permission to make this comment visible to guests";
+				}
 				CommentsDAO.getInstance().makeCommentVisible(id);
 				return "Success";
 			}
@@ -523,11 +564,13 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Host) {
 				res.status(403);
-				return "You cant hide comments";
+				return "You can't hide comments";
 			} else {
 				Comment comment = CommentsDAO.getInstance().getComment(id);
-				if (!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username))
-					return "You dont have permission to hide this comment";
+				if (!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username)) {
+					res.status(403);
+					return "You don't have permission to hide this comment";
+				}
 				CommentsDAO.getInstance().hideComment(id);
 				return "Success";
 			}
@@ -538,17 +581,21 @@ public class Main {
 			int id = Integer.parseInt(req.params("id"));
 			Comment comment = CommentsDAO.getInstance().getComment(id);
 			if (username == null) {
-				res.status(401);
+				res.status(403);
 				return "You must login first";
 			} else {
 				if (UsersDAO.getInstance().getUserType(username) == UserType.Guest) {
 					if (comment.isVisibleToGuests())
 						return g.toJson(comment);
-					else
-						return "You cant see this comment";
+					else {
+						res.status(403);
+						return "You can't see this comment";
+					}
 				} else if (UsersDAO.getInstance().getUserType(username) == UserType.Host) {
-					if (!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username))
-						return "You dont have permission to view comments for this apartment";
+					if (!ApartmentsDAO.getInstance().getHost(comment.getApartment()).getUsername().equals(username)) {
+						res.status(403);
+						return "You don't have permission to view comments for this apartment";
+					}
 					else
 						return g.toJson(comment);
 				} else {
