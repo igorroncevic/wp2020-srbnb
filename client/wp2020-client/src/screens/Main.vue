@@ -82,6 +82,7 @@ header {
 
 .content {
   flex: 1;
+  margin-top: 20px;
 }
 
 .logo a {

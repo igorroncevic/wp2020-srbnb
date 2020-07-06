@@ -2,7 +2,7 @@
   <div class="grid-container">
     <!-- Title -->
     <div class="title-wrapper">
-      <h1 style="width:25rem; font-size: 32px;">Hi, Petar! Let's get started listing your space.</h1>
+      <h1 style="width:25rem; font-size: 32px;">Let's get started listing your space.</h1>
     </div>
     <div id="form">
       <StylishInput

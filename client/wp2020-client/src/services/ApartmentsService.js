@@ -41,6 +41,22 @@ class ApartmentsService {
     return apartment;
   }
 
+  async deleteApartment(id) {
+   const headers = usersService.setHeaders();
+   var success = await this.apiClient
+     .delete(`/apartments/${id}`, {
+       headers,
+     })
+     .then(() => {
+       return true;
+     })
+     .catch((err) => {
+       console.log(err);
+       return false;
+     });
+   return success;
+ }
+
   async addApartment(data) {
     console.log(data);
     const headers = usersService.setHeaders();
