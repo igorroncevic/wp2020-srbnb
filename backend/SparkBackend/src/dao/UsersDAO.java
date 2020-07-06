@@ -81,7 +81,7 @@ public class UsersDAO {
 
 	public User login(Login login) {
 		User user = users.get(login.getUsername());
-		if (user != null && user.getPassword().equals(login.getPassword()))
+		if (user != null && user.getPassword().equals(login.getPassword()) && !user.isBlocked())
 			return user;
 
 		return null;
@@ -97,6 +97,24 @@ public class UsersDAO {
 			return true;
 		}
 
+	}
+	
+	public boolean blockUser(String username) {
+		if (users.get(username) == null)
+			return false;
+		else {
+			users.get(username).setBlocked(true);
+			saveData();
+			return true;
+		}
+	}
+	
+	public boolean doesUserExists(String username) {
+		if (users.get(username) == null)
+			return false;
+		else {
+			return true;
+		}
 	}
 
 	public List<User> getAllUsers() {

@@ -4,43 +4,28 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
 import static spark.Spark.delete;
-import static spark.Spark.before;
-import static spark.Spark.halt;
 import static spark.Spark.port;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
-import java.util.List;
 import java.util.Date;
 import java.security.Key;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import io.jsonwebtoken.security.Keys;
 import model.*;
 import model.enums.ApartmentStatus;
-import model.enums.ReservationStatus;
 import model.enums.UserType;
 import requests.ApartmentSearch;
 import requests.Login;
 import requests.ReservationSearch;
 import requests.UserSearch;
 
-import org.eclipse.jetty.security.UserAuthentication;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
-
 import dao.AmenitiesDAO;
 import dao.ApartmentsDAO;
 import dao.CommentsDAO;
 import dao.ReservationsDAO;
 import dao.UsersDAO;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -149,6 +134,28 @@ public class Main {
 			String usernameToGet = req.params("user");
 			User user = UsersDAO.getInstance().getUser(usernameToGet);
 			return g.toJson(user);
+		});
+		
+		put("/users/:user/block", (req, res) -> {
+			String username = Utils.authenticate(req);
+			String usernameToBlock = req.params("user");
+			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
+				res.status(403);
+				return "You don't have permission to block users";
+			} else {
+				if(UsersDAO.getInstance().doesUserExists(usernameToBlock)) {
+					if(UsersDAO.getInstance().getUserType(usernameToBlock) == UserType.Admin) {
+						res.status(400);
+						return "You can't block admins";
+					} else {
+						UsersDAO.getInstance().blockUser(usernameToBlock);
+						return "Success";
+					}
+				} else {
+					res.status(400);
+					return "User with this username can't be found";
+				}
+			}
 		});
 
 		get("/apartments", (req, res) -> {

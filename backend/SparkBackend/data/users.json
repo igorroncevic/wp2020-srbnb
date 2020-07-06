@@ -5,7 +5,8 @@
 		"name": "Milica",
 		"lastname": "Kostic",
 		"gender": "Female",
-		"type": "Guest"
+		"type": "Guest",
+		"blocked": false
 	},
 	{
 		"username": "petarpetrovic",
@@ -13,7 +14,8 @@
 		"name": "Petar",
 		"lastname": "Petrovic",
 		"gender": "Male",
-		"type": "Guest"
+		"type": "Guest",
+		"blocked": false
 	},
 	{
 		"username": "zukovicfilip",
@@ -21,7 +23,8 @@
 		"name": "Filip",
 		"lastname": "Zukoni",
 		"gender": "Male",
-		"type": "Guest"
+		"type": "Guest",
+		"blocked": false
 	},
 	{
 		"username": "vojapetrovic",
@@ -29,7 +32,8 @@
 		"name": "Voja",
 		"lastname": "Petrovic",
 		"gender": "Male",
-		"type": "Host"
+		"type": "Host",
+		"blocked": false
 	},
 	{
 		"username": "igorroncevic",
@@ -37,7 +41,8 @@
 		"name": "Igor",
 		"lastname": "Roncevic",
 		"gender": "Male",
-		"type": "Guest"
+		"type": "Guest",
+		"blocked": false
 	},
 	{
 		"username": "miroslavraduljica",
@@ -45,7 +50,8 @@
 		"name": "Miroslav",
 		"lastname": "Raduljica",
 		"gender": "Male",
-		"type": "Admin"
+		"type": "Admin",
+		"blocked": false
 	},
 	{
 		"username": "zoransijan",
@@ -53,6 +59,7 @@
 		"name": "Zoran",
 		"lastname": "Sijan",
 		"gender": "Male",
-		"type": "Host"
+		"type": "Host",
+		"blocked": false
 	}
 ]

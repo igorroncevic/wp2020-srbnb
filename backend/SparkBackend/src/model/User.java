@@ -11,6 +11,7 @@ public class User {
 	private String lastname;
 	private Gender gender;
 	private UserType type;
+	private boolean blocked;
 	
 	public User(String username, String password, String name, String lastname, Gender gender, UserType type) {
 		super();
@@ -20,6 +21,7 @@ public class User {
 		this.lastname = lastname;
 		this.gender = gender;
 		this.type = type;
+		this.blocked = false;
 	}
 
 	public String getUsername() {
@@ -68,6 +70,14 @@ public class User {
 
 	public void setType(UserType type) {
 		this.type = type;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}
 
 }
