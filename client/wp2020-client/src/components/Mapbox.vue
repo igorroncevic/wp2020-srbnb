@@ -41,10 +41,10 @@ export default {
       this.map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/mapbox/streets-v11",
-        minZoom: 12,
+        minZoom: 9,
         maxZoom: 17,
         //center: [19.8311387, 45.2506721], // Ne smije biti centra, jer odatle krece sirenje mape, a ne znamo da li je uvijek NS
-        zoom: 14
+        zoom: 10
       });
 
       const bounds = new mapboxgl.LngLatBounds();

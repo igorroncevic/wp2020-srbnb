@@ -159,20 +159,27 @@ export default {
       e.preventDefault();
       if (moment(this.startDate).isAfter(moment(this.endDate))) {
         this.$toasted.global.startDateAfterEndDate();
-      } else if (this.startDate == "" || this.endDate == "") {
-        this.$toasted.global.emptyDates();
-      } else if (this.guests == 0) {
-        this.$toasted.global.emptyGuests();
-      } else if (this.location == "") {
-        this.$toasted.global.emptyLocation();
+      } else if (this.startDate == "" && this.endDate != "") {
+        this.$toasted.global.bothCheckinCheckout();
+      } else if (this.startDate != "" && this.endDate == "") {
+        this.$toasted.global.bothCheckinCheckout();
       } else {
         var queryParams = {
-          location: this.location,
-          guests: this.guests,
-          startDate: moment(this.startDate).format("DD-MM-YYYY"),
-          endDate: moment(this.endDate).format("DD-MM-YYYY"),
           type: "Any_type"
         };
+
+        if (this.startDate != "" && this.endDate != "") {
+          queryParams.startDate = moment(this.startDate).format("DD-MM-YYYY");
+          queryParams.endDate = moment(this.endDate).format("DD-MM-YYYY");
+        }
+
+        if (this.location != "") {
+          queryParams.location = this.location;
+        }
+
+        if (this.guests != 0) {
+          queryParams.guests = this.guests;
+        }
 
         if (this.minPrice != 0) {
           queryParams.minPrice = this.minPrice;

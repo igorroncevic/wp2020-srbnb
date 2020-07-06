@@ -99,12 +99,50 @@ export default {
   },
   async beforeMount() {
     var queryParams = {
-      location: this.$route.query.location,
-      guests: this.$route.query.guests,
-      startDate: this.$route.query.startDate,
-      endDate: this.$route.query.endDate,
       type: this.$route.query.selectedType
     };
+
+    if (this.$route.query.location) {
+      queryParams.location = this.$route.query.location;
+      this.location = this.$route.query.location;
+    } else {
+      this.location = "Anywhere";
+    }
+
+    if (this.$route.query.guests) {
+      queryParams.guests = this.$route.query.guests;
+      this.guests = this.$route.query.guests;
+    } else {
+      this.guests = "Any number of ";
+    }
+
+    if (this.$route.query.startDate) {
+      queryParams.startDate = this.$route.query.startDate;
+      var startDateQuery = this.$route.query.startDate.split("-");
+      var startDateParts = moment(
+        startDateQuery[1] + " " + startDateQuery[0] + "-" + startDateQuery[2]
+      )
+        .format("MMMM Do YYYY")
+        .split(" ");
+      this.startDate = startDateParts[0] + " " + startDateParts[1];
+    } else {
+      this.startDate = "Any start date";
+    }
+
+    if (this.$route.query.startDate) {
+      queryParams.startDate = this.$route.query.startDate;
+      var endDateQuery = this.$route.query.endDate.split("-");
+
+      var endDateParts = moment(
+        endDateQuery[1] + " " + endDateQuery[0] + "-" + endDateQuery[2]
+      )
+        .format("MMMM Do YYYY")
+        .split(" ");
+
+      this.endDate = endDateParts[0] + " " + endDateParts[1];
+    } else {
+      this.endDate = "Any end date";
+    }
 
     if (this.$route.query.amenities) {
       queryParams.amenities = this.$route.query.amenities;
@@ -125,21 +163,6 @@ export default {
     this.apartments = await ApartmentsService.searchApartments(queryParams);
     this.amenities = await AmenitiesService.getAllAmenities();
 
-    this.location = this.$route.query.location;
-    var startDateQuery = this.$route.query.startDate.split("-");
-    var endDateQuery = this.$route.query.endDate.split("-");
-    var startDateParts = moment(
-      startDateQuery[1] + " " + startDateQuery[0] + "-" + startDateQuery[2]
-    )
-      .format("MMMM Do YYYY")
-      .split(" ");
-    var endDateParts = moment(
-      endDateQuery[1] + " " + endDateQuery[0] + "-" + endDateQuery[2]
-    )
-      .format("MMMM Do YYYY")
-      .split(" ");
-    this.startDate = startDateParts[0] + " " + startDateParts[1];
-    this.endDate = endDateParts[0] + " " + endDateParts[1];
     if (
       this.$route.query.minRooms == null &&
       this.$route.query.maxRooms != null
@@ -200,7 +223,7 @@ export default {
       location: "",
       startDate: "",
       endDate: "",
-      guests: this.$route.query.guests,
+      guests: "",
       sortParameter: "Ascending",
       rooms: "",
       price: "",

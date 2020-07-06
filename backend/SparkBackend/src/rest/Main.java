@@ -153,7 +153,6 @@ public class Main {
 		put("/users/:user/block", (req, res) -> {
 			String username = Utils.authenticate(req);
 			String usernameToBlock = req.params("user");
-			System.out.println(username);
 			if (username == null || UsersDAO.getInstance().getUserType(username) != UserType.Admin) {
 				res.status(403);
 				return "You don't have permission to block users";

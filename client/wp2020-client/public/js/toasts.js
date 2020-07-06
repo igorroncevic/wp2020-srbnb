@@ -60,6 +60,11 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    icon: 'error_outline',
  })
 
+ Vue.toasted.register('bothCheckinCheckout', 'Please select either both check-in/check-out dates or neither!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
  Vue.toasted.register('emptyGuests', 'Please select number of guests!', {
    type: 'error',
    icon: 'error_outline',
