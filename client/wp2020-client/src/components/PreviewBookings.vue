@@ -44,6 +44,15 @@
       </form>
       <!-- End of the form -->
     </div>
+    <div class="sortby" v-if="reservationsPending.length != 0 || reservationsNonPending.length != 0">
+      Sort by Price
+      <span class="sort-field" @click="chooseSort">
+        {{this.sortParameter}}
+        <svg style="width:14px;height:14px;cursor:pointer;" viewBox="0 0 18 18">
+          <path fill="var(--medium-text-color)" d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
+        </svg>
+      </span>
+    </div>
     <table id="reservations" v-if="reservationsNonPending.length != 0">
       <tr>
         <th>Customer</th>
@@ -207,6 +216,7 @@ export default {
       status: "",
       selectedType: "",
       username: "",
+      sortParameter: "Descending",
       /*reservations: [
         {
           customer: "Jovan Jovanovic",
@@ -258,6 +268,31 @@ export default {
     };
   },
   methods: {
+    chooseSort() {
+      if (this.sortParameter == "Descending") {
+        this.sortParameter = "Ascending";
+      } else {
+        this.sortParameter = "Descending";
+      }
+      this.sortBookings();
+    },
+    sortBookings() {
+      if (this.sortParameter == "Ascending") {
+        this.reservationsPending.sort(function(a, b) {
+          return a.totalPrice - b.totalPrice;
+        });
+        this.reservationsNonPending.sort(function(a, b) {
+          return a.totalPrice - b.totalPrice;
+        });
+      } else {
+        this.reservationsPending.sort(function(a, b) {
+          return b.totalPrice - a.totalPrice;
+        });
+        this.reservationsNonPending.sort(function(a, b) {
+          return b.totalPrice - a.totalPrice;
+        });
+      }
+    },
     isUserGuest() {
       return this.userType == "Guest" ? true : false;
     },
@@ -379,7 +414,7 @@ export default {
 
 <style>
 #reservations {
-  grid-row: 3/9;
+  grid-row: 4/10;
   grid-column: 2/14;
   margin-top: 5px;
   border-collapse: separate;
@@ -401,13 +436,13 @@ td {
 }
 
 #pending-reservations-title {
-  grid-row: 10;
+  grid-row: 11;
   grid-column: 1/5;
   font-size: 18px;
 }
 
 #pending-reservations {
-  grid-row: 11;
+  grid-row: 12;
   grid-column: 2/15;
   margin-top: -25px;
   border-collapse: separate;
@@ -424,8 +459,20 @@ td {
 .no-pending-reservations {
   font-size: 22px;
   font-weight: 500;
-  grid-row: 12;
+  grid-row: 13;
   grid-column: 6/10;
+}
+
+.sortby {
+  right: 0;
+  height: 50px !important;
+  font-size: 14px;
+  grid-column: 3;
+  margin-left: -15px;
+  color: var(--medium-text-color);
+  grid-column: 12/14;
+  grid-row: 4;
+  cursor: pointer;
 }
 
 /* Search bar */
@@ -450,7 +497,7 @@ h1 {
 }
 .search-results-wrapper {
   grid-column: 1 / 16;
-  grid-row: 5/70; /* Hardkodiranih 70, ali radi posao */
+  grid-row: 6/70; /* Hardkodiranih 70, ali radi posao */
   display: grid;
   grid-template-rows: repeat(auto-fill, 23vh);
   grid-template-columns: repeat(auto-fill, 57vh);

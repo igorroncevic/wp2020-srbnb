@@ -4,7 +4,7 @@
     <div class="title-wrapper">
       <h1 style="width:25rem; font-size: 32px;">Hi, Petar! Let's get started listing your space.</h1>
     </div>
-    <form id="form">
+    <div id="form">
       <StylishInput
         id="apartmentName"
         label-text="Pick a name for your space"
@@ -14,13 +14,10 @@
         height="38"
       />
       <div id="apartment-type">
-        <label for="dropdown-container">What kind of apartment do you have?</label>
+        <label class="label" for="dropdown-container">What kind of apartment do you have?</label>
         <div class="dropdown-container">
-          <select required v-model="appType">
+          <select required v-model="apartmentType">
             <option value hidden>Select apartment type</option>
-            <!-- Placeholder -->
-
-            <!-- normal options -->
             <option value="Full_apartment">Full apartment</option>
             <option value="Room">Room</option>
           </select>
@@ -80,28 +77,6 @@
             />
           </svg>
         </div>
-        <!-- Beds -->
-        <div class="counter">
-          <p style="font-size: 24px; margin: -2px 42px 0 0;">Beds:</p>
-          <svg style="width:28px;height:28px" viewBox="0 0 24 24" @click="decrementBeds">
-            <path
-              fill="#e8394d"
-              d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7"
-            />
-          </svg>
-          <p style="margin: -1px 20px; font-size:24px;">{{bedsCounter}}</p>
-          <svg
-            style="width:28px;height:28px"
-            viewBox="0 0 24 24"
-            cursor="pointer"
-            @click="incrementBeds"
-          >
-            <path
-              fill="#e8394d"
-              d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"
-            />
-          </svg>
-        </div>
       </div>
 
       <div id="location">
@@ -111,56 +86,101 @@
           label-text="Street"
           :value="''"
           v-model="streetName"
-          width="290"
+          width="260"
           height="38"
+        />
+        <StylishNumberInput
+          id="apartmentName"
+          label-text="Number"
+          name="streetNo"
+          v-model="streetNo"
+          width="120"
+          height="28"
         />
         <StylishInput
           id="apartmentName"
           label-text="City"
           :value="''"
-          v-model="streetName"
-          width="290"
+          v-model="place"
+          width="270"
           height="38"
         />
+        <StylishNumberInput
+          id="apartmentName"
+          label-text="Zip"
+          name="zipcode"
+          v-model="zipCode"
+          width="120"
+          height="28"
+        />
       </div>
+      <MapPreview
+        v-if="mapReady"
+        id="mapbox-preview"
+        :latitude="latitude"
+        :longitude="longitude"
+        @markerChange="getLngLat"
+        style="margin-top:0;"
+      />
       <div class="amenity-checkboxes">
-        <label for="amenities-grid">What amenities do you offer?</label>
-        <div class="amenities-grid">
-          <div id="first-col">
-            <Checkbox value="Essentials" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Wifi" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Shampoo" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Closet/drawers" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="TV/Cable" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Heaters" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Air conditioning" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Breakfast, cofee, tea" :checked="false" @change="editAmenities($event.target.value)" />
-          </div>
-          <div id="second-col">
-            <Checkbox value="Desk/workspace" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Fireplace" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Iron for clothes" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Hair dryer" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Pets in the house" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Private entrance" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Parking" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Elevator" :checked="false" @change="editAmenities($event.target.value)" />
+        <label class="label" for="amenity-grid">What amenities do you offer?</label>
+        <div id="amenity-grid">
+          <div class="single-amenity" v-for="(amenityItem, i) in amenities" :key="i">
+            <Checkbox
+              :value="amenityItem.name"
+              :checked="false"
+              @change="editAmenities($event.target.value)"
+            />
           </div>
         </div>
-        <label id="safety-label" for="safety-amenities-grid">Safety amenities</label>
-        <div class="safety-amenities-grid">
-          <div class="first-col">
-            <Checkbox value="Smoke detector" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Carbon monoxide detector" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox :value="'First aid kit'" :checked="false" @change="editAmenities($event.target.value)"/>
-            <Checkbox value="Safety card" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Fire extinguisher" :checked="false" @change="editAmenities($event.target.value)" />
-            <Checkbox value="Lock on bedroom door" :checked="false" @change="editAmenities($event.target.value)" />
+      </div>
+      <div id="available-dates">
+        <div class="nest stacked">
+          <label
+            for="datepickerss"
+            class="label"
+            style="margin-bottom:10px;"
+          >Add available check-in / check-out dates</label>
+          <div class="datepickerss">
+            <datepicker
+              placeholder="Select check-in"
+              class="vdp-datepickerr"
+              v-model="startDate"
+              :value="startDate"
+              name="startDate"
+              :disabledDates="disabledDates"
+              :format="customFormatter"
+            ></datepicker>
+            <datepicker
+              placeholder="Select check-out"
+              class="vdp-datepickerr"
+              v-model="endDate"
+              :value="endDate"
+              name="endDate"
+              :disabledDates="disabledDates"
+              :format="customFormatter"
+            ></datepicker>
+            <Button text="Add" width="300" fontsize="16" height="36" @clicked="addAvailableDates" />
           </div>
         </div>
+        <table style="grid-row:2; grid-column:1/3;border-spacing:3rem 10px;">
+          <tr style="margin-top:5px;" v-for="(startDate, i) in availableStartDates" :key="i">
+            <td>{{startDate}}</td>
+            <td>{{availableEndDates[i]}}</td>
+            <td>
+              <Button
+                text="X"
+                width="40"
+                fontsize="16"
+                height="40"
+                @clicked="removeDate(availableEndDates[i])"
+              />
+            </td>
+          </tr>
+        </table>
       </div>
       <div class="checkin-checkout-cointainer">
-        <label for="checkin-checkout">And to finish off...</label>
+        <label class="label" for="checkin-checkout">And to finish off...</label>
         <div class="checkin-checkout">
           <StylishTimeInput
             id="apartmentName"
@@ -171,13 +191,15 @@
             width="300"
             height="38"
           />
-          <StylishTimeInput  id="apartmentName"
+          <StylishTimeInput
+            id="apartmentName"
             label-text="Check-out"
             labelColor="#323846"
             :value="checkout"
             v-model="checkout"
             width="290"
-            height="38" />
+            height="38"
+          />
         </div>
       </div>
       <div id="price-cointainer">
@@ -191,8 +213,15 @@
         />
         <p id="per-night">$ / night</p>
       </div>
-      <Button text="Publish" width="400" fontsize="20" id="button" height="50"/>
-    </form>
+      <Button
+        text="Publish"
+        width="400"
+        fontsize="20"
+        id="button"
+        height="50"
+        @clicked="addApartment"
+      />
+    </div>
   </div>
 </template>
 
@@ -202,67 +231,214 @@ import StylishInput from "./reusable/StylishInput.vue";
 import StylishNumberInput from "./reusable/StylishNumberInput.vue";
 import StylishTimeInput from "./reusable/StylishTimeInput.vue";
 import Checkbox from "./form-components/Checkbox.vue";
+import AmenitiesService from "./../services/AmenitiesService";
+import MapPreview from "./MapPreview";
+import moment from "moment";
+import Datepicker from "vuejs-datepicker";
+import ApartmentsService from "../services/ApartmentsService";
+
 export default {
-  components: { StylishInput, StylishNumberInput, StylishTimeInput, Checkbox, Button },
+  components: {
+    StylishInput,
+    StylishNumberInput,
+    StylishTimeInput,
+    Checkbox,
+    Button,
+    MapPreview,
+    Datepicker
+  },
+  async beforeMount() {
+    this.amenities = await AmenitiesService.getAllAmenities();
+    this.$nextTick(() => {
+      this.mapReady = true;
+    });
+  },
   data() {
     return {
       apartmentName: "",
-      appType: "",
+      apartmentType: "",
       streetName: "",
-      roomCounter: 0,
-      bedCounter: 0,
-      guestCounter: 0,
+      streetNo: "",
+      place: "",
+      zipCode: "",
+      numberOfRooms: 0,
+      numberOfGuest: 0,
       checkin: "",
       checkout: "",
       price: 0,
       amenities: [],
+      selectedAmenities: [],
+      selectedLatitude: "",
+      selectedLongitude: "",
+      startDate: "",
+      endDate: "",
+      availableStartDates: [],
+      availableEndDates: [],
+      mapReady: false,
+      disabledDates: {
+        to: new Date(Date.now() - 8640000)
+      }
     };
   },
   computed: {
     roomsCounter() {
-      return this.roomCounter;
-    },
-    bedsCounter() {
-      return this.bedCounter;
+      return this.numberOfRooms;
     },
     guestsCounter() {
-      return this.guestCounter;
+      return this.numberOfGuest;
     }
   },
   methods: {
-    incrementBeds() {
-      this.bedCounter++;
+    async addApartment() {
+      var daysForRent = [];
+      for (var i = 0; i < this.availableStartDates.length; i++) {
+        daysForRent.push(this.availableStartDates[i]);
+        daysForRent.push(this.availableEndDates[i]);
+      }
+
+      if (daysForRent.length == 0) {
+        this.$toasted.global.pleaseSelectAvailableDates();
+        return;
+      }
+
+      var success = await ApartmentsService.addApartment({
+        name: this.apartmentName,
+        type: this.apartmentType,
+        numberOfRooms: this.numberOfRooms,
+        numberOfGuest: this.numberOfGuest,
+        location: {
+          latitude: this.selectedLatitude,
+          longitude: this.selectedLongitude,
+          address: {
+            street: this.streetName,
+            number: this.streetNo,
+            place: this.place,
+            zipCode: this.zipCode
+          }
+        },
+        daysForRent: daysForRent,
+        pricePerNight: this.price,
+        checkInTime: this.checkin.split(":")[0],
+        checkOutTime: this.checkout.split(":")[0],
+        amenities: this.selectedAmenities
+      });
+      if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go({ name: "home" });
+        }, 1000);
+      } else {
+        this.$toasted.global.unknownError();
+      }
     },
-    decrementBeds() {
-      if (this.bedCounter > 0) this.bedCounter--;
+    customFormatter(date) {
+      return moment(date).format("DD-MM-YYYY"); //DD-MM-YYYY for java friendly dates
     },
     incrementRooms() {
-      this.roomCounter++;
+      this.numberOfRooms++;
     },
     decrementRooms() {
-      if (this.roomCounter > 0) this.roomCounter--;
+      if (this.numberOfRooms > 0) this.numberOfRooms--;
     },
     incrementGuests() {
-      this.guestCounter++;
+      this.numberOfGuest++;
     },
     decrementGuests() {
-      if (this.guestCounter > 0) this.guestCounter--;
+      if (this.numberOfGuest > 0) this.numberOfGuest--;
     },
-    editAmenities(value){
-       if(this.amenities.includes(value)){
-          this.amenities = this.amenities.filter(amenity => amenity != value);
-       }else{
-          this.amenities.push(value);
-       }
+    editAmenities(value) {
+      const element = this.amenities.find(amenity => amenity.name == value);
+      if (this.selectedAmenities.includes(element.id)) {
+        this.selectedAmenities = this.selectedAmenities.filter(
+          amenity => amenity != element.id
+        );
+      } else {
+        this.selectedAmenities.push(element.id);
+      }
+      console.log(this.selectedAmenities);
     },
+    getLngLat(lngLat) {
+      var parts = lngLat.toString().split(",");
+      this.selectedLongitude = parts[0].substr(7);
+      this.selectedLatitude = parts[1].substr(1, parts[1].length - 2);
+      console.log(parts);
+      console.log(this.selectedLongitude);
+      console.log(this.selectedLatitude);
+    },
+    addAvailableDates() {
+      if (
+        this.availableStartDates.includes(
+          moment(this.startDate).format("DD-MM-YYYY")
+        ) ||
+        this.availableEndDates.includes(
+          moment(this.endDate).format("DD-MM-YYYY")
+        )
+      ) {
+        this.$toasted.global.alreadySelectedDates();
+        return;
+      } else if (moment(this.startDate).isAfter(moment(this.endDate))) {
+        this.$toasted.global.startDateAfterEndDate();
+        return;
+      }
+
+      for (var i = 0; i < this.availableStartDates.length; i++) {
+        var start = this.availableStartDates[i];
+        var end = this.availableEndDates[i];
+
+        if (
+          moment(this.startDate).isAfter(moment(start)) &&
+          moment(this.endDate).isAfter(moment(end))
+        ) {
+          return;
+        } else if (
+          moment(this.startDate).isBefore(moment(start)) &&
+          moment(this.endDate).isBefore(moment(end))
+        ) {
+          return;
+        } else if (
+          moment(this.startDate).isBefore(moment(start)) &&
+          moment(this.endDate).isAfter(moment(end))
+        ) {
+          return;
+        } else if (
+          moment(this.startDate).isAfter(moment(start)) &&
+          moment(this.endDate).isBefore(moment(end))
+        ) {
+          return;
+        }
+      }
+
+      this.availableStartDates.push(
+        moment(this.startDate).format("DD-MM-YYYY")
+      );
+      this.availableEndDates.push(moment(this.endDate).format("DD-MM-YYYY"));
+      console.log(this.availableStartDates);
+      console.log(this.availableEndDates);
+    },
+    removeDate(endDate) {
+      console.log(endDate);
+      var index = this.availableEndDates.indexOf(endDate);
+      console.log(index);
+      if (this.availableStartDates.length == 1) {
+        this.availableStartDates = [];
+        this.availableEndDates = [];
+        return;
+      } else if (index == -1) {
+        return;
+      }
+      this.availableEndDates.splice(index, 1);
+      this.availableStartDates.splice(index, 1);
+      console.log(this.availableStartDates);
+      console.log(this.availableEndDates);
+    }
   }
 };
 </script>
 
 <style scoped>
-#button{
-   grid-row: 9;
-   justify-self: center;
+#button {
+  grid-row: 10;
+  justify-self: center;
 }
 
 #price-input {
@@ -270,23 +446,47 @@ export default {
 }
 
 #per-night {
-   grid-column: 2;
-   font-size: 22px;
-   justify-content: baseline;
-   margin: 0;
-   margin-top: auto;
-   margin-left: 40px;
-   margin-bottom: 10px;
+  grid-column: 2;
+  font-size: 22px;
+  justify-content: baseline;
+  margin: 0;
+  margin-top: auto;
+  margin-left: 40px;
+  margin-bottom: 10px;
 }
 
 #price-cointainer {
-  grid-row: 7;
+  grid-row: 9;
   display: grid;
   grid-template-columns: 5rem 15rem;
 }
 
 .checkin-checkout-cointainer {
-  grid-row: 6;
+  grid-row: 8;
+}
+
+#available-dates {
+  grid-row: 7;
+  display: grid;
+  grid-template-columns: repeat(3, auto-fit);
+  grid-template-rows: 3rem auto;
+  row-gap: 2rem;
+}
+
+#available-dates .vdp-datepickerr {
+  margin-right: 15px !important;
+  width: 180px !important;
+  height: 50px !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+}
+
+#available-dates .datepickerss {
+  display: inline-flex;
+  width: min-content;
+  flex-direction: row;
+  margin-top: 1px;
+  width: 50% !important;
 }
 
 .checkin-checkout {
@@ -294,27 +494,23 @@ export default {
   margin-top: 30px;
 }
 
+#addDate {
+  width: 150px !important;
+  grid-column: 3;
+  grid-row: 1;
+}
+
+#removeDateButton {
+  grid-column: 3;
+  grid-row: 2;
+}
+
 .amenity-checkboxes {
-  grid-row: 5;
+  grid-row: 6;
 }
 
 #safety-label {
   color: var(--main-text-color);
-}
-
-.amenities-grid {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: grid;
-  grid-template-columns: 12rem 13rem;
-  column-gap: 10rem;
-}
-
-.safety-amenities-grid {
-  margin-top: 30px;
-  display: grid;
-  grid-template-columns: 16rem 15rem;
-  column-gap: 10rem;
 }
 
 .first-col {
@@ -327,12 +523,6 @@ export default {
 
 h1 {
   color: var(--main-text-color);
-}
-
-label {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--brand-color);
 }
 
 #form {
@@ -381,6 +571,7 @@ svg {
   width: 400px;
   margin-top: 20px;
   margin-bottom: -10px;
+  left: 0%;
 }
 select {
   width: 300px;
@@ -458,4 +649,48 @@ select:focus ~ .select-icon svg.icon {
   top: 5%;
 }
 
+#amenity-grid {
+  display: grid;
+  grid-template-columns: 30px 50px;
+  column-gap: 15rem;
+  margin-top: 15px;
+}
+.single-amenity {
+  color: var(--main-text-color);
+  font-size: 18px;
+  grid-column: auto;
+  margin-top: 12px;
+  margin-right: 0px;
+  width: 300px;
+}
+
+#mapbox-preview {
+  height: 700px;
+  grid-row: 5;
+  margin-top: 0 !important;
+}
+
+.nest {
+  max-width: 90%;
+  margin-top: 6px;
+}
+
+.stacked {
+  display: grid;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 22px;
+  color: var(--brand-color);
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.title-wrapper {
+  grid-row: 1;
+  margin-top: -10px;
+  grid-column: 6/8;
+  position: relative;
+}
 </style>

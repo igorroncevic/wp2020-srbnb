@@ -45,6 +45,16 @@ Vue.toasted.register('loggedOut', 'You have successfully logged out.', {
    icon: 'error_outline',
  })
 
+ Vue.toasted.register('alreadySelectedDates', 'Start date or end date were already selected!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
+ Vue.toasted.register('pleaseSelectAvailableDates', 'Please select available dates!', {
+   type: 'error',
+   icon: 'error_outline',
+ })
+
  Vue.toasted.register('emptyDates', 'Please select dates!', {
    type: 'error',
    icon: 'error_outline',

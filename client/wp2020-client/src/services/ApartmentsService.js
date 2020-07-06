@@ -40,6 +40,23 @@ class ApartmentsService {
       });
     return apartment;
   }
+
+  async addApartment(data) {
+    console.log(data);
+    const headers = usersService.setHeaders();
+    var success = await this.apiClient
+      .post(`/apartments`, data, {
+        headers,
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
+  }
 }
 
 const apartmentsService = new ApartmentsService();
