@@ -96,6 +96,22 @@ class UsersService {
     return users;
   }
 
+  async blockUser(user) {
+    const headers = this.setHeaders();
+    const success = await this.apiClient
+      .put(`/users/${user.username}/block`, user, {
+        headers,
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return success;
+  }
+
   setHeaders() {
     const jwt = this.getToken();
     var headers = {

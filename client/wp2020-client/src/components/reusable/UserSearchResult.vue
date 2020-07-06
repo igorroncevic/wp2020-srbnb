@@ -10,7 +10,16 @@
       </div>
       <div id="main-info">
         <span style="margin-bottom: 6px; font-size: 18px;" v-if="currentUserType == 'Admin'">
-          <Button text="Block" width="100" height="35" fontsize="17" id="block-button" />
+          <Button
+            v-if="!user.blocked"
+            text="Block"
+            width="100"
+            height="35"
+            fontsize="17"
+            id="block-button"
+            @clicked="blockUser(user)"
+          />
+          <p id="blocked" v-if="user.blocked">BLOCKED</p>
         </span>
       </div>
     </div>
@@ -19,11 +28,25 @@
 
 <script>
 import Button from "./../form-components/Button.vue";
+import UserService from "./../../services/UserService";
 
 export default {
   props: ["user", "currentUserType"],
   name: "UserSearchResult",
-  components: { Button }
+  components: { Button },
+  methods: {
+    async blockUser(user) {
+      var success = await UserService.blockUser(user);
+      if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1000);
+      } else {
+        this.$toasted.global.unknownError();
+      }
+    }
+  }
 };
 </script>
 
@@ -76,6 +99,15 @@ export default {
 
 #user-type-span {
   margin: 51px;
+}
+
+#blocked {
+  position: absolute;
+  grid-row: 6;
+  margin-top: -2px;
+  right: 5%;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 #features {
