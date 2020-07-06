@@ -33,3 +33,18 @@ html, body {
    height: 44px;
    cursor: pointer;
  }
+
+ #background-image{
+   background-image: url("./../img/apartment-cover.png");
+   background-size: 100% 100%;
+ }
+
+ .review-user-photo{
+   background-image: url("./../img/user-photo.jpg");
+   background-size: 100% 100%;
+ }
+
+ #owner-photo{
+   background-image: url("./../img/user-photo.jpg");
+   background-size: 100% 100%;
+ }

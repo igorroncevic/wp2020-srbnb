@@ -4,19 +4,23 @@
       <h1>{{apartment.name}}</h1>
       <div id="city-edit">
         <p>{{apartment.location.address.street}} {{apartment.location.address.number}}, {{apartment.location.address.place}}</p>
-        <div id="edit-btn">
-          <router-link :to="{name: 'edit-apartment', params: {id: apartment.id}}">
+        <div id="edit-btn" v-if="canUserEdit">
+          <router-link
+            :to="{name: 'edit-apartment', params: {id: apartment.id}}"
+            style="display:inline-flex;"
+          >
             <svg style="width:20px;height:20px" viewBox="0 0 24 24">
               <path
                 fill="#b8b8b8"
                 d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
               />
             </svg>
-            <p style="float: right;">Edit</p>
+            <p>Edit</p>
           </router-link>
+          <p v-if="canUserEdit" @click="deleteApartment" style="margin-left:25px;">Delete apartment</p>
         </div>
       </div>
-      <div id="app-photo">Cover photo</div>
+      <div id="app-photo"></div>
     </div>
     <div id="main-info-grid">
       <div id="left-col">
@@ -29,8 +33,8 @@
         </div>
         <div>
           <label for="amenity-item">Amenities</label>
-          <div id="amenity-grid">
-            <div class="single-amenity" v-for="(amenityItem, i) in amenities" :key="i">
+          <div id="amenity-grid" v-if="loaded">
+            <div class="single-amenity" v-for="amenityItem in amenities" :key="amenityItem.id">
               <svg style="width:24px;height:24px; margin-bottom: -4px;" viewBox="0 0 24 24">
                 <path fill="#e8394d" d="M12,2L1,21H23M12,6L19.53,19H4.47" />
               </svg>
@@ -106,10 +110,10 @@
       </div>
     </div>
     <div id="reviews-title">Reviews</div>
-    <div id="reviews-wrapper">
+    <div id="reviews-wrapper" v-if="loaded">
       <review-item
-        v-for="(review, i) in reviews"
-        :key="i"
+        v-for="review in reviews"
+        :key="review.id"
         :review="review"
         @hideshow="hideShowReview(review)"
       />
@@ -215,6 +219,7 @@ export default {
     );
     console.log(this.amenities);
     console.log(this.reviews);
+    this.$nextTick(() => (this.loaded = true));
   },
   data() {
     return {
@@ -229,7 +234,8 @@ export default {
       reviews: [],
       reservationMessage: "",
       startDate: "",
-      endDate: ""
+      endDate: "",
+      loaded: false
     };
   },
   methods: {
@@ -249,6 +255,13 @@ export default {
       } else {
         this.$toasted.global.cantPostComment();
       }
+    },
+    canUserEdit() {
+      console.log(UserService.getUserType());
+      return UserService.getUserType() == "Host" ||
+        UserService.getUserType() == "Admin"
+        ? true
+        : false;
     },
     async placeReservation() {
       var start = moment(this.startDate);
@@ -282,6 +295,17 @@ export default {
     },
     customFormatter(date) {
       return moment(date).format("MMMM Do YYYY"); //DD-MM-YYYY for java friendly dates
+    },
+    async deleteApartment() {
+      var success = await ApartmentsService.deleteApartment(this.apartment.id);
+      if (success) {
+        this.$toasted.global.successMessage();
+        setTimeout(() => {
+          this.$router.go();
+        }, 1000);
+      } else {
+        this.$toasted.global.unknownError();
+      }
     },
     hideShowReview(review) {
       var success;
@@ -361,14 +385,15 @@ p {
 #city-edit {
   grid-row: 2;
   display: grid;
-  grid-template-columns: 400px 150px;
-  column-gap: 72.4%;
+  grid-template-columns: 400px 200px;
+  column-gap: 63%;
 }
 #edit-btn {
   position: relative;
-  width: 50px;
+  width: 250px;
   align-content: center;
   cursor: pointer;
+  display: inline-flex;
 }
 #app-photo {
   grid-row: 3;
@@ -377,6 +402,8 @@ p {
   border: 1px solid var(--light-text-color);
   color: var(--light-text-color);
   text-align: center;
+  background-image: url("./../../public/img/apartment-cover.png");
+  background-size: 100% 100%;
 }
 
 /* Main info */
@@ -415,6 +442,8 @@ p {
   border-radius: 50%;
   height: 60px;
   width: 60px;
+  background-image: url("./../../public/img/user-photo.jpg");
+  background-size: 100% 100%;
 }
 label {
   font-size: 24px;
