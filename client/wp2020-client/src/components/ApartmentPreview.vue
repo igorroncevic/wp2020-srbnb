@@ -219,6 +219,8 @@ export default {
     );
     console.log(this.amenities);
     console.log(this.reviews);
+    this.userType = UserService.getUserType();
+    console.log(this.userType);
     this.$nextTick(() => (this.loaded = true));
   },
   data() {
@@ -235,8 +237,18 @@ export default {
       reservationMessage: "",
       startDate: "",
       endDate: "",
-      loaded: false
+      loaded: false,
+      userType: ""
     };
+  },
+  computed: {
+    canUserEdit() {
+      if (this.userType == "Guest" || this.userType == null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
   },
   methods: {
     async publishReview() {
@@ -255,13 +267,6 @@ export default {
       } else {
         this.$toasted.global.cantPostComment();
       }
-    },
-    canUserEdit() {
-      console.log(UserService.getUserType());
-      return UserService.getUserType() == "Host" ||
-        UserService.getUserType() == "Admin"
-        ? true
-        : false;
     },
     async placeReservation() {
       var start = moment(this.startDate);

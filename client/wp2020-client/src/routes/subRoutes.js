@@ -79,7 +79,7 @@ export default [
       title: " - Preview Bookings",
     },
     beforeEnter: (to, from, next) => {
-      if (UserService.getUserType() == "") {
+      if (UserService.getUserType() == null) {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",
           icon: "error_outline",
@@ -148,7 +148,7 @@ export default [
       title: " - Edit Apartment",
     },
     beforeEnter: (to, from, next) => {
-      if (UserService.getUserType() != "Host") {
+      if (UserService.getUserType() != "Host" && UserService.getUserType() != "Admin") {
         Vue.toasted.show("You have no permissions to perform this action.", {
           type: "error",
           icon: "error_outline",

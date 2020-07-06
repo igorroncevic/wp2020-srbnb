@@ -1,12 +1,1 @@
-[
-	{
-		"id": 0,
-		"apartment": 9,
-		"checkInDay": "01-08-2020",
-		"nightsStaying": 14,
-		"totalPrice": 2010.0,
-		"reservationMessage": "Dolazimo!!!",
-		"guest": "zukovicfilip",
-		"status": "Completed"
-	}
-]
+[{"id":0,"apartment":9,"checkInDay":"01-08-2020","nightsStaying":14,"totalPrice":2010.0,"reservationMessage":"Dolazimo!!!","guest":"zukovicfilip","status":"Completed"}]
