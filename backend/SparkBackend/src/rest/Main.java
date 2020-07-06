@@ -46,19 +46,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class Main {
 
-	public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-	public static JsonSerializer<Date> ser = (src, typeOfSrc, context) -> src == null ? null
-			: new JsonPrimitive(dateFormat.format(src));
-	public static JsonDeserializer<Date> deser = (jSon, typeOfT, context) -> {
-		try {
-			return jSon == null ? null : dateFormat.parse(jSon.getAsString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;
-	};
-	public static Gson g = new GsonBuilder().registerTypeAdapter(Date.class, ser).registerTypeAdapter(Date.class, deser)
-			.create();
+	
+	public static Gson g = Utils.createGson();
 
 	public static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
