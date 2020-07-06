@@ -63,10 +63,19 @@ public class AmenitiesDAO {
 	}
 	
 	public boolean addNewAmenity(Amenity newAmenity) {
-		newAmenity.setId(amenities.size());
+		newAmenity.setId(generateNewId());
 		amenities.put(newAmenity.getId(), newAmenity);
 		saveData();
 		return true;
+	}
+	
+	private int generateNewId() {
+		int max = -1;
+		for(int id : amenities.keySet()) {
+			if(id > max)
+				max = id;
+		}
+		return max + 1;
 	}
 	
 	public boolean updateAmenityName(int id, String name) {
