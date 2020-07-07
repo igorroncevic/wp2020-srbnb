@@ -88,7 +88,7 @@ public class UsersDAO {
 	}
 
 	public boolean updateUserData(User newData) {
-		if (users.get(newData.getUsername()) == null)
+		if (users.get(newData.getUsername()) == null || users.get(newData.getUsername()).isBlocked())
 			return false;
 		else {
 			newData.setType(getUserType(newData.getUsername()));
@@ -104,6 +104,7 @@ public class UsersDAO {
 			return false;
 		else {
 			users.get(username).setBlocked(true);
+			ReservationsDAO.getInstance().cancleGuestReservations(username);
 			saveData();
 			return true;
 		}
@@ -150,7 +151,7 @@ public class UsersDAO {
 		List<User> myGuests = new ArrayList<User>();
 
 		for (Reservation reservation : ReservationsDAO.getInstance().getHostReservations(host)) {
-			if (!myGuests.contains(users.get(reservation.getGuest()))) {	//unikatni gosti, ne rezervacije
+			if (!myGuests.contains(users.get(reservation.getGuest())) && !users.get(reservation.getGuest()).isBlocked()) {
 				myGuests.add(users.get(reservation.getGuest()));
 			}
 		}

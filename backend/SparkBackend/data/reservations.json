@@ -1,1 +1,22 @@
-[{"id":0,"apartment":9,"checkInDay":"01-07-2020","nightsStaying":4,"totalPrice":600.0,"reservationMessage":"Dolazimo!!!","guest":"zukovicfilip","status":"Completed"},{"id":1,"apartment":0,"checkInDay":"07-08-2020","nightsStaying":8,"totalPrice":380.0,"reservationMessage":"Jedva cekamo!","guest":"igorroncevic","status":"Accepted"}]
+[
+	{
+		"id": 0,
+		"apartment": 9,
+		"checkInDay": "01-07-2020",
+		"nightsStaying": 4,
+		"totalPrice": 600.0,
+		"reservationMessage": "Dolazimo!!!",
+		"guest": "zukovicfilip",
+		"status": "Completed"
+	},
+	{
+		"id": 1,
+		"apartment": 0,
+		"checkInDay": "07-08-2020",
+		"nightsStaying": 8,
+		"totalPrice": 380.0,
+		"reservationMessage": "Jedva cekamo!",
+		"guest": "igorroncevic",
+		"status": "Accepted"
+	}
+]

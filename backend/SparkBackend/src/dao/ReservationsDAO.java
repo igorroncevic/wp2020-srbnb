@@ -273,5 +273,14 @@ public class ReservationsDAO {
 		
 		return false;
 	}
+	
+	public void cancleGuestReservations(String guest) {
+		for(Reservation reservation : getGuestReservations(guest)) {
+			if(reservation.getStatus() == ReservationStatus.Created || reservation.getStatus() == ReservationStatus.Accepted) {
+				reservation.setStatus(ReservationStatus.Canceled);
+			}
+		}
+		saveData();
+	}
 
 }
