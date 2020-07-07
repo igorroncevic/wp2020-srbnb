@@ -181,6 +181,8 @@
 		],
 		"availableDaysForRent": [
 			"01-01-2020",
+			"01-12-2020",
+			"15-12-2020",
 			"31-12-2020"
 		],
 		"host": "vojapetrovic",
@@ -301,7 +303,7 @@
 		],
 		"availableDaysForRent": [
 			"01-08-2020",
-			"01-11-2020",
+			"01-09-2020",
 			"01-12-2020",
 			"01-05-2021"
 		],
@@ -400,6 +402,97 @@
 			4,
 			7,
 			8
+		]
+	},
+	{
+		"id": 10,
+		"name": "Apartmani Momcilo",
+		"type": "Full_Apartment",
+		"numberOfRooms": 4,
+		"numberOfGuest": 6,
+		"location": {
+			"latitude": 45.25173647365648,
+			"longitude": 19.83911666355297,
+			"address": {
+				"street": "Vase Pelagica",
+				"number": "9",
+				"place": "Novi Sad, Serbia",
+				"zipCode": 21000
+			}
+		},
+		"daysForRent": [
+			"01-08-2020",
+			"01-05-2021",
+			"01-06-2021",
+			"01-11-2021"
+		],
+		"availableDaysForRent": [
+			"01-08-2020",
+			"05-10-2020",
+			"25-10-2020",
+			"01-05-2021",
+			"01-06-2021",
+			"01-11-2021"
+		],
+		"host": "stefanvukic",
+		"pricePerNight": 50.0,
+		"checkInTime": 11,
+		"checkOutTime": 11,
+		"status": "Active",
+		"amenities": [
+			0,
+			2,
+			4,
+			6,
+			7,
+			9,
+			12,
+			5,
+			3,
+			1,
+			8,
+			11,
+			13
+		]
+	},
+	{
+		"id": 11,
+		"name": "Vila Ana",
+		"type": "Room",
+		"numberOfRooms": 1,
+		"numberOfGuest": 2,
+		"location": {
+			"latitude": 44.81027184168519,
+			"longitude": 20.476535151684686,
+			"address": {
+				"street": "Kneza Danila",
+				"number": "20",
+				"place": "Belgrade, Serba",
+				"zipCode": 11000
+			}
+		},
+		"daysForRent": [
+			"23-07-2020",
+			"08-04-2021"
+		],
+		"availableDaysForRent": [
+			"23-07-2020",
+			"01-08-2020",
+			"20-08-2020",
+			"08-04-2021"
+		],
+		"host": "stefanvukic",
+		"pricePerNight": 30.0,
+		"checkInTime": 11,
+		"checkOutTime": 11,
+		"status": "Active",
+		"amenities": [
+			0,
+			2,
+			4,
+			6,
+			7,
+			5
 		]
 	}
 ]

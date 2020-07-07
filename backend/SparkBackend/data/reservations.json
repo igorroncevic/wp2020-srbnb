@@ -18,5 +18,55 @@
 		"reservationMessage": "Jedva cekamo!",
 		"guest": "igorroncevic",
 		"status": "Accepted"
+	},
+	{
+		"id": 2,
+		"apartment": 4,
+		"checkInDay": "01-12-2020",
+		"nightsStaying": 14,
+		"totalPrice": 804.0,
+		"reservationMessage": "",
+		"guest": "petarpetrovic",
+		"status": "Accepted"
+	},
+	{
+		"id": 3,
+		"apartment": 10,
+		"checkInDay": "05-10-2020",
+		"nightsStaying": 10,
+		"totalPrice": 485.0,
+		"reservationMessage": "Pozdrav, pripremite parking.",
+		"guest": "milicakostic",
+		"status": "Accepted"
+	},
+	{
+		"id": 4,
+		"apartment": 10,
+		"checkInDay": "15-10-2020",
+		"nightsStaying": 10,
+		"totalPrice": 475.0,
+		"reservationMessage": "",
+		"guest": "zukovicfilip",
+		"status": "Accepted"
+	},
+	{
+		"id": 5,
+		"apartment": 11,
+		"checkInDay": "01-08-2020",
+		"nightsStaying": 19,
+		"totalPrice": 546.0,
+		"reservationMessage": "Cao, da li mimozete rezervisati i parking u nekoj garazi.",
+		"guest": "petarpetrovic",
+		"status": "Accepted"
+	},
+	{
+		"id": 6,
+		"apartment": 7,
+		"checkInDay": "05-08-2020",
+		"nightsStaying": 27,
+		"totalPrice": 2580.0,
+		"reservationMessage": "We have a pet!",
+		"guest": "milicakostic",
+		"status": "Declined"
 	}
 ]
